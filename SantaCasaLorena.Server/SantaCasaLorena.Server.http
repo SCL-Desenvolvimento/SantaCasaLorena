@@ -1,0 +1,6 @@
+@SantaCasaLorena.Server_HostAddress = http://localhost:5178
+
+GET {{SantaCasaLorena.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
