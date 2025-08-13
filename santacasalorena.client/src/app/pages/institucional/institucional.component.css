@@ -1,20 +1,82 @@
-/* Gradiente do hero (equivalente ao tailwind from-blue-600 to-blue-800) */
+/* Hero */
 .hero-gradient {
   background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
+  background-size: 200% 200%;
+  animation: gradientMove 6s ease infinite;
 }
 
-/* Hover suave nos cards de valores */
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Ícones circulares */
+.icon-circle {
+  width: 70px; /* ligeiramente maior para respiro */
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto; /* centraliza dentro do card */
+}
+
+/* Cards */
+.card {
+  border: none; /* mantém visual limpo */
+  border-radius: 0.75rem; /* bordas levemente arredondadas */
+  padding: 1.25rem; /* espaçamento interno padrão */
+}
+
+.card-body {
+  padding: 1rem 0 0 0; /* espaço entre título e descrição */
+}
+
+.card-header {
+  padding: 1rem; /* adiciona respiro no header */
+}
+
+/* Cards */
 .card-hover {
-  transition: box-shadow 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
   .card-hover:hover {
+    transform: translateY(-5px);
     box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,0.08);
   }
+
+.card-header .d-flex {
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.card-header .rounded {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 50%;
+}
+
+.text-secondary {
+  line-height: 1.6;
+}
 
 /* Timeline */
 .timeline {
   position: relative;
+  max-width: 900px;
 }
 
 .timeline-line {
@@ -22,49 +84,51 @@
   top: 0;
   bottom: 0;
   left: 50%;
-  width: 2px;
   transform: translateX(-50%);
-  background: #cfe2ff; /* azul clarinho */
+  width: 3px;
+  background: #cfe2ff;
 }
 
 .timeline-item {
   position: relative;
+  margin-bottom: 2rem;
 }
 
-  .timeline-item .timeline-dot {
-    position: absolute;
-    left: 1rem; /* mobile: alinha à esquerda */
-    top: 1rem;
-    width: 14px;
-    height: 14px;
-    background: #0d6efd;
-    border: 4px solid #fff;
-    border-radius: 50%;
-    box-shadow: 0 0 0 2px #cfe2ff;
-    z-index: 2;
+.timeline-dot {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 16px;
+  background: #0d6efd;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #cfe2ff;
+  z-index: 2;
+}
+
+.timeline-content {
+  width: 50%;
+}
+
+.timeline-item.flex-row-reverse .timeline-content {
+  margin-left: auto;
+}
+
+/* Responsivo */
+@media (max-width: 767px) {
+  .timeline-line {
+    left: 0;
+    transform: none;
   }
 
-  .timeline-item .timeline-content {
-    margin-left: 3rem; /* espaço para o dot no mobile */
+  .timeline-dot {
+    left: 0;
+    transform: none;
   }
 
-/* Desktop: alternância esquerda/direita ao redor da linha central */
-@media (min-width: 768px) {
-  .timeline-item {
-    margin-bottom: 2rem;
+  .timeline-content {
+    width: 100%;
+    margin-left: 2.5rem;
   }
-
-    .timeline-item .timeline-dot {
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .timeline-item .timeline-content {
-      width: 50%;
-      margin-left: 0;
-    }
-
-    .timeline-item.flex-row-reverse .timeline-content {
-      margin-left: auto; /* joga para direita quando reverso */
-    }
 }
