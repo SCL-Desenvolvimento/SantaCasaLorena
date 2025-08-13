@@ -89,4 +89,48 @@ export class InstalacoesComponent {
     }
   ];
 
+  details = [
+    {
+      title: 'Pronto Atendimento',
+      description: 'Nosso Pronto Atendimento funciona 24 horas por dia, 7 dias por semana...',
+      columns: [
+        {
+          title: 'Equipamentos Disponíveis:',
+          items: ['Desfibriladores', 'Monitores cardíacos', 'Ventiladores portáteis', 'Equipamentos de suporte avançado']
+        },
+        {
+          title: 'Especialidades:',
+          items: ['Clínica Médica', 'Pediatria', 'Ortopedia', 'Cardiologia']
+        }
+      ]
+    },
+    {
+      title: 'Centro de Diagnóstico por Imagem',
+      description: 'Nosso Centro de Diagnóstico conta com equipamentos de última geração...',
+      columns: [
+        {
+          title: 'Exames Disponíveis:',
+          items: ['Ressonância Magnética', 'Tomografia Computadorizada', 'Ultrassonografia', 'Raio-X Digital', 'Mamografia', 'Densitometria Óssea']
+        },
+        {
+          title: 'Diferenciais:',
+          items: ['Laudos em até 24h', 'Radiologistas especializados', 'Agendamento facilitado', 'Resultados online']
+        }
+      ]
+    },
+    {
+      title: 'Hotelaria Hospitalar',
+      description: 'Nossos quartos de internação foram projetados para oferecer máximo conforto...',
+      columns: [
+        {
+          title: 'Comodidades dos Quartos:',
+          items: ['Quartos privativos e semi-privativos', 'Banheiro privativo', 'TV com canais a cabo', 'Wi-Fi gratuito', 'Ar condicionado', 'Poltrona para acompanhante']
+        },
+        {
+          title: 'Serviços Inclusos:',
+          items: ['Enfermagem 24 horas', 'Limpeza diária', 'Roupas de cama e banho', 'Alimentação balanceada']
+        }
+      ]
+    }
+  ];
 }

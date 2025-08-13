@@ -1,45 +1,73 @@
-.hero {
-  background: linear-gradient(90deg, #2563eb, #1e40af);
+.hero-modern {
+  background: linear-gradient(120deg, #2563eb, #1e40af);
 }
 
 .icon-bubble {
   width: 64px;
   height: 64px;
   font-size: 1.5rem;
-  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff; /* Ícone sempre branco */
 }
 
 .icon-bubble-sm {
   width: 64px;
   height: 64px;
   font-size: 1.75rem;
+  border-radius: 50%;
+  background-color: #f8f9fa;
   color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
+.card-spec {
+  background-color: #f9fafb;
+  transition: transform 0.2s ease;
+}
+
+  .card-spec:hover {
+    transform: translateY(-3px);
+  }
+
+.detail-card {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+  .detail-card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.08);
+    transform: translateY(-3px);
+  }
+
 .bg-red {
-  background-color: #ef4444;
+  background-color: #ef4444 !important;
 }
 
 .bg-blue {
-  background-color: #3b82f6;
+  background-color: #3b82f6 !important;
 }
 
 .bg-purple {
-  background-color: #8b5cf6;
+  background-color: #8b5cf6 !important;
 }
 
 .bg-green {
-  background-color: #22c55e;
+  background-color: #22c55e !important;
 }
 
 .bg-orange {
-  background-color: #f59e0b;
+  background-color: #f59e0b !important;
 }
 
 .bg-indigo {
-  background-color: #6366f1;
-}
-
-.bg-purple-subtle {
-  background-color: rgba(128, 90, 213, 0.12);
+  background-color: #6366f1 !important;
 }
