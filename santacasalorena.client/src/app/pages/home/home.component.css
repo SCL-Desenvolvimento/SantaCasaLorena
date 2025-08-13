@@ -1,8 +1,45 @@
-.bg-purple {
-  background-color: #6f42c1;
+.hero-section {
+  background-size: cover;
+  background-position: center;
 }
 
-.card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  transition: box-shadow 0.3s ease;
+.text-accent {
+  color: var(--bs-danger);
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  transition: all 0.3s ease;
+}
+
+.service-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.stat-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: var(--bs-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--bs-primary);
+}
+
+.news-card img {
+  object-fit: cover;
+  height: 200px;
+}
+
+.news-card:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }

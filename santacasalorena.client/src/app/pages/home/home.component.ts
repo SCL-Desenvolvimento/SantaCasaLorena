@@ -22,55 +22,60 @@ interface Service {
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
-  news: News[] = [];
-  services: Service[] = [];
-  placeholderNews = [1, 2, 3];
+  hero = {
+    bgGradient: 'linear-gradient(135deg, #0d6efd, #6610f2)',
+    title: 'Atendimento de qualidade e um serviço de',
+    highlight: 'excelência!',
+    hashtag: '#150AnosporVocê',
+    subtitle: 'Estrutura de ponta e profissionais qualificados. De portas e braços abertos pra você!',
+    buttons: [
+      { label: 'Resultado de Exames', icon: 'bi-calendar', class: 'btn btn-danger' },
+      { label: 'Fale Conosco', icon: 'bi-telephone', class: 'btn btn-outline-light' }
+    ]
+  };
 
   heroServices = [
-    {
-      icon: 'bi-clock',
-      title: "Pronto Atendimento",
-      description: "Mais de 25 mil casos por ano, situações de urgência e emergência.",
-      color: "bg-danger"
-    },
-    {
-      icon: 'bi-building',
-      title: "Hotelaria",
-      description: "Satisfazendo todas as necessidades dos pacientes bem como a integridade física.",
-      color: "bg-primary"
-    },
-    {
-      icon: 'bi-stethoscope',
-      title: "Clínica Emília",
-      description: "Equipe médica especializada de alto nível técnico garantindo assim o atendimento com qualidade.",
-      color: "bg-success"
-    },
-    {
-      icon: 'bi-heart',
-      title: "Centro de Diagnóstico",
-      description: "Planejadas para oferecer aos nossos pacientes todo acolhimento e segurança necessários.",
-      color: "bg-purple"
-    }
+    { icon: 'bi-clock', title: 'Pronto Atendimento', description: 'Mais de 25 mil casos por ano...', color: 'bg-danger' },
+    { icon: 'bi-building', title: 'Hotelaria', description: 'Satisfazendo todas as necessidades...', color: 'bg-primary' },
+    { icon: 'bi-stethoscope', title: 'Clínica Emília', description: 'Equipe médica especializada...', color: 'bg-success' },
+    { icon: 'bi-heart', title: 'Centro de Diagnóstico', description: 'Planejadas para oferecer...', color: 'bg-purple' }
   ];
 
   stats = [
-    { number: "150+", label: "Anos de História", icon: "bi-award" },
-    { number: "25k+", label: "Atendimentos/Ano", icon: "bi-people" },
-    { number: "24h", label: "Pronto Socorro", icon: "bi-clock" },
-    { number: "100%", label: "Dedicação", icon: "bi-heart" }
+    { number: '150+', label: 'Anos de História', icon: 'bi-award' },
+    { number: '25k+', label: 'Atendimentos/Ano', icon: 'bi-people' },
+    { number: '24h', label: 'Pronto Socorro', icon: 'bi-clock' },
+    { number: '100%', label: 'Dedicação', icon: 'bi-heart' }
   ];
+
+  convenios = {
+    title: 'Convênios',
+    description: 'Uma série de convênios atendidos...',
+    items: [
+      { name: 'Convênio 1', logo: '' },
+      { name: 'Convênio 2', logo: '' },
+      { name: 'Convênio 3', logo: '' },
+      { name: 'Convênio 4', logo: '' },
+      { name: 'Convênio 5', logo: '' },
+      { name: 'Convênio 6', logo: '' }
+    ]
+  };
+
+  newsSection = { title: 'Últimas Notícias' };
+
+  cta = {
+    bgGradient: 'linear-gradient(135deg, #0d6efd, #198754)',
+    title: 'Manual do Paciente e Visitante',
+    description: 'Este manual foi desenvolvido para facilitar...',
+    buttonLabel: 'Clique aqui para acessar'
+  };
+
+  news: any[] = [];
+  placeholderNews = [1, 2, 3];
 
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.http.get<any>('/api/news?per_page=3').subscribe({
-      next: res => this.news = res.news || [],
-      error: err => console.error('Erro ao carregar notícias:', err)
-    });
-
-    this.http.get<any>('/api/services').subscribe({
-      next: res => this.services = (res || []).slice(0, 4),
-      error: err => console.error('Erro ao carregar serviços:', err)
-    });
+    this.http.get<any>('/api/news?per_page=3').subscribe(res => this.news = res.news || []);
   }
 }
