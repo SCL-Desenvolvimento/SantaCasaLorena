@@ -26,7 +26,7 @@ export class NoticiasComponent implements OnInit {
   selectedCategory: string = 'all';
   currentPage: number = 1;
   totalPages: number = 1;
-  loading: boolean = false;
+  loading: boolean = true;
 
   defaultNews: News[] = [
     {
@@ -97,6 +97,7 @@ export class NoticiasComponent implements OnInit {
         this.filteredNews = this.defaultNews;
         this.totalPages = 1;
         this.applyFilters();
+        this.loading = false;
       },
       complete: () => {
         this.loading = false;

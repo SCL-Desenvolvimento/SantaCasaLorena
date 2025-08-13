@@ -1,13 +1,13 @@
-<!--<div *ngIf="loading" class="d-flex justify-content-center align-items-center min-vh-100">
+<div *ngIf="loading" class="loading-screen">
   <div class="text-center">
-    <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status"></div>
+    <div class="spinner-border text-primary big-spinner" role="status"></div>
     <p class="mt-3 text-muted">Carregando notícias...</p>
   </div>
-</div>-->
+</div>
 
 <div>
   <!-- Hero -->
-  <section class="bg-primary text-white py-5">
+  <section class="hero-section">
     <div class="container text-center">
       <h1 class="display-4 fw-bold">Notícias</h1>
       <p class="lead">Fique por dentro das últimas novidades da Santa Casa de Lorena</p>
@@ -15,15 +15,39 @@
   </section>
 
   <!-- Filtros -->
-  <section class="py-4 border-bottom bg-white">
-    <div class="container d-flex flex-column flex-md-row gap-3 justify-content-between">
-      <div class="input-group" style="max-width: 400px;">
+  <section class="filters-section">
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text"
+               class="form-control"
+               placeholder="Buscar notícias..."
+               [(ngModel)]="searchTerm"
+               (input)="applyFilters()" />
+      </div>
+      <div class="categories">
+        <button *ngFor="let category of categories()"
+                [class.active]="selectedCategory === category"
+                (click)="selectedCategory = category; applyFilters()">
+          {{ category === 'all' ? 'Todos' : category }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filtros -->
+  <!--<section class="filters-section">
+    <div class="container d-flex flex-column flex-md-row gap-3 justify-content-between align-items-center">
+      <div class="input-group search-box">
         <span class="input-group-text"><i class="bi bi-search"></i></span>
-        <input type="text" class="form-control" placeholder="Buscar notícias..."
-               (input)="applyFilters()">
+        <input type="text"
+               class="form-control"
+               placeholder="Buscar notícias..."
+               [(ngModel)]="searchTerm"
+               (input)="applyFilters()" />
       </div>
 
-      <div class="btn-group flex-wrap">
+      <div class="btn-group flex-wrap category-buttons">
         <button *ngFor="let category of categories()"
                 class="btn btn-sm"
                 [ngClass]="selectedCategory === category ? 'btn-primary' : 'btn-outline-primary'"
@@ -32,12 +56,13 @@
         </button>
       </div>
     </div>
-  </section>
+  </section>-->
 
   <!-- Lista -->
-  <section class="py-5 bg-light">
+  <section class="news-section">
     <div class="container">
-      <div *ngIf="filteredNews.length === 0" class="text-center py-5">
+      <!-- Nenhum resultado -->
+      <div *ngIf="filteredNews.length === 0" class="no-results">
         <i class="bi bi-search display-4 text-muted"></i>
         <h3 class="mt-3">Nenhuma notícia encontrada</h3>
         <p class="text-muted">Tente ajustar os filtros ou termo de busca.</p>
@@ -45,17 +70,16 @@
 
       <div *ngIf="filteredNews.length > 0">
         <!-- Destaque -->
-        <div class="mb-5">
+        <div class="highlight-news">
           <h2 class="fw-bold mb-4">Notícia em Destaque</h2>
-          <div class="card shadow-sm">
+          <div class="card shadow-sm h-100">
             <div class="row g-0">
               <div class="col-md-4">
                 <img *ngIf="filteredNews[0].image_url"
                      [src]="filteredNews[0].image_url"
                      class="img-fluid h-100 object-fit-cover"
-                     alt="{{filteredNews[0].title}}">
-                <div *ngIf="!filteredNews[0].image_url"
-                     class="bg-primary text-white d-flex align-items-center justify-content-center h-100 p-3">
+                     alt="{{filteredNews[0].title}}" />
+                <div *ngIf="!filteredNews[0].image_url" class="no-image-placeholder">
                   <i class="bi bi-calendar3 display-6"></i>
                   <p class="mb-0 ms-2">Imagem não disponível</p>
                 </div>
@@ -85,17 +109,20 @@
         <!-- Grid -->
         <div class="row g-4">
           <div class="col-md-6 col-lg-4" *ngFor="let item of filteredNews.slice(1)">
-            <div class="card h-100 shadow-sm">
-              <img *ngIf="item.image_url" [src]="item.image_url" class="card-img-top" alt="{{item.title}}">
-              <div *ngIf="!item.image_url"
-                   class="bg-light text-muted d-flex align-items-center justify-content-center"
-                   style="height: 200px;">
+            <div class="card h-100 shadow-sm news-card">
+              <img *ngIf="item.image_url"
+                   [src]="item.image_url"
+                   class="card-img-top"
+                   alt="{{item.title}}" />
+              <div *ngIf="!item.image_url" class="no-image-grid">
                 <i class="bi bi-calendar3 display-6"></i>
               </div>
               <div class="card-body">
                 <div class="d-flex align-items-center gap-2 mb-2">
                   <span [ngClass]="getCategoryClass(item.category)">{{ item.category }}</span>
-                  <small class="text-muted"><i class="bi bi-calendar3"></i> {{ formatDate(item.created_at) }}</small>
+                  <small class="text-muted">
+                    <i class="bi bi-calendar3"></i> {{ formatDate(item.created_at) }}
+                  </small>
                 </div>
                 <h5 class="card-title">{{ item.title }}</h5>
                 <p class="card-text text-muted">{{ item.summary }}</p>
@@ -111,13 +138,12 @@
         </div>
 
         <!-- Paginação -->
-        <nav *ngIf="totalPages > 1" class="mt-5">
+        <nav *ngIf="totalPages > 1" class="pagination-container">
           <ul class="pagination justify-content-center">
             <li class="page-item" [class.disabled]="currentPage === 1">
               <button class="page-link" (click)="changePage(currentPage - 1)">Anterior</button>
             </li>
-            <li *ngFor="let p of [].constructor(totalPages); let i = index"
-                class="page-item" [class.active]="currentPage === i+1">
+            <li *ngFor="let p of [].constructor(totalPages); let i = index" class="page-item" [class.active]="currentPage === i+1">
               <button class="page-link" (click)="changePage(i+1)">{{ i+1 }}</button>
             </li>
             <li class="page-item" [class.disabled]="currentPage === totalPages">
@@ -130,8 +156,8 @@
   </section>
 
   <!-- Newsletter -->
-  <section class="py-5 bg-primary text-white text-center">
-    <div class="container">
+  <section class="newsletter-section">
+    <div class="container text-center">
       <h2 class="fw-bold mb-3">Receba nossas notícias</h2>
       <p class="mb-4">Cadastre-se para receber as últimas notícias e atualizações diretamente em seu e-mail.</p>
       <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center">
