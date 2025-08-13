@@ -22,6 +22,25 @@ export class ServicosComponent implements OnInit {
   searchTerm: string = '';
   selectedCategory: string = 'all';
   loading: boolean = true;
+  heroTitle = 'Serviços';
+  heroSubtitle = 'Cuidados médicos especializados com excelência e humanização';
+
+  infos = [
+    { iconClass: 'bi-people-fill text-primary', title: 'Convênios Aceitos', text: 'Atendemos diversos convênios médicos...', buttonText: 'Ver lista completa' },
+    { iconClass: 'bi-calendar-event-fill text-success', title: 'Agendamento', text: 'Agende suas consultas e exames...', buttonText: 'Agendar consulta' }
+  ];
+
+  schedules = [
+    { name: 'Pronto Atendimento', time: '24h / 7 dias' },
+    { name: 'Ambulatório', time: 'Seg-Sex: 7h-17h | Sáb: 7h-12h' },
+    { name: 'Centro de Diagnóstico', time: 'Seg-Sex: 6h-18h | Sáb: 6h-12h' },
+    { name: 'Internação', time: 'Visitas: 14h-20h | UTI: 14h-15h e 19h-20h' }
+  ];
+
+  ctaTitle = 'Precisa de Atendimento?';
+  ctaSubtitle = 'Nossa equipe está pronta para atendê-lo com qualidade e dedicação.';
+  ctaPrimaryBtn = 'Agendar Consulta';
+  ctaSecondaryBtn = 'Fale Conosco';
 
   defaultServices: Service[] = [
     { id: 1, name: 'Cardiologia', description: 'Diagnóstico e tratamento de doenças cardiovasculares com equipamentos de última geração.', icon: 'heart-fill', category: 'Especialidades Médicas' },
