@@ -1,22 +1,22 @@
 <div class="min-vh-100">
   <!-- Hero Section -->
-  <section class="bg-primary text-white py-5 text-center">
+  <section class="hero-section text-white text-center py-5">
     <div class="container">
-      <h1 class="display-4 fw-bold">Fale Conosco</h1>
-      <p class="lead">Estamos aqui para ajudar você</p>
+      <h1 class="display-5 fw-bold">{{ heroTitle || 'Fale Conosco' }}</h1>
+      <p class="lead opacity-75">{{ heroSubtitle || 'Estamos aqui para ajudar você' }}</p>
     </div>
   </section>
 
   <!-- Mensagem de Sucesso -->
   <section *ngIf="isSubmitted" class="py-5 bg-light">
     <div class="container text-center">
-      <div class="card border-success bg-success-subtle p-4">
+      <div class="card border-success bg-success-subtle p-4 shadow-sm animate-fadeIn">
         <div class="mb-3">
-          <i class="bi bi-check-circle-fill text-success" style="font-size: 2rem;"></i>
+          <i class="bi bi-check-circle-fill text-success fs-1"></i>
         </div>
-        <h2 class="text-success">Mensagem Enviada com Sucesso!</h2>
-        <p>Obrigado por entrar em contato. Responderemos em até 24 horas.</p>
-        <button class="btn btn-success" (click)="resetForm()">Enviar Nova Mensagem</button>
+        <h2 class="text-success">Mensagem Enviada!</h2>
+        <p class="mb-4">Obrigado por entrar em contato. Responderemos em até 24 horas.</p>
+        <button class="btn btn-success px-4" (click)="resetForm()">Enviar Nova Mensagem</button>
       </div>
     </div>
   </section>
@@ -24,16 +24,16 @@
   <!-- Informações de Contato -->
   <section *ngIf="!isSubmitted" class="py-5 bg-white">
     <div class="container">
-      <h2 class="text-center mb-4">Informações de Contato</h2>
+      <h2 class="text-center mb-5">Informações de Contato</h2>
       <div class="row g-4">
         <div *ngFor="let info of contactInfo" class="col-12 col-md-6 col-lg-3">
-          <div class="card text-center shadow-sm">
+          <div class="card h-100 text-center shadow-sm border-0 hover-scale">
             <div class="card-body">
-              <div class="{{ info.color }} text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width:60px; height:60px;">
-                <i class="bi {{ info.icon }}" style="font-size:1.5rem;"></i>
+              <div class="{{ info.color }} text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 icon-wrapper">
+                <i class="bi {{ info.icon }} fs-4"></i>
               </div>
-              <h5 class="card-title">{{ info.title }}</h5>
-              <p class="card-text" *ngFor="let detail of info.details">{{ detail }}</p>
+              <h5 class="fw-semibold">{{ info.title }}</h5>
+              <p class="mb-0 text-muted small" *ngFor="let detail of info.details">{{ detail }}</p>
             </div>
           </div>
         </div>
@@ -45,35 +45,34 @@
   <section *ngIf="!isSubmitted" class="py-5 bg-light">
     <div class="container">
       <div class="row g-4">
-
         <!-- Formulário -->
         <div class="col-lg-6">
           <h2 class="mb-4">Envie sua Mensagem</h2>
-          <form [formGroup]="formData" (ngSubmit)="onSubmit()">
+          <form [formGroup]="formData" (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
             <div class="row g-3">
-              <div class="col-md-6">
-                <label>Nome *</label>
-                <input type="text" class="form-control" formControlName="name" placeholder="Seu nome completo">
-              </div>
-              <div class="col-md-6">
-                <label>E-mail *</label>
-                <input type="email" class="form-control" formControlName="email" placeholder="seu@email.com">
-              </div>
-              <div class="col-md-6">
-                <label>Telefone</label>
-                <input type="tel" class="form-control" formControlName="phone" placeholder="(12) 99999-9999">
-              </div>
-              <div class="col-md-6">
-                <label>Assunto *</label>
-                <input type="text" class="form-control" formControlName="subject" placeholder="Assunto da mensagem">
-              </div>
-              <div class="col-12">
-                <label>Mensagem *</label>
-                <textarea class="form-control" formControlName="message" rows="5" placeholder="Digite sua mensagem..."></textarea>
+              <div *ngFor="let field of formFields"
+                   [ngClass]="field.type === 'textarea' ? 'col-12' : 'col-md-6'">
+
+                <label class="form-label">
+                  {{ field.label }}
+                  <span *ngIf="field.required" class="text-danger">*</span>
+                </label>
+
+                <input *ngIf="field.type !== 'textarea'"
+                       [type]="field.type"
+                       class="form-control"
+                       [formControlName]="field.name"
+                       [placeholder]="field.placeholder" />
+
+                <textarea *ngIf="field.type === 'textarea'"
+                          class="form-control"
+                          [formControlName]="field.name"
+                          rows="5"
+                          [placeholder]="field.placeholder"></textarea>
               </div>
             </div>
-            <div *ngIf="error" class="text-danger mt-2">{{ error }}</div>
-            <button class="btn btn-primary w-100 mt-3" [disabled]="isSubmitting">
+            <div *ngIf="error" class="text-danger mt-2 small">{{ error }}</div>
+            <button class="btn btn-primary w-100 mt-4 py-2" [disabled]="isSubmitting">
               <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
               Enviar Mensagem
             </button>
@@ -83,22 +82,22 @@
         <!-- Departamentos -->
         <div class="col-lg-6">
           <h2 class="mb-4">Departamentos</h2>
-          <div *ngFor="let dept of departments" class="card mb-3">
+          <div *ngFor="let dept of departments" class="card mb-3 shadow-sm border-0">
             <div class="card-body d-flex justify-content-between align-items-center">
               <div>
-                <h5 class="mb-1">{{ dept.name }}</h5>
-                <p class="mb-0 text-muted">{{ dept.phone }}</p>
+                <h5 class="mb-1 fw-semibold">{{ dept.name }}</h5>
+                <p class="mb-0 text-muted small">{{ dept.phone }}</p>
               </div>
               <small class="text-secondary">
-                <i class="bi bi-clock me-1"></i> {{ dept.hours }}
+                <i class="bi bi-clock me-1"></i>{{ dept.hours }}
               </small>
             </div>
           </div>
-          <div class="card border-danger bg-danger-subtle">
+          <div class="card border-danger bg-danger-subtle shadow-sm">
             <div class="card-body">
-              <h5 class="text-danger">Emergências</h5>
-              <p>Em caso de emergência médica, dirija-se ao Pronto Atendimento ou ligue <strong>192</strong></p>
-              <p class="text-danger"><strong>Pronto Atendimento 24h:</strong> (12) 3159-3344</p>
+              <h5 class="text-danger fw-bold">Emergências</h5>
+              <p>Em caso de emergência médica, ligue <strong>192</strong> ou dirija-se ao Pronto Atendimento.</p>
+              <p class="text-danger fw-semibold">Pronto Atendimento 24h: (12) 3159-3344</p>
             </div>
           </div>
         </div>
@@ -110,12 +109,12 @@
   <section *ngIf="!isSubmitted" class="py-5 bg-white">
     <div class="container text-center">
       <h2 class="mb-4">Localização</h2>
-      <div class="card shadow-sm mx-auto" style="max-width:800px;">
+      <div class="card shadow-sm mx-auto border-0" style="max-width:800px;">
         <div class="card-body bg-light py-5">
-          <i class="bi bi-geo-alt-fill text-secondary" style="font-size:2rem;"></i>
-          <p class="fw-bold">Mapa Interativo</p>
-          <p>Rua Dom Bosco - 562, Centro, Lorena/SP</p>
-          <a class="btn btn-outline-primary" href="https://maps.google.com" target="_blank">Ver no Google Maps</a>
+          <i class="bi bi-geo-alt-fill text-secondary fs-1"></i>
+          <p class="fw-bold mt-3">Mapa Interativo</p>
+          <p class="mb-4">Rua Dom Bosco - 562, Centro, Lorena/SP</p>
+          <a class="btn btn-outline-primary px-4" href="https://maps.google.com" target="_blank">Ver no Google Maps</a>
         </div>
       </div>
     </div>
