@@ -1,0 +1,195 @@
+<div class="min-vh-100">
+
+  <!-- Hero -->
+  <section class="hero text-white py-5">
+    <div class="container text-center">
+      <h1 class="display-4 fw-bold mb-3">Instalações</h1>
+      <p class="fs-4 text-white-50 mb-0">
+        Estrutura moderna e tecnologia de ponta para o seu cuidado
+      </p>
+    </div>
+  </section>
+
+  <!-- Especificações -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <h2 class="h2 fw-bold text-dark text-center mb-4">Nossa Estrutura em Números</h2>
+      <div class="row g-3">
+        <div class="col-6 col-md-4 col-lg-2" *ngFor="let spec of specs">
+          <div class="text-center">
+            <div class="p-4 rounded bg-primary-subtle mb-2">
+              <div class="fs-3 fw-bold text-primary">{{ spec.value }}</div>
+              <div class="small text-muted">{{ spec.label }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Principais Instalações -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <h2 class="h2 fw-bold text-dark text-center mb-4">Principais Instalações</h2>
+      <div class="row g-4">
+        <div class="col-12 col-md-6 col-lg-4" *ngFor="let facility of facilities">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+              <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3 icon-bubble"
+                   [ngClass]="facility.colorClass">
+                <i class="bi" [ngClass]="facility.icon"></i>
+              </div>
+              <h5 class="card-title">{{ facility.title }}</h5>
+              <p class="card-text text-muted">{{ facility.description }}</p>
+              <div>
+                <span *ngFor="let feature of facility.features" class="badge text-bg-secondary me-2 mb-2">
+                  {{ feature }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Detalhes -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <div class="mx-auto" style="max-width: 56rem;">
+        <h2 class="h2 fw-bold text-dark text-center mb-4">Detalhes das Instalações</h2>
+
+        <!-- Pronto Atendimento -->
+        <div class="p-4 rounded bg-light mb-4">
+          <h3 class="h4 fw-bold mb-3">Pronto Atendimento</h3>
+          <p class="text-muted mb-3">
+            Nosso Pronto Atendimento funciona 24 horas por dia, 7 dias por semana...
+          </p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <h6 class="fw-semibold">Equipamentos Disponíveis:</h6>
+              <ul class="list-unstyled text-muted small mb-0">
+                <li>• Desfibriladores</li>
+                <li>• Monitores cardíacos</li>
+                <li>• Ventiladores portáteis</li>
+                <li>• Equipamentos de suporte avançado</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h6 class="fw-semibold">Especialidades:</h6>
+              <ul class="list-unstyled text-muted small mb-0">
+                <li>• Clínica Médica</li>
+                <li>• Pediatria</li>
+                <li>• Ortopedia</li>
+                <li>• Cardiologia</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Centro de Diagnóstico -->
+        <div class="p-4 rounded bg-light mb-4">
+          <h3 class="h4 fw-bold mb-3">Centro de Diagnóstico por Imagem</h3>
+          <p class="text-muted mb-3">
+            Nosso Centro de Diagnóstico conta com equipamentos de última geração...
+          </p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <h6 class="fw-semibold">Exames Disponíveis:</h6>
+              <ul class="list-unstyled text-muted small mb-0">
+                <li>• Ressonância Magnética</li>
+                <li>• Tomografia Computadorizada</li>
+                <li>• Ultrassonografia</li>
+                <li>• Raio-X Digital</li>
+                <li>• Mamografia</li>
+                <li>• Densitometria Óssea</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h6 class="fw-semibold">Diferenciais:</h6>
+              <ul class="list-unstyled text-muted small mb-0">
+                <li>• Laudos em até 24h</li>
+                <li>• Radiologistas especializados</li>
+                <li>• Agendamento facilitado</li>
+                <li>• Resultados online</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hotelaria Hospitalar -->
+        <div class="p-4 rounded bg-light">
+          <h3 class="h4 fw-bold mb-3">Hotelaria Hospitalar</h3>
+          <p class="text-muted mb-3">
+            Nossos quartos de internação foram projetados para oferecer máximo conforto...
+          </p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <h6 class="fw-semibold">Comodidades dos Quartos:</h6>
+              <ul class="list-unstyled text-muted small mb-0">
+                <li>• Quartos privativos e semi-privativos</li>
+                <li>• Banheiro privativo</li>
+                <li>• TV com canais a cabo</li>
+                <li>• Wi-Fi gratuito</li>
+                <li>• Ar condicionado</li>
+                <li>• Poltrona para acompanhante</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h6 class="fw-semibold">Serviços Inclusos:</h6>
+              <ul class="list-unstyled text-muted small mb-0">
+                <li>• Enfermagem 24 horas</li>
+                <li>• Limpeza diária</li>
+                <li>• Roupas de cama e banho</li>
+                <li>• Alimentação balanceada</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Comodidades -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <h2 class="h2 fw-bold text-dark text-center mb-4">Comodidades</h2>
+      <div class="row g-4">
+        <div class="col-12 col-md-6 col-lg-3" *ngFor="let amenity of amenities">
+          <div class="card h-100 text-center shadow-sm border-0">
+            <div class="card-body">
+              <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3 bg-light icon-bubble-sm">
+                <i class="bi" [ngClass]="amenity.icon"></i>
+              </div>
+              <h6 class="card-title mb-2">{{ amenity.title }}</h6>
+              <p class="card-text text-muted mb-0">{{ amenity.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Segurança e Qualidade -->
+  <section class="py-5 bg-white">
+    <div class="container text-center">
+      <div class="mx-auto" style="max-width: 56rem;">
+        <h2 class="h2 fw-bold mb-4">Segurança e Qualidade</h2>
+        <p class="lead text-muted mb-4">
+          Todas as nossas instalações seguem rigorosos protocolos de segurança e qualidade...
+        </p>
+        <div class="row g-3">
+          <div class="col-12 col-md-4" *ngFor="let item of safetyItems">
+            <div class="p-4 rounded h-100" [ngClass]="item.toneClass">
+              <i class="bi d-block mb-2 display-6" [ngClass]="item.icon"></i>
+              <h6 class="fw-semibold mb-2">{{ item.title }}</h6>
+              <p class="small text-muted mb-0">{{ item.text }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

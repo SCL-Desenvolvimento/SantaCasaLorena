@@ -1,0 +1,15 @@
+header {
+  z-index: 1050; /* Garantir que fique acima de outros elementos */
+}
+
+.nav-link {
+  transition: color 0.2s ease-in-out;
+}
+
+  .nav-link:hover {
+    color: #0d6efd;
+  }
+
+.btn {
+  transition: background-color 0.2s ease-in-out;
+}

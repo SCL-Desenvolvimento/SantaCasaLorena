@@ -7,4 +7,11 @@
     <!-- Folder where production build objects will be placed -->
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\santacasalorena.client\browser\</BuildOutputFolder>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="src\app\admin\components\" />
+    <Folder Include="src\app\admin\layout\" />
+    <Folder Include="src\app\admin\pages\" />
+    <Folder Include="src\app\services\" />
+    <Folder Include="src\app\pages\" />
+  </ItemGroup>
 </Project>

@@ -1,0 +1,219 @@
+<div class="min-vh-100">
+
+  <!-- Hero -->
+  <section class="hero-gradient text-white py-5 py-lg-6">
+    <div class="container">
+      <div class="mx-auto text-center" style="max-width: 900px;">
+        <h1 class="display-5 fw-bold mb-3">Institucional</h1>
+        <p class="lead mb-0 opacity-75">150 anos de história, tradição e dedicação à saúde</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Nossa História -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <div class="mx-auto" style="max-width: 900px;">
+        <h2 class="h1 fw-bold text-dark text-center mb-4">Nossa História</h2>
+        <div class="fs-5 text-secondary">
+          <p class="mb-3">
+            A Santa Casa de Misericórdia de Lorena foi fundada em 1874 pelas Irmãs de São José de Chambéry,
+            com o objetivo de prestar assistência médica e hospitalar à população da região do Vale do Paraíba.
+            Ao longo de seus 150 anos de existência, a instituição se consolidou como referência em saúde,
+            sempre pautada pelos valores cristãos de caridade, solidariedade e amor ao próximo.
+          </p>
+          <p class="mb-3">
+            Durante mais de um século e meio, a Santa Casa de Lorena tem sido um pilar fundamental na
+            prestação de serviços de saúde para a comunidade local e regional. Nossa trajetória é marcada
+            por constantes investimentos em infraestrutura, tecnologia e capacitação profissional, sempre
+            com o objetivo de oferecer o melhor atendimento possível aos nossos pacientes.
+          </p>
+          <p class="mb-0">
+            Hoje, somos reconhecidos como um hospital de referência, oferecendo serviços de alta complexidade
+            e mantendo nosso compromisso original de servir a todos, independentemente de sua condição social
+            ou econômica. Nossa missão continua sendo a mesma: cuidar da vida com dedicação, competência e amor.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Missão, Visão, Valores -->
+  <section class="py-5 bg-light">
+    <div class="container">
+
+      <div class="row g-4 mb-4">
+        <!-- Missão -->
+        <div class="col-12 col-lg-4">
+          <div class="card text-center h-100 shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-4">
+              <div class="mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center"
+                   style="width:64px;height:64px;background:#0d6efd;">
+                <i class="bi bi-bullseye fs-3 text-white"></i>
+              </div>
+              <h3 class="h4 mb-0">Missão</h3>
+            </div>
+            <div class="card-body pt-0">
+              <p class="card-text">
+                Prestar assistência médica e hospitalar de qualidade, com humanização e
+                excelência técnica, promovendo a saúde e o bem-estar da comunidade,
+                fundamentados nos valores cristãos de caridade e solidariedade.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visão -->
+        <div class="col-12 col-lg-4">
+          <div class="card text-center h-100 shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-4">
+              <div class="mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center"
+                   style="width:64px;height:64px;background:#198754;">
+                <i class="bi bi-eye fs-3 text-white"></i>
+              </div>
+              <h3 class="h4 mb-0">Visão</h3>
+            </div>
+            <div class="card-body pt-0">
+              <p class="card-text">
+                Ser reconhecida como referência regional em saúde, destacando-se pela
+                excelência no atendimento, inovação tecnológica e responsabilidade social,
+                mantendo nossa tradição de 150 anos de dedicação à vida.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Valores -->
+        <div class="col-12 col-lg-4">
+          <div class="card text-center h-100 shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-4">
+              <div class="mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center"
+                   style="width:64px;height:64px;background:#dc3545;">
+                <i class="bi bi-heart-fill fs-3 text-white"></i>
+              </div>
+              <h3 class="h4 mb-0">Valores</h3>
+            </div>
+            <div class="card-body pt-0">
+              <p class="card-text">
+                Humanização, ética, excelência, compromisso social, respeito à vida,
+                transparência, trabalho em equipe e melhoria contínua são os pilares
+                que norteiam todas as nossas ações e decisões.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nossos Valores em Ação -->
+      <div>
+        <h3 class="h3 fw-bold text-dark text-center mb-4">Nossos Valores em Ação</h3>
+        <div class="row g-4">
+          <div class="col-12 col-md-6" *ngFor="let value of values; let i = index">
+            <div class="card h-100 shadow-sm card-hover">
+              <div class="card-header bg-transparent border-0">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="rounded p-2" style="background:#e7f1ff;">
+                    <i class="bi fs-4 text-primary" [ngClass]="value.icon"></i>
+                  </div>
+                  <h4 class="h5 mb-0">{{ value.title }}</h4>
+                </div>
+              </div>
+              <div class="card-body pt-0">
+                <p class="card-text mb-0">{{ value.description }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Linha do Tempo -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <h2 class="h1 fw-bold text-dark text-center mb-5">Linha do Tempo</h2>
+
+      <div class="timeline mx-auto" style="max-width: 900px;">
+        <div class="timeline-line d-none d-md-block"></div>
+
+        <div class="timeline-item d-md-flex align-items-center mb-4"
+             *ngFor="let item of timeline; let idx = index"
+             [ngClass]="{'flex-row-reverse': idx % 2 === 1}">
+          <!-- Dot -->
+          <div class="timeline-dot"></div>
+
+          <!-- Content -->
+          <div class="timeline-content card shadow-sm">
+            <div class="card-header bg-transparent border-0">
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-primary fw-bold">{{ item.year }}</span>
+                <h3 class="h5 mb-0">{{ item.title }}</h3>
+              </div>
+            </div>
+            <div class="card-body pt-0">
+              <p class="mb-0 text-secondary">{{ item.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Certificações e Reconhecimentos -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <h2 class="h1 fw-bold text-dark text-center mb-4">Certificações e Reconhecimentos</h2>
+
+      <div class="row g-4">
+        <div class="col-12 col-md-4">
+          <div class="card text-center h-100 shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-4">
+              <div class="mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center"
+                   style="width:64px;height:64px;background:#ffc107;">
+                <i class="bi bi-award fs-3 text-white"></i>
+              </div>
+              <h3 class="h5 mb-0">Selo Hospital Amigo do Idoso</h3>
+            </div>
+            <div class="card-body pt-0">
+              <p class="card-text">Reconhecimento pela qualidade no atendimento à população idosa.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="card text-center h-100 shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-4">
+              <div class="mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center"
+                   style="width:64px;height:64px;background:#198754;">
+                <i class="bi bi-heart-pulse-fill fs-3 text-white"></i>
+              </div>
+              <h3 class="h5 mb-0">Acreditação Hospitalar</h3>
+            </div>
+            <div class="card-body pt-0">
+              <p class="card-text">Certificação de qualidade e segurança nos processos hospitalares.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="card text-center h-100 shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-4">
+              <div class="mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center"
+                   style="width:64px;height:64px;background:#0d6efd;">
+                <i class="bi bi-people-fill fs-3 text-white"></i>
+              </div>
+              <h3 class="h5 mb-0">Responsabilidade Social</h3>
+            </div>
+            <div class="card-body pt-0">
+              <p class="card-text">Reconhecimento pelas ações sociais e ambientais desenvolvidas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>

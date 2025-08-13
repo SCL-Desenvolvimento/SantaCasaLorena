@@ -1,0 +1,45 @@
+.hero {
+  background: linear-gradient(90deg, #2563eb, #1e40af);
+}
+
+.icon-bubble {
+  width: 64px;
+  height: 64px;
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.icon-bubble-sm {
+  width: 64px;
+  height: 64px;
+  font-size: 1.75rem;
+  color: #2563eb;
+}
+
+.bg-red {
+  background-color: #ef4444;
+}
+
+.bg-blue {
+  background-color: #3b82f6;
+}
+
+.bg-purple {
+  background-color: #8b5cf6;
+}
+
+.bg-green {
+  background-color: #22c55e;
+}
+
+.bg-orange {
+  background-color: #f59e0b;
+}
+
+.bg-indigo {
+  background-color: #6366f1;
+}
+
+.bg-purple-subtle {
+  background-color: rgba(128, 90, 213, 0.12);
+}

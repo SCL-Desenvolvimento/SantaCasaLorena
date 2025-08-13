@@ -1,0 +1,130 @@
+<div class="min-vh-100">
+
+  <!-- Hero Section -->
+  <section class="bg-primary text-white py-5 text-center">
+    <div class="container">
+      <h1 class="display-4 fw-bold mb-3">
+        Atendimento de qualidade e um serviço de
+        <span class="text-danger">excelência!</span>
+      </h1>
+      <p class="fs-4 text-light mb-3">#150AnosporVocê</p>
+      <p class="fs-5 text-light mb-4">
+        Estrutura de ponta e profissionais qualificados.<br>
+        De portas e braços abertos pra você!
+      </p>
+      <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+        <button class="btn btn-danger btn-lg">
+          <i class="bi bi-calendar me-2"></i> Resultado de Exames
+        </button>
+        <button class="btn btn-outline-light btn-lg">
+          <i class="bi bi-telephone me-2"></i> Fale Conosco
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-12 col-md-6 col-lg-3" *ngFor="let service of heroServices">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body text-center">
+              <div [class]="service.color + ' rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3'" style="width:64px; height:64px;">
+                <i [class]="'bi ' + service.icon + ' text-white fs-3'"></i>
+              </div>
+              <h5 class="card-title">{{ service.title }}</h5>
+              <p class="card-text">{{ service.description }}</p>
+              <button class="btn btn-link text-decoration-none">
+                Saiba mais <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <div class="row text-center g-4">
+        <div class="col-6 col-md-3" *ngFor="let stat of stats">
+          <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width:64px; height:64px;">
+            <i [class]="'bi ' + stat.icon + ' text-primary fs-3'"></i>
+          </div>
+          <h3 class="fw-bold">{{ stat.number }}</h3>
+          <p class="text-muted">{{ stat.label }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Convênios Section -->
+  <section class="py-5 bg-light">
+    <div class="container text-center">
+      <h2 class="fw-bold mb-3">CONVÊNIOS</h2>
+      <p class="text-muted mb-4 mx-auto" style="max-width:700px;">
+        Uma série de convênios atendidos em nossa unidade, que levam aos nossos pacientes toda a dedicação, qualidade e suporte.
+      </p>
+      <div class="row g-3">
+        <div class="col-6 col-md-4 col-lg-2" *ngFor="let item of [1,2,3,4,5,6]">
+          <div class="bg-white p-3 rounded shadow-sm">
+            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height:64px;">
+              <span class="text-muted small">Convênio {{ item }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- News Section -->
+  <!-- Lista de notícias -->
+  <div class="row g-4" *ngIf="news.length > 0; else newsPlaceholder">
+    <div class="col-12 col-md-6 col-lg-4" *ngFor="let item of news">
+      <div class="card h-100 shadow-sm border-0">
+        <img *ngIf="item.image_url" [src]="item.image_url" [alt]="item.title" class="card-img-top">
+        <div class="card-body">
+          <h5 class="card-title">{{ item.title }}</h5>
+          <small *ngIf="item.category" class="text-primary fw-bold">{{ item.category }}</small>
+          <p class="card-text mt-2">
+            {{ item.summary || (item.content?.substring(0, 150) + '...') }}
+          </p>
+          <button class="btn btn-link p-0">Continue lendo <i class="bi bi-arrow-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Placeholder quando não tem notícias -->
+  <ng-template #newsPlaceholder>
+    <div class="row g-4">
+      <div class="col-12 col-md-6 col-lg-4" *ngFor="let item of placeholderNews">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="bg-light" style="height:192px;"></div>
+          <div class="card-body">
+            <h5 class="card-title">Notícia em Destaque {{ item }}</h5>
+            <small class="text-primary fw-bold">Categoria</small>
+            <p class="card-text">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </p>
+            <button class="btn btn-link p-0">Continue lendo <i class="bi bi-arrow-right"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- CTA Section -->
+  <section class="py-5 bg-primary text-white text-center">
+    <div class="container">
+      <h2 class="fw-bold mb-3">Manual do Paciente e Visitante</h2>
+      <p class="mb-4 mx-auto" style="max-width:700px;">
+        Este manual foi desenvolvido para facilitar o relacionamento entre o paciente, familiares e o hospital garantindo total segurança, conforto e tranquilidade ao utilizar nossos serviços.
+      </p>
+      <button class="btn btn-light btn-lg text-primary">Clique aqui para acessar</button>
+    </div>
+  </section>
+
+</div>

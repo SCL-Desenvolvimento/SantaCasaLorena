@@ -1,0 +1,12 @@
+.object-fit-cover {
+  object-fit: cover;
+}
+
+.bg-purple {
+  background-color: #6f42c1;
+  color: #fff;
+}
+
+.min-vh-100 {
+  min-height: 100vh;
+}

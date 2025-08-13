@@ -1,0 +1,15 @@
+.bg-purple {
+  background-color: #6f42c1 !important;
+}
+
+.min-vh-100 {
+  min-height: 100vh;
+}
+
+.card {
+  border-radius: 0.75rem;
+}
+
+textarea {
+  resize: none;
+}
