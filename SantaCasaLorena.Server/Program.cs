@@ -1,6 +1,26 @@
+using Microsoft.EntityFrameworkCore;
+using SantaCasaLorena.Server.Context;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<SantaCasaDbContext>(options =>
+    options.UseMySql(builder.Configuration.GetConnectionString("SantaCasaLorenaConnectionString"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("SantaCasaLorenaConnectionString"))));
+
+
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin", policy =>
+    {
+        policy.WithOrigins(
+                "https://localhost:64770")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -11,6 +31,8 @@ var app = builder.Build();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
+
+app.UseCors("AllowSpecificOrigin");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

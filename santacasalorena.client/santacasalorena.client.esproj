@@ -8,10 +8,10 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist\santacasalorena.client\browser\</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="src\app\admin\components\" />
-    <Folder Include="src\app\admin\layout\" />
-    <Folder Include="src\app\admin\pages\" />
-    <Folder Include="src\app\services\" />
+    <None Remove="src\app\admin\pages\forms\**" />
+    <TypeScriptConfiguration Remove="src\app\admin\pages\forms\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="src\app\pages\" />
   </ItemGroup>
 </Project>

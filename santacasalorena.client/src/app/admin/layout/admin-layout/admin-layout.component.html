@@ -1,0 +1,91 @@
+<div class="min-h-screen bg-light">
+  <!-- Header -->
+  <app-admin-header [user]="user()" (logout)="handleLogout()"></app-admin-header>
+
+  <!-- Main Content -->
+  <div class="container-fluid py-4">
+    <!-- Tabs Navigation -->
+    <ul class="nav nav-tabs mb-4" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link"
+                [class.active]="activeTab() === 'dashboard'"
+                (click)="setActiveTab('dashboard')">
+          <i class="bi bi-speedometer2 me-2"></i> Dashboard
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link"
+                [class.active]="activeTab() === 'news'"
+                (click)="setActiveTab('news')">
+          <i class="bi bi-newspaper me-2"></i> Notícias
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link"
+                [class.active]="activeTab() === 'services'"
+                (click)="setActiveTab('services')">
+          <i class="bi bi-gear me-2"></i> Serviços
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link"
+                [class.active]="activeTab() === 'convenios'"
+                (click)="setActiveTab('convenios')">
+          <i class="bi bi-people me-2"></i> Convênios
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link"
+                [class.active]="activeTab() === 'contacts'"
+                (click)="setActiveTab('contacts')">
+          <i class="bi bi-chat-dots me-2"></i> Contatos
+        </button>
+      </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div [ngSwitch]="activeTab()">
+      <app-dashboard *ngSwitchCase="'dashboard'"
+                     [stats]="stats()"
+                     [news]="news()"
+                     [contacts]="contacts()">
+      </app-dashboard>
+
+      <app-news *ngSwitchCase="'news'"
+                [news]="news()"
+                (createNews)="openEditDialog('news')"
+                (editNews)="openEditDialog('news', $event)"
+                (deleteNews)="handleDelete('news', $event)">
+      </app-news>
+
+      <app-services *ngSwitchCase="'services'"
+                    [services]="services()"
+                    (createService)="openEditDialog('services')"
+                    (editService)="openEditDialog('services', $event)"
+                    (deleteService)="handleDelete('services', $event)">
+      </app-services>
+
+      <app-convenios *ngSwitchCase="'convenios'"
+                     [convenios]="convenios()"
+                     (createConvenio)="openEditDialog('convenios')"
+                     (editConvenio)="openEditDialog('convenios', $event)"
+                     (deleteConvenio)="handleDelete('convenios', $event)">
+      </app-convenios>
+
+      <app-contacts *ngSwitchCase="'contacts'"
+                    [contacts]="contacts()"
+                    (markAsRead)="markAsRead($event)"
+                    (deleteContact)="handleDelete('contacts', $event)">
+      </app-contacts>
+    </div>
+  </div>
+
+  <!-- Modal Create/Edit -->
+  <app-entity-dialog *ngIf="isDialogOpen()"
+                     [activeTab]="activeTab()"
+                     [editingItem]="editingItem()"
+                     [formData]="formData()"
+                     (save)="handleSave($event)"
+                     (close)="closeDialog()">
+  </app-entity-dialog>
+</div>

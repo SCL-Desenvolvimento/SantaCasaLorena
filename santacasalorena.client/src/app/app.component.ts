@@ -15,5 +15,5 @@ export class AppComponent implements OnInit {
   ngOnInit() {
   }
 
-  title = 'santacasalorena.client';
+  title = 'Santa casa de Lorena';
 }

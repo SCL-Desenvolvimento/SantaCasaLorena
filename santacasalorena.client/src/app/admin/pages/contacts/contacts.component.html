@@ -1,0 +1,53 @@
+<!-- Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="h4 fw-bold mb-0">💬 Gerenciar Contatos</h2>
+</div>
+
+<!-- Contacts List -->
+<div class="row g-3">
+  <div *ngFor="let contact of contacts" class="col-12">
+    <div class="card shadow-sm border-0 rounded-3 contact-card">
+      <div class="card-body d-flex justify-content-between align-items-start flex-wrap">
+
+        <!-- Conteúdo -->
+        <div class="flex-grow-1">
+          <h5 class="fw-semibold mb-1 d-flex align-items-center gap-2">
+            <i class="bi bi-person-circle text-muted"></i> {{ contact.name }}
+          </h5>
+          <p class="text-muted small mb-1 d-flex align-items-center gap-1">
+            <i class="bi bi-envelope"></i> {{ contact.email }}
+          </p>
+          <p *ngIf="contact.phone" class="text-muted small mb-1 d-flex align-items-center gap-1">
+            <i class="bi bi-telephone"></i> {{ contact.phone }}
+          </p>
+          <p class="fw-medium mb-2">{{ contact.subject }}</p>
+          <p class="text-muted small message-preview">{{ contact.message }}</p>
+          <small class="text-muted">
+            <i class="bi bi-calendar-event"></i> {{ formatDate(contact.created_at) }}
+          </small>
+        </div>
+
+        <!-- Ações -->
+        <div class="d-flex flex-column align-items-end gap-2 mt-2 mt-sm-0">
+          <span class="badge d-flex align-items-center gap-1 px-2 py-1"
+                [class.bg-success]="contact.is_read"
+                [class.bg-danger]="!contact.is_read">
+            <i class="bi" [ngClass]="contact.is_read ? 'bi-check-circle' : 'bi-envelope-fill'"></i>
+            {{ contact.is_read ? 'Lido' : 'Novo' }}
+          </span>
+
+          <button *ngIf="!contact.is_read"
+                  class="btn btn-outline-primary btn-sm w-100"
+                  (click)="onMarkAsRead(contact.id!)">
+            <i class="bi bi-check2 me-1"></i> Marcar como Lido
+          </button>
+          <button class="btn btn-outline-danger btn-sm w-100"
+                  (click)="onDeleteContact(contact.id!)">
+            <i class="bi bi-trash"></i> Excluir
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

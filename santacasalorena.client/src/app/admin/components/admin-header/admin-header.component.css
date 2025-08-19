@@ -1,0 +1,58 @@
+/* ============================= */
+/* HEADER - Estilo moderno       */
+/* ============================= */
+
+.admin-header {
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+
+  .admin-header .header-title h1 {
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .admin-header .header-actions {
+    display: flex;
+    align-items: center;
+  }
+
+/* Botão com gradiente */
+.btn-gradient {
+  background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+  border: none;
+  color: #fff;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: all 0.25s ease-in-out;
+  padding: 0.4rem 0.9rem;
+}
+
+  .btn-gradient:hover {
+    background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.25);
+    transform: translateY(-1px);
+  }
+
+  .btn-gradient i {
+    vertical-align: middle;
+  }
+
+/* Ícone do usuário */
+.user-info i {
+  font-size: 1.1rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .admin-header .header-title h1 {
+    font-size: 1.1rem;
+  }
+
+  .btn-gradient {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+  }
+}

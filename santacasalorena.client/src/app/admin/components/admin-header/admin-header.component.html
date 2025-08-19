@@ -1,0 +1,28 @@
+<header class="admin-header shadow-sm border-bottom">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center py-3 flex-wrap gap-3">
+
+      <!-- Título e subtítulo -->
+      <div class="header-title">
+        <h1 class="h4 mb-1 text-dark fw-bold d-flex align-items-center">
+          <i class="bi bi-speedometer2 text-primary me-2"></i>
+          Painel Administrativo
+        </h1>
+        <p class="text-muted small mb-0">Santa Casa de Lorena</p>
+      </div>
+
+      <!-- Ações do usuário -->
+      <div class="d-flex align-items-center gap-3 header-actions">
+        <span class="user-info text-muted small d-flex align-items-center">
+          <i class="bi bi-person-circle me-1 text-primary"></i>
+          Olá, <strong class="ms-1">{{ user?.username || 'Admin' }}</strong>
+        </span>
+        <button class="btn btn-sm btn-gradient" (click)="onLogout()">
+          <i class="bi bi-box-arrow-right me-1"></i>
+          Sair
+        </button>
+      </div>
+
+    </div>
+  </div>
+</header>
