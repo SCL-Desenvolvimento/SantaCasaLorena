@@ -1,12 +1,66 @@
-.hero-section {
-  min-height: 50vh; /* ocupa a tela inteira */
-  display: flex;
-  align-items: center; /* centraliza verticalmente */
-  justify-content: center; /* centraliza horizontalmente */
-  background-size: cover;
-  background-position: center;
+/* Carrossel */
+.hero-carousel {
+  position: relative; /* vira o pai relativo dos indicadores */
+  width: 100%;
+  height: 60vh;
+  overflow: hidden;
 }
 
+.carousel-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.carousel-slide {
+  flex: 0 0 100%;
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+  .carousel-slide.active {
+    opacity: 1;
+    z-index: 2;
+  }
+
+/* Indicadores (bolinhas) */
+.carousel-indicators {
+  position: absolute;
+  bottom: 15px;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 100% !important;
+  margin: 0;
+}
+
+.indicator {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+  .indicator.active {
+    background: #fff;
+    border: 2px solid #0d6efd;
+  }
+
+/* Restante do layout */
 .text-accent {
   color: var(--bs-danger);
 }

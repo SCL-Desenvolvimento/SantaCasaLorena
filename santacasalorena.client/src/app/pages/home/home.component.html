@@ -1,21 +1,22 @@
 <div class="home-page min-vh-100">
 
-  <!-- Hero Section -->
-  <section class="hero-section text-white text-center py-5" [style.background]="hero.bgGradient">
-    <div class="container">
-      <h1 class="display-5 fw-bold mb-3">
-        {{ hero.title }} <span class="text-accent">{{ hero.highlight }}</span>
-      </h1>
-      <p class="fs-4 text-light mb-3">{{ hero.hashtag }}</p>
-      <p class="fs-5 text-light mb-4">{{ hero.subtitle }}</p>
-
-      <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
-        <button *ngFor="let btn of hero.buttons"
-                [ngClass]="btn.class"
-                class="btn btn-lg">
-          <i class="bi me-2" [class]="btn.icon"></i> {{ btn.label }}
-        </button>
+  <!-- Hero Section substituído por carrossel -->
+  <section class="hero-carousel">
+    <div class="carousel-container">
+      <div class="carousel-slide"
+           *ngFor="let slide of heroSlides; let i = index"
+           [class.active]="i === currentSlide"
+           [style.backgroundImage]="'url(' + slide.image + ')'">
       </div>
+    </div>
+
+    <!-- Controles (bolinhas) -->
+    <div class="carousel-indicators">
+      <span *ngFor="let slide of heroSlides; let i = index"
+            class="indicator"
+            [class.active]="i === currentSlide"
+            (click)="goToSlide(i)">
+      </span>
     </div>
   </section>
 

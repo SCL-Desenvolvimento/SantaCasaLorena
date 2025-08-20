@@ -1,20 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-interface News {
-  id: number;
-  title: string;
-  category?: string;
-  summary?: string;
-  content?: string;
-  image_url?: string;
-}
-
-interface Service {
-  title: string;
-  description: string;
-}
-
 @Component({
   selector: 'app-home',
   standalone: false,
@@ -22,17 +8,15 @@ interface Service {
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
-  hero = {
-    bgGradient: 'linear-gradient(135deg, #0d6efd, #6610f2)',
-    title: 'Atendimento de qualidade e um serviço de',
-    highlight: 'excelência!',
-    hashtag: '#150AnosporVocê',
-    subtitle: 'Estrutura de ponta e profissionais qualificados. De portas e braços abertos pra você!',
-    buttons: [
-      { label: 'Resultado de Exames', icon: 'bi-calendar', class: 'btn btn-danger' },
-      { label: 'Fale Conosco', icon: 'bi-telephone', class: 'btn btn-outline-light' }
-    ]
-  };
+
+  heroSlides = [
+    { image: '../../../assets/img/carrossel/Desktop_-1920x540-3.png' },
+    { image: '../../../assets/img/carrossel/Desktop_-1920x540-5.png' },
+    { image: '../../../assets/img/carrossel/Desktop_-1920x540-3.png' }
+  ];
+
+  currentSlide = 0;
+  intervalId: any;
 
   heroServices = [
     { icon: 'bi-clock', title: 'Pronto Atendimento', description: 'Mais de 25 mil casos por ano...', color: 'bg-danger' },
@@ -70,12 +54,27 @@ export class HomeComponent implements OnInit {
     buttonLabel: 'Clique aqui para acessar'
   };
 
+  // Apenas placeholders para simular notícias locais
   news: any[] = [];
   placeholderNews = [1, 2, 3];
 
-  constructor(private http: HttpClient) { }
-
   ngOnInit(): void {
-    this.http.get<any>('/api/news?per_page=3').subscribe(res => this.news = res.news || []);
+    this.startAutoSlide();
+  }
+
+  startAutoSlide(): void {
+    this.intervalId = setInterval(() => {
+      this.nextSlide();
+    }, 5000); // troca a cada 5s
+  }
+
+  nextSlide(): void {
+    this.currentSlide = (this.currentSlide + 1) % this.heroSlides.length;
+  }
+
+  goToSlide(index: number): void {
+    this.currentSlide = index;
+    clearInterval(this.intervalId);
+    this.startAutoSlide(); // reinicia o timer ao clicar
   }
 }
