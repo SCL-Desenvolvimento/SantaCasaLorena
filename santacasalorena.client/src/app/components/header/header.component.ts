@@ -16,11 +16,11 @@ export class HeaderComponent {
       name: 'Institucional',
       open: false,
       children: [
-        { name: 'Sobre a Santa Casa', path: '/institucional/sobre' },
-        { name: 'Humanização', path: '/institucional/humanizacao' },
-        { name: 'Ações Sociais e Ambientais', path: '/institucional/acoes-sociais' },
-        { name: 'Programa Nacional de Segurança do Paciente', path: '/institucional/programa-seguranca' },
-        { name: 'Portal da Transparência', path: '/institucional/portal-transparencia' }
+        { name: 'Sobre a Santa Casa', path: '/sobre' },
+        { name: 'Humanização', path: '/humanizacao' },
+        { name: 'Ações Sociais e Ambientais', path: '/sociais' },
+        { name: 'Programa Nacional de Segurança do Paciente', path: '/seguranca' },
+        { name: 'Portal da Transparência', path: '/transparencia' }
       ]
     },
     {

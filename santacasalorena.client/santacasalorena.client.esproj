@@ -11,7 +11,4 @@
     <None Remove="src\app\admin\pages\forms\**" />
     <TypeScriptConfiguration Remove="src\app\admin\pages\forms\**" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\app\pages\" />
-  </ItemGroup>
 </Project>

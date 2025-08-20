@@ -1,0 +1,97 @@
+<div class="acoes-sociais-ambientais min-vh-100">
+
+  <!-- Hero -->
+  <section class="hero-gradient text-white py-5 text-center">
+    <div class="container">
+      <h1 class="display-5 fw-bold mb-3">{{ pageTitle }}</h1>
+      <p class="lead opacity-75">{{ pageSubtitle }}</p>
+    </div>
+  </section>
+
+  <!-- Conteúdo Principal -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <div class="content-section mb-5" *ngFor="let section of contentSections; let i = index">
+        <div class="row align-items-center" [ngClass]="{'flex-row-reverse': i % 2 === 1}">
+          <div class="col-lg-6">
+            <h2 class="h1 fw-bold mb-4">{{ section.title }}</h2>
+            <div class="fs-5 text-secondary" [innerHTML]="section.content"></div>
+
+            <!-- Estatísticas -->
+            <div class="row text-center mt-4" *ngIf="section.id === 'voluntariado'">
+              <div class="col-6 col-md-3 mb-3" *ngFor="let stat of voluntariadoStats">
+                <div class="card shadow-sm border-0 h-100">
+                  <div class="card-body">
+                    <h3 class="fw-bold text-primary">{{ stat.number }}</h3>
+                    <p class="text-secondary small mb-0">{{ stat.label }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="col-lg-6 text-center">
+            <img [src]="section.image" [alt]="section.title" class="img-fluid rounded shadow">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chamada para Ação -->
+  <section class="py-5 bg-light text-center">
+    <div class="container">
+      <h2 class="h1 fw-bold mb-3">Faça Parte da Nossa Missão</h2>
+      <p class="lead text-secondary mb-4">
+        Junte-se ao nosso time de voluntários e ajude a transformar vidas através do cuidado e da solidariedade.
+      </p>
+      <button class="btn btn-primary btn-lg me-3" (click)="onVolunteerClick()">
+        <i class="bi bi-heart-fill me-2"></i> Seja Voluntário
+      </button>
+      <button class="btn btn-light btn-lg" (click)="onContactClick()">
+        <i class="bi bi-telephone-fill me-2"></i> Entre em Contato
+      </button>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <h2 class="h1 fw-bold text-center mb-5">Nossa História</h2>
+      <div class="timeline mx-auto">
+        <div class="timeline-line"></div>
+        <div class="timeline-item" *ngFor="let item of timelineItems; let i = index" [ngClass]="{'flex-row-reverse': i % 2}">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content card shadow-sm border-0">
+            <div class="card-body p-4">
+              <span class="badge bg-primary fw-bold mb-2">{{ item.year }}</span>
+              <h3 class="h5 fw-bold mb-2">{{ item.title }}</h3>
+              <p class="text-secondary mb-0">{{ item.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Valores -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <h2 class="h1 fw-bold text-center mb-5">Nossos Valores</h2>
+      <div class="row g-4">
+        <div class="col-12 col-md-6 col-lg-3" *ngFor="let value of values">
+          <div class="card h-100 shadow-sm card-hover border-0 text-center">
+            <div class="card-body p-4">
+              <div class="rounded-circle p-3 mb-3 mx-auto" [style.background]="'#0d6efd'" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi fs-4 text-white" [ngClass]="value.icon"></i>
+              </div>
+              <h4 class="h6 fw-bold mb-2">{{ value.title }}</h4>
+              <p class="text-secondary small mb-0">{{ value.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
