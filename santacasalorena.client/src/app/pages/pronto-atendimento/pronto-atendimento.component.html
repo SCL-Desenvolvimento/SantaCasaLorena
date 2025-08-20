@@ -1,0 +1,76 @@
+<div class="min-vh-100">
+
+  <!-- Hero -->
+  <section class="hero-gradient text-white py-5 text-center">
+    <div class="container">
+      <h1 class="display-5 fw-bold mb-3">Pronto Atendimento SUS</h1>
+      <p class="lead opacity-75">Atendimento de excelência e acolhimento</p>
+    </div>
+  </section>
+
+  <!-- Introdução -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <h2 class="h1 fw-bold mb-4">Estrutura Completa</h2>
+          <p class="lead text-primary mb-3">
+            Conforto, acolhimento e eficiência no atendimento de urgência e emergência.
+          </p>
+          <p class="text-secondary fs-5">
+            O Pronto Atendimento da Santa Casa de Lorena conta com consultórios médicos, leitos de observação clínica, cirúrgica e de emergência, além de uma área exclusiva para atendimento materno-infantil.
+          </p>
+          <p class="text-secondary fs-5">
+            Equipe composta por clínicos, emergencistas, cirurgiões, pediatras, obstetras, ortopedistas e anestesistas — todos dedicados a oferecer o melhor cuidado em situações críticas.
+          </p>
+          <p class="text-muted small">
+            Localizado na Rua Dom Bosco, 562, Centro – Lorena - com estacionamento próprio.
+          </p>
+        </div>
+        <div class="col-lg-6">
+          <div class="text-center">
+            <img src="../../../assets/img/paginas/pronto-atendimento.jpg"
+                 alt="Atendimento hospitalar de urgência"
+                 class="img-fluid rounded shadow">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Classificação de Risco -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-5 text-center">
+          <div class="icon-circle bg-danger mx-auto mb-3">
+            <i class="bi bi-hospital fs-3 text-white"></i>
+          </div>
+          <h3 class="h4 fw-bold text-primary mb-4">Classificação de Risco</h3>
+          <p class="fs-5 text-secondary">
+            O atendimento segue as normas internacionais com base no <strong>Protocolo de Manchester</strong>, priorizando casos de acordo com a gravidade.
+          </p>
+        </div>
+      </div>
+
+      <div class="row g-4 mt-4">
+        <div class="col-md-6 col-lg-3" *ngFor="let risco of riscos">
+          <div class="card h-100 shadow-sm card-hover text-center border-0"
+               [ngClass]="risco.bgClass">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-2">{{ risco.titulo }}</h5>
+              <span class="badge bg-dark mb-3">{{ risco.cor }}</span>
+              <p class="text-white small mb-1">{{ risco.descricao }}</p>
+              <p class="text-white small fw-bold">{{ risco.tempo }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="mt-5 text-center text-secondary">
+        Desde sua implantação em 2014, o sistema trouxe mais agilidade e segurança ao atendimento.
+      </p>
+    </div>
+  </section>
+
+</div>

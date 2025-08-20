@@ -14,6 +14,11 @@ import { HumanizacaoComponent } from './pages/humanizacao/humanizacao.component'
 import { AcoesSociaisAmbientaisComponent } from './pages/acoes-sociais-ambientais/acoes-sociais-ambientais.component';
 import { ProgramaNacionalSegurancaComponent } from './pages/programa-nacional-seguranca/programa-nacional-seguranca.component';
 import { PortalTransparenciaComponent } from './pages/portal-transparencia/portal-transparencia.component';
+import { ProntoAtendimentoComponent } from './pages/pronto-atendimento/pronto-atendimento.component';
+import { HotelariaComponent } from './pages/hotelaria/hotelaria.component';
+import { ClinicaEmiliaComponent } from './pages/clinica-emilia/clinica-emilia.component';
+import { CentroDiagnosticoPorImagemComponent } from './pages/centro-diagnostico-por-imagem/centro-diagnostico-por-imagem.component';
+import { UnidadesDeInternacaoComponent } from './pages/unidades-de-internacao/unidades-de-internacao.component';
 //import { AuthGuard } from './guards/auth.guard';
 //import { RoleGuard } from './guards/role.guard';
 
@@ -32,6 +37,11 @@ const routes: Routes = [
       { path: 'sociais', component: AcoesSociaisAmbientaisComponent },
       { path: 'seguranca', component: ProgramaNacionalSegurancaComponent },
       { path: 'transparencia', component: PortalTransparenciaComponent },
+      { path: 'pronto-atendimento', component: ProntoAtendimentoComponent },
+      { path: 'hotelaria', component: HotelariaComponent },
+      { path: 'clinica-emilia', component: ClinicaEmiliaComponent },
+      { path: 'diagnostico-imagem', component: CentroDiagnosticoPorImagemComponent },
+      { path: 'unidade-internacao', component: UnidadesDeInternacaoComponent },
     ]
   },
   {

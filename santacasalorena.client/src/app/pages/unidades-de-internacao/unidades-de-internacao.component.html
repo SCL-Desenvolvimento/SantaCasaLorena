@@ -1,0 +1,151 @@
+<div class="min-vh-100">
+
+  <!-- Hero -->
+  <section class="hero-gradient text-white py-5 text-center">
+    <div class="container">
+      <h1 class="display-5 fw-bold mb-3">Unidade de Internação</h1>
+      <p class="lead opacity-75">Cuidado, tecnologia e humanização no atendimento</p>
+    </div>
+  </section>
+
+  <!-- Introdução -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <h2 class="h1 fw-bold mb-4">Ambiente moderno e acolhedor</h2>
+          <p class="lead text-primary mb-3">
+            As Unidades de Internação da Santa Casa foram projetadas para oferecer conforto e
+            segurança durante o processo de recuperação de nossos pacientes.
+          </p>
+          <p class="text-secondary fs-5">
+            Estruturadas com tecnologia de ponta e atenção ao bem-estar dos pacientes e familiares,
+            garantimos excelência em assistência hospitalar com foco na humanização.
+          </p>
+        </div>
+        <div class="col-lg-6 text-center">
+          <img src="assets/images/unidade-internacao-hero.jpg"
+               alt="Unidade de Internação moderna"
+               class="img-fluid rounded shadow">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- UTI Section -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-5">
+          <div class="icon-circle bg-primary mx-auto mb-4">
+            <i class="fas fa-heartbeat fs-3 text-white"></i>
+          </div>
+          <h3 class="h4 fw-bold text-primary text-center mb-4">UTI - Unidade de Terapia Intensiva</h3>
+          <p class="fs-5 text-secondary text-center mb-5">
+            Com 10 leitos equipados com os mais modernos recursos, a UTI da Santa Casa de Lorena
+            atende aos mais altos padrões de qualidade em medicina intensiva.
+          </p>
+
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="card h-100 shadow-sm card-hover border-0">
+                <div class="card-body p-4 text-center">
+                  <div class="icon-circle bg-primary mb-3 mx-auto">
+                    <i class="fas fa-users text-white fs-4"></i>
+                  </div>
+                  <h5 class="fw-bold mb-2">Humanização e Conforto</h5>
+                  <p class="text-secondary small mb-0">
+                    Leitos em boxes individuais, com acesso independente para familiares,
+                    televisores individuais e ambiente acolhedor para recuperação.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card h-100 shadow-sm card-hover border-0">
+                <div class="card-body p-4 text-center">
+                  <div class="icon-circle bg-primary mb-3 mx-auto">
+                    <i class="fas fa-shield-alt text-white fs-4"></i>
+                  </div>
+                  <h5 class="fw-bold mb-2">Tecnologia e Segurança</h5>
+                  <p class="text-secondary small mb-0">
+                    Equipamentos modernos, central de monitoramento e posto de enfermagem com
+                    visualização ampla de todos os leitos.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Unidades -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <h2 class="h1 fw-bold text-center mb-5">Nossas Unidades</h2>
+      <div class="row g-4">
+        <div class="col-lg-6 col-md-12" *ngFor="let unidade of unidades">
+          <div class="card h-100 shadow-sm card-hover border-0">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-3">
+                <div class="icon-circle bg-primary me-3">
+                  <i [class]="unidade.icon" class="fs-4 text-white"></i>
+                </div>
+                <h5 class="fw-bold mb-0">{{ unidade.titulo }}</h5>
+              </div>
+              <p class="text-secondary small">{{ unidade.descricao }}</p>
+              <div *ngIf="unidade.informacoes" class="bg-light rounded p-3 mt-3">
+                <div *ngFor="let info of unidade.informacoes" class="mb-2">
+                  <small class="text-muted fw-bold">{{ info.label }}:</small>
+                  <small class="d-block">{{ info.valor }}</small>
+                </div>
+              </div>
+              <div class="mt-3">
+                <span class="badge bg-primary">{{ unidade.leitos }} leitos</span>
+                <span class="badge bg-secondary ms-2" *ngIf="unidade.leitosSus">{{ unidade.leitosSus }} SUS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Estatísticas -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <h2 class="h1 fw-bold text-center mb-5">Nossos Números</h2>
+      <div class="row g-4 text-center">
+        <div class="col-md-3 col-6">
+          <div class="card shadow-sm card-hover border-0 p-4">
+            <h4 class="display-6 fw-bold text-primary">{{ totalLeitos }}</h4>
+            <p class="text-secondary small">Total de Leitos</p>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="card shadow-sm card-hover border-0 p-4">
+            <h4 class="display-6 fw-bold text-primary">{{ leitosSus }}</h4>
+            <p class="text-secondary small">Leitos SUS</p>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="card shadow-sm card-hover border-0 p-4">
+            <h4 class="display-6 fw-bold text-primary">{{ apartamentosPrivados }}</h4>
+            <p class="text-secondary small">Apartamentos Privados</p>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="card shadow-sm card-hover border-0 p-4">
+            <h4 class="display-6 fw-bold text-primary">10</h4>
+            <p class="text-secondary small">Leitos UTI</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

@@ -1,0 +1,107 @@
+/* Hero */
+.hero-gradient {
+  background: linear-gradient(135deg, #0d6efd 0%, #20c997 50%, #198754 100%);
+  background-size: 200% 200%;
+  animation: gradientMove 8s ease infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+  .hero-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+  }
+
+  .hero-gradient .container {
+    position: relative;
+    z-index: 2;
+  }
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Ícones circulares */
+.icon-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.bg-primary {
+  background-color: #0d6efd !important;
+}
+
+.bg-success {
+  background-color: #198754 !important;
+}
+
+.bg-warning {
+  background-color: #ffc107 !important;
+}
+
+/* Cards */
+.card {
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+}
+
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+  .card-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+  }
+
+/* Texto */
+.text-primary {
+  color: #0d6efd !important;
+}
+
+.text-secondary {
+  color: #6c757d !important;
+}
+
+/* Responsividade */
+@media (max-width: 767px) {
+  .hero-gradient {
+    padding: 3rem 0;
+  }
+
+  .display-5 {
+    font-size: 2rem;
+  }
+
+  .card-body {
+    padding: 1.2rem;
+  }
+
+  .icon-circle {
+    width: 60px;
+    height: 60px;
+  }
+}

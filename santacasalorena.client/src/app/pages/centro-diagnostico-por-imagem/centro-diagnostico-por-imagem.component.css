@@ -1,0 +1,224 @@
+/* ========= HERO ========= */
+.hero-gradient {
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 50%, #198754 100%);
+  background-size: 200% 200%;
+  animation: gradientMove 8s ease infinite;
+  position: relative;
+  overflow: hidden;
+  padding: 5rem 0; /* garante espaçamento uniforme em telas maiores */
+}
+
+  .hero-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.15); /* leve escurecimento para legibilidade */
+    z-index: 1;
+  }
+
+  .hero-gradient .container {
+    position: relative;
+    z-index: 2;
+  }
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ========= BREADCRUMB ========= */
+.custom-breadcrumb {
+  background: transparent;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.breadcrumb-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+  .breadcrumb-link:hover {
+    text-decoration: underline;
+    color: #e2e6ea;
+  }
+
+/* ========= ÍCONES CIRCULARES ========= */
+.icon-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  background: #fff; /* garante contraste */
+  color: #0d6efd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+  .icon-circle:hover {
+    transform: scale(1.05);
+  }
+
+/* ========= CARDS ========= */
+.card {
+  border: none;
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.6s ease-out;
+  background: #fff;
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+  .card-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+  }
+
+/* ========= TEXTO E CORES ========= */
+.text-primary {
+  color: #0d6efd !important;
+}
+
+.bg-primary {
+  background-color: #0d6efd !important;
+}
+
+.text-secondary {
+  color: #6c757d !important;
+}
+
+/* ========= BADGES ========= */
+.badge {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-weight: 500;
+}
+
+/* ========= ANIMAÇÕES ========= */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========= GALERIA ========= */
+.card img {
+  height: 250px;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  transition: transform 0.3s ease;
+}
+
+  .card img:hover {
+    transform: scale(1.03);
+  }
+
+/* ========= CTA ========= */
+.cta-buttons .btn {
+  padding: 12px 30px;
+  font-weight: 600;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.cta-buttons .btn-light {
+  background: #fff;
+  color: #0d6efd;
+  border: 2px solid #fff;
+}
+
+  .cta-buttons .btn-light:hover {
+    background: transparent;
+    color: #fff;
+    transform: translateY(-2px);
+  }
+
+.cta-buttons .btn-outline-light {
+  border: 2px solid #fff;
+  color: #fff;
+}
+
+  .cta-buttons .btn-outline-light:hover {
+    background: #fff;
+    color: #0d6efd;
+    transform: translateY(-2px);
+  }
+
+/* ========= MODAL ========= */
+.modal-content {
+  border-radius: 1rem;
+  border: none;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-body img {
+  border-radius: 10px;
+}
+
+/* ========= RESPONSIVIDADE ========= */
+@media (max-width: 767px) {
+  .hero-gradient {
+    padding: 3rem 0;
+  }
+
+  .display-5 {
+    font-size: 2rem;
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .icon-circle {
+    width: 60px;
+    height: 60px;
+  }
+
+  .card img {
+    height: 200px;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-gradient {
+    padding: 60px 0;
+  }
+
+  .display-5 {
+    font-size: 1.8rem;
+  }
+
+  .cta-buttons .btn {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+}

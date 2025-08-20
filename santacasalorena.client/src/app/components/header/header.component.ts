@@ -27,12 +27,12 @@ export class HeaderComponent {
       name: 'Instalações',
       open: false,
       children: [
-        { name: 'Pronto Atendimento SUS', path: '/instalacoes/pronto-atendimento' },
-        { name: 'Hotelaria', path: '/instalacoes/hotelaria' },
-        { name: 'Clínica Emília', path: '/instalacoes/clinica-emilia' },
-        { name: 'Centro de Diagnóstico por Imagem', path: '/instalacoes/diagnostico-imagem' },
-        { name: 'Unidade de Internação', path: '/instalacoes/unidade-internacao' },
-        { name: 'Particular / Convênio', path: '/instalacoes/particular-convenio' }
+        { name: 'Pronto Atendimento SUS', path: '/pronto-atendimento' },
+        { name: 'Hotelaria', path: '/hotelaria' },
+        { name: 'Clínica Emília', path: '/clinica-emilia' },
+        { name: 'Centro de Diagnóstico por Imagem', path: '/diagnostico-imagem' },
+        { name: 'Unidade de Internação', path: '/unidade-internacao' },
+        { name: 'Particular / Convênio', path: '/particular-convenio' }
       ]
     },
     {

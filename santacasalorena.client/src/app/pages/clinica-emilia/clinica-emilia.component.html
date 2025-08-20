@@ -1,0 +1,77 @@
+<div class="min-vh-100">
+
+  <!-- Hero -->
+  <section class="hero-gradient text-white py-5 text-center">
+    <div class="container">
+      <h1 class="display-5 fw-bold mb-3">Clínica Emília</h1>
+      <p class="lead opacity-75">Conforto e segurança durante a Reabilitação</p>
+    </div>
+  </section>
+
+  <!-- Introdução -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <h2 class="h1 fw-bold mb-4">Ambiente Diferenciado e Humanizado</h2>
+          <p class="lead text-primary mb-3">
+            A Santa Casa de Lorena conta com a Clínica Emília, unidade com ambiente diferenciado
+            que conta com recepção e área de espera individualizada, serviços assistenciais e de
+            apoio com abordagem humanizada, por 24h ininterruptas.
+          </p>
+          <p class="text-secondary fs-5">
+            Um espaço projetado para oferecer acolhimento, qualidade e o máximo de cuidado ao paciente
+            e seus familiares durante todo o processo de reabilitação.
+          </p>
+        </div>
+        <div class="col-lg-6">
+          <div class="text-center">
+            <img src="assets/images/clinica-emilia-hero.jpg"
+                 alt="Área de espera da Clínica Emília"
+                 class="img-fluid rounded shadow">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Estrutura e Comodidades -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <h2 class="h1 fw-bold text-center mb-5">Estrutura e Comodidades</h2>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3" *ngFor="let estrutura of estruturas">
+          <div class="card h-100 shadow-sm card-hover border-0 text-center">
+            <div class="card-body p-4">
+              <div class="icon-circle mb-3 mx-auto bg-primary">
+                <i class="bi fs-4 text-white" [ngClass]="estrutura.icon"></i>
+              </div>
+              <h5 class="fw-bold mb-2">{{ estrutura.titulo }}</h5>
+              <p class="text-secondary small mb-0">{{ estrutura.descricao }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comodidades Especiais -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <h2 class="h1 fw-bold text-center mb-5">Comodidades Especiais</h2>
+      <div class="row g-4">
+        <div class="col-md-3 col-sm-6" *ngFor="let amenidade of amenidades">
+          <div class="card h-100 shadow-sm card-hover border-0 text-center">
+            <div class="card-body p-4">
+              <div class="icon-circle mb-3 mx-auto bg-primary">
+                <i class="bi fs-4 text-white" [ngClass]="amenidade.icon"></i>
+              </div>
+              <h6 class="fw-bold">{{ amenidade.titulo }}</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

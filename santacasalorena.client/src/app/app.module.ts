@@ -24,6 +24,11 @@ import { HumanizacaoComponent } from './pages/humanizacao/humanizacao.component'
 import { AcoesSociaisAmbientaisComponent } from './pages/acoes-sociais-ambientais/acoes-sociais-ambientais.component';
 import { ProgramaNacionalSegurancaComponent } from './pages/programa-nacional-seguranca/programa-nacional-seguranca.component';
 import { PortalTransparenciaComponent } from './pages/portal-transparencia/portal-transparencia.component';
+import { ProntoAtendimentoComponent } from './pages/pronto-atendimento/pronto-atendimento.component';
+import { HotelariaComponent } from './pages/hotelaria/hotelaria.component';
+import { ClinicaEmiliaComponent } from './pages/clinica-emilia/clinica-emilia.component';
+import { CentroDiagnosticoPorImagemComponent } from './pages/centro-diagnostico-por-imagem/centro-diagnostico-por-imagem.component';
+import { UnidadesDeInternacaoComponent } from './pages/unidades-de-internacao/unidades-de-internacao.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +46,12 @@ import { PortalTransparenciaComponent } from './pages/portal-transparencia/porta
     NewsDetailComponent,
     AcoesSociaisAmbientaisComponent,
     ProgramaNacionalSegurancaComponent,
-    PortalTransparenciaComponent
+    PortalTransparenciaComponent,
+    ProntoAtendimentoComponent,
+    HotelariaComponent,
+    ClinicaEmiliaComponent,
+    CentroDiagnosticoPorImagemComponent,
+    UnidadesDeInternacaoComponent
   ],
   imports: [
     BrowserModule,
