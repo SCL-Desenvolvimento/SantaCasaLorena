@@ -1,16 +1,38 @@
 <div class="home-page min-vh-100">
 
-  <!-- Hero Section substituído por carrossel -->
-  <section class="hero-carousel">
-    <div class="carousel-container">
+  <!-- carrossel -->
+  <section class="hero-carousel" #heroCarousel
+           (mousedown)="onDragStart($event)"
+           (mousemove)="onDragMove($event)"
+           (mouseup)="onDragEnd($event)"
+           (mouseleave)="onDragEnd($event)"
+           (touchstart)="onDragStart($event)"
+           (touchmove)="onDragMove($event)"
+           (touchend)="onDragEnd($event)">
+
+    <div class="carousel-container" [style.transform]="'translateX(' + currentTranslate + '%)'" [style.transition]="currentTransition">
       <div class="carousel-slide"
            *ngFor="let slide of heroSlides; let i = index"
-           [class.active]="i === currentSlide"
            [style.backgroundImage]="'url(' + slide.image + ')'">
       </div>
     </div>
 
-    <!-- Controles (bolinhas) -->
+    <!-- setas -->
+    <button class="carousel-arrow left" aria-label="Anterior" (click)="prevSlide()">
+      <svg viewBox="0 0 24 24" width="22" height="22">
+        <path d="M15.5 19l-7-7 7-7" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
+    <button class="carousel-arrow right" aria-label="Próximo" (click)="nextSlide()">
+      <svg viewBox="0 0 24 24" width="22" height="22">
+        <path d="M8.5 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
+    <!-- indicadores -->
     <div class="carousel-indicators">
       <span *ngFor="let slide of heroSlides; let i = index"
             class="indicator"
@@ -20,9 +42,16 @@
     </div>
   </section>
 
+
   <!-- Services Section -->
   <section class="py-5 bg-light">
     <div class="container">
+      <!-- Título e descrição centralizados -->
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Nossos serviços</h2>
+        <p class="text-muted">Oferecemos uma ampla gama de serviços médicos com qualidade e dedicação.</p>
+      </div>
+
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
         <div *ngFor="let service of heroServices" class="col">
           <div class="card h-100 shadow-sm border-0 service-card">
@@ -32,9 +61,9 @@
               </div>
               <h5 class="card-title fw-semibold">{{ service.title }}</h5>
               <p class="card-text text-muted">{{ service.description }}</p>
-              <a class="stretched-link text-decoration-none fw-semibold" href="#">
+              <!--<a class="stretched-link text-decoration-none fw-semibold" href="#">
                 Saiba mais <i class="bi bi-arrow-right"></i>
-              </a>
+              </a>-->
             </div>
           </div>
         </div>
