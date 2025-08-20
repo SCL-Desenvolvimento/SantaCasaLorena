@@ -19,6 +19,7 @@ import { FaleConoscoComponent } from './pages/fale-conosco/fale-conosco.componen
 import { PublicLayoutComponent } from './layout/public-layout/public-layout.component';
 //import { AuthInterceptor } from './guards/auth.interceptor';
 import { registerLocaleData } from '@angular/common';
+import { NewsDetailComponent } from './pages/news-detail/news-detail.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { registerLocaleData } from '@angular/common';
     ServicosComponent,
     NoticiasComponent,
     FaleConoscoComponent,
-    PublicLayoutComponent
+    PublicLayoutComponent,
+    NewsDetailComponent
   ],
   imports: [
     BrowserModule,

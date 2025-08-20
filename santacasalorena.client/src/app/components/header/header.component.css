@@ -1,8 +1,17 @@
-header {
-  z-index: 1050; /* Garantir que fique acima de outros elementos */
+/* Header base */
+.main-header {
+  z-index: 1050;
 }
 
+.logo {
+  height: 50px;
+  width: auto;
+  display: block;
+}
+
+/* Links */
 .nav-link {
+  color: #343a40;
   transition: color 0.2s ease-in-out;
 }
 
@@ -10,6 +19,94 @@ header {
     color: #0d6efd;
   }
 
-.btn {
-  transition: background-color 0.2s ease-in-out;
+/* Botões de destaque */
+.btn-donation {
+  background: #dc3545;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 50px;
+  padding: 0.5rem 1.2rem;
+  transition: all 0.3s ease;
+}
+
+  .btn-donation:hover {
+    background: #b02a37;
+    color: #fff;
+  }
+
+.btn-exam {
+  background: #0d6efd;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 50px;
+  padding: 0.5rem 1.2rem;
+  transition: all 0.3s ease;
+}
+
+  .btn-exam:hover {
+    background: #0a58ca;
+    color: #fff;
+  }
+
+/* Dropdown desktop */
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}
+
+.dropdown-menu {
+  border-radius: 0.5rem;
+  border: none;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.dropdown-item:hover {
+  background-color: #f1f5f9;
+}
+
+/* Mobile menu */
+.mobile-menu {
+  background: #f8f9fa;
+  border-radius: 0 0 1rem 1rem;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.mobile-submenu {
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 0.5rem;
+}
+
+.submenu-toggle {
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  padding: 0.4rem 0;
+}
+
+  .submenu-toggle:focus {
+    outline: none;
+  }
+
+/* Submenu expand/collapse com animação */
+.submenu-collapsed {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.submenu-expanded {
+  max-height: 500px; /* grande suficiente para vários itens */
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+/* Ícone animado */
+.transition {
+  transition: transform 0.3s ease;
+}
+
+.rotate {
+  transform: rotate(180deg);
 }

@@ -1,52 +1,103 @@
-<header class="bg-white shadow sticky-top">
+<header class="main-header bg-white shadow sticky-top">
   <div class="container">
     <div class="d-flex justify-content-between align-items-center py-3">
 
       <!-- Logo -->
       <a class="d-flex align-items-center text-decoration-none" routerLink="/">
-        <div class="bg-primary p-2 rounded me-2">
-          <i class="bi bi-heart-fill text-white fs-4"></i>
-        </div>
-        <div>
-          <h1 class="h5 mb-0 fw-bold text-dark">Santa Casa</h1>
-          <p class="small text-muted mb-0">de Lorena</p>
-        </div>
+        <img src="../../../assets/img/logo/logo.svg"
+             alt="Santa Casa de Lorena"
+             class="img-fluid logo">
       </a>
 
       <!-- Desktop Navigation -->
-      <nav class="d-none d-lg-flex gap-4">
-        <a *ngFor="let item of menuItems"
-           class="text-dark fw-medium nav-link"
-           [routerLink]="item.path"
-           routerLinkActive="text-primary">
-          {{ item.name }}
-        </a>
+      <nav class="d-none d-lg-flex gap-4 align-items-center">
+        <ng-container *ngFor="let item of menuItems">
+          <!-- Com submenu -->
+          <div class="nav-item dropdown" *ngIf="item.children; else noChildren">
+            <a class="nav-link dropdown-toggle fw-medium"
+               href="#"
+               id="{{item.name}}Dropdown"
+               role="button"
+               aria-expanded="false">
+              {{ item.name }}
+            </a>
+            <ul class="dropdown-menu shadow-lg animate__animated animate__fadeIn"
+                [attr.aria-labelledby]="item.name + 'Dropdown'">
+              <li *ngFor="let child of item.children">
+                <a class="dropdown-item"
+                   [routerLink]="child.path"
+                   routerLinkActive="active">
+                  {{ child.name }}
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Sem submenu -->
+          <ng-template #noChildren>
+            <a class="nav-link fw-medium"
+               [routerLink]="item.path"
+               routerLinkActive="text-primary">
+              {{ item.name }}
+            </a>
+          </ng-template>
+        </ng-container>
       </nav>
 
       <!-- CTA Desktop -->
-      <div class="d-none d-lg-flex">
-        <a routerLink="/admin/login" class="btn btn-danger">
-          Área Administrativa
+      <div class="d-none d-lg-flex gap-2">
+        <a routerLink="/" class="btn btn-donation">
+          Doação
+        </a>
+        <a routerLink="/" class="btn btn-exam">
+          Resultado de exames
         </a>
       </div>
 
       <!-- Mobile Toggle -->
-      <button class="btn d-lg-none" (click)="toggleMenu()">
-        <i [class]="'bi ' + (isMenuOpen ? 'bi-x-lg' : 'bi-list') + ' fs-4'"></i>
+      <button class="btn d-lg-none p-0" (click)="toggleMenu()">
+        <i [class]="'bi ' + (isMenuOpen ? 'bi-x-lg' : 'bi-list') + ' fs-2'"></i>
       </button>
     </div>
 
     <!-- Mobile Menu -->
-    <div *ngIf="isMenuOpen" class="d-lg-none border-top pt-3">
+    <div *ngIf="isMenuOpen" class="mobile-menu d-lg-none border-top pt-3 pb-3">
       <nav class="d-flex flex-column gap-3">
-        <a *ngFor="let item of menuItems"
-           class="text-dark fw-medium nav-link"
-           (click)="navigateTo(item.path)">
-          {{ item.name }}
+
+        <ng-container *ngFor="let item of menuItems">
+          <!-- Com submenu -->
+          <div *ngIf="item.children; else simpleLink" class="mobile-submenu">
+            <button class="submenu-toggle d-flex justify-content-between align-items-center w-100 fw-bold text-dark"
+                    (click)="item.open = !item.open">
+              {{ item.name }}
+              <i class="bi transition"
+                 [class]="item.open ? 'bi-chevron-up rotate' : 'bi-chevron-down'"></i>
+            </button>
+
+            <div [ngClass]="{'submenu-collapsed': !item.open, 'submenu-expanded': item.open}">
+              <a *ngFor="let child of item.children"
+                 class="nav-link text-dark ps-3 py-1 d-block"
+                 (click)="navigateTo(child.path)">
+                {{ child.name }}
+              </a>
+            </div>
+          </div>
+
+          <!-- Sem submenu -->
+          <ng-template #simpleLink>
+            <a class="nav-link fw-medium"
+               (click)="item.path && navigateTo(item.path)">
+              {{ item.name }}
+            </a>
+          </ng-template>
+        </ng-container>
+
+        <!-- CTA Mobile -->
+        <a class="btn btn-donation mt-3" (click)="navigateTo('/')">
+          Doação
         </a>
-        <a class="btn btn-danger w-auto"
-           (click)="navigateTo('/admin/login')">
-          Área Administrativa
+        <a class="btn btn-exam mt-2" (click)="navigateTo('/')">
+          Resultado de exames
         </a>
       </nav>
     </div>

@@ -1,0 +1,92 @@
+<div *ngIf="loading" class="d-flex justify-content-center align-items-center vh-100">
+  <div class="text-center">
+    <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;"></div>
+    <p class="mt-3 text-muted">Carregando notícia...</p>
+  </div>
+</div>
+
+<div *ngIf="!loading && (error || !news)" class="d-flex justify-content-center align-items-center vh-100">
+  <div class="text-center">
+    <h1 class="display-5 fw-bold mb-3">Notícia não encontrada</h1>
+    <p class="text-muted mb-4">A notícia que você procura não existe ou foi removida.</p>
+    <button class="btn btn-primary" (click)="goBack()">← Voltar para Notícias</button>
+  </div>
+</div>
+
+<div *ngIf="!loading && news" class="container my-5">
+  <!-- Breadcrumb -->
+  <nav class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+      <li class="breadcrumb-item"><a routerLink="/noticias">Notícias</a></li>
+      <li class="breadcrumb-item active">{{ news.title }}</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <!-- Conteúdo principal -->
+    <div class="col-lg-8">
+      <div class="card mb-4">
+        <div class="card-body">
+          <button class="btn btn-outline-secondary mb-3" (click)="goBack()">← Voltar</button>
+
+          <span *ngIf="news.category" class="badge bg-secondary mb-3">
+            {{ news.category }}
+          </span>
+
+          <h2 class="card-title h3 fw-bold">{{ news.title }}</h2>
+          <p *ngIf="news.summary" class="text-muted fs-5 mt-2">{{ news.summary }}</p>
+
+          <div class="d-flex flex-wrap gap-3 border-top pt-3 mt-3 text-muted small">
+            <span><i class="bi bi-calendar-event"></i> {{ formatDate(news.created_at) }}</span>
+            <span *ngIf="news.author"><i class="bi bi-person"></i> {{ news.author }}</span>
+          </div>
+        </div>
+
+        <img *ngIf="news.image_url" [src]="news.image_url" [alt]="news.title" class="img-fluid rounded">
+
+        <div class="card-body">
+          <div [innerHTML]="news.content || 'Conteúdo não disponível.'" class="news-content"></div>
+
+          <!-- Compartilhamento -->
+          <div class="border-top mt-4 pt-3">
+            <h5 class="fw-bold mb-3">Compartilhar esta notícia</h5>
+            <div class="d-flex gap-2 flex-wrap">
+              <button class="btn btn-outline-primary btn-sm" (click)="share('facebook')">Facebook</button>
+              <button class="btn btn-outline-info btn-sm" (click)="share('twitter')">Twitter</button>
+              <button class="btn btn-outline-dark btn-sm" (click)="share('linkedin')">LinkedIn</button>
+              <button class="btn btn-outline-secondary btn-sm" (click)="share('email')">E-mail</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <div *ngIf="relatedNews.length > 0" class="card mb-4">
+        <div class="card-header fw-bold">Outras Notícias</div>
+        <div class="card-body">
+          <div *ngFor="let item of relatedNews" class="mb-3 border-bottom pb-2">
+            <a [routerLink]="['/noticias', item.id]" class="text-decoration-none">
+              <h6 class="fw-semibold mb-1">{{ item.title }}</h6>
+            </a>
+            <small class="text-muted">{{ formatDate(item.created_at) }}</small>
+            <p *ngIf="item.summary" class="text-muted small">{{ item.summary }}</p>
+          </div>
+          <button class="btn btn-outline-secondary w-100" (click)="goBack()">Ver Todas</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header fw-bold">Fale Conosco</div>
+        <div class="card-body small">
+          <p><strong>Telefone:</strong> (12) 3159-3344</p>
+          <p><strong>WhatsApp:</strong> (12) 98891-5484</p>
+          <p><strong>E-mail:</strong> contato@santacasalorena.org.br</p>
+          <button class="btn btn-primary w-100 mt-3" routerLink="/fale-conosco">Enviar Mensagem</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
