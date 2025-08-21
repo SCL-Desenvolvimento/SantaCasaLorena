@@ -58,9 +58,9 @@ export class CentroDiagnosticoPorImagemComponent {
   ];
 
   galleryImages = [
-    { src: 'assets/images/galeria/centro1.jpg', alt: 'Sala de Tomografia' },
-    { src: 'assets/images/galeria/centro2.jpg', alt: 'Sala de Ressonância' },
-    { src: 'assets/images/galeria/centro3.jpg', alt: 'Recepção moderna' }
+    { src: 'assets/img/paginas/diagnostico-imagem2.jpg', alt: 'Sala de Tomografia' },
+    { src: 'assets/img/paginas/diagnostico-imagem3.jpg', alt: 'Sala de Ressonância' },
+    { src: 'assets/img/paginas/diagnostico-imagem4.jpg', alt: 'Recepção moderna' }
   ];
 
   selectedImage: { src: string, alt: string } | null = null;

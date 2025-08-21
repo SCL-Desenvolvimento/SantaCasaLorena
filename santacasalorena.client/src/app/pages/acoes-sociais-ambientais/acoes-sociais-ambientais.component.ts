@@ -43,7 +43,7 @@ export class AcoesSociaisAmbientaisComponent implements OnInit {
         <p>A Santa Casa de Lorena desenvolve atividades voluntárias em sua unidade através de uma organização regulamentada, e presta assistência religiosa aos pacientes de diversas religiões.</p>
         <p>Nosso compromisso vai além do cuidado médico, oferecendo suporte espiritual e emocional para pacientes e familiares em momentos de vulnerabilidade.</p>
       `,
-      image: 'assets/images/acoes-voluntarias.jpg'
+      image: 'assets/img/paginas/acoes_sociais_ambientais.jpg'
     },
     {
       id: 'ministro-eucaristia',
@@ -52,7 +52,7 @@ export class AcoesSociaisAmbientaisComponent implements OnInit {
         <p>A Santa Casa de Lorena conta com o apoio voluntário de ministros da eucaristia, que prestam assistência religiosa ao paciente com o sacramento da eucaristia distribuindo o sacramento da comunhão e trabalhando de maneira integrada ao serviço de capelania da Santa Casa de Lorena.</p>
         <p>O Hospital recebe representantes das demais religiões conforme demanda, obtendo autorização prévia junto ao Serviço Social, garantindo o respeito à diversidade religiosa e cultural de nossos pacientes.</p>
       `,
-      image: 'assets/images/capelania.jpg'
+      image: 'assets/img/paginas/sociais2-img.jpg'
     },
     {
       id: 'voluntariado',
@@ -64,7 +64,7 @@ export class AcoesSociaisAmbientaisComponent implements OnInit {
         <p>O trabalho das voluntárias é todo regulamentado, com organização de registro e estatutos e independente da administração da Santa Casa. A cada três anos é feita uma eleição, para definição dos conselheiros e diretores.</p>
         <p>Além disso, as voluntárias possuem total autonomia para organizar e direcionar potenciais de atuação em diversas áreas e promover mecanismos de impacto social, refletindo em um trabalho positivo para toda sociedade lorenense.</p>
       `,
-      image: 'assets/images/voluntariado.jpg'
+      image: 'assets/img/paginas/sociais3-img.jpg'
     }
   ];
 
