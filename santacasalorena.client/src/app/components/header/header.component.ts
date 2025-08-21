@@ -39,14 +39,15 @@ export class HeaderComponent {
       name: 'Serviços',
       open: false,
       children: [
-        { name: 'Convênios', path: '/servicos/convenios' },
-        { name: 'Especialidades', path: '/servicos/especialidades' },
-        { name: 'Capacidade de Instalação e Produção', path: '/servicos/capacidade' },
-        { name: 'Manual do Paciente e Visitante', path: '/servicos/manual' }
+        { name: 'Convênios', path: '/convenios' },
+        { name: 'Especialidades', path: '/especialidades' },
+        { name: 'Capacidade de Instalação e Produção', path: '/capacidade-instalacao-producao' },
+        { name: 'Manual do Paciente e Visitante', path: '/manual-do-paciente-visitante' }
       ]
     },
     { name: 'Notícias', path: '/noticias' },
-    { name: 'Fale Conosco', path: '/fale-conosco' }
+    { name: 'Fale Conosco', path: '/fale-conosco' },
+    { name: 'Emendômetro', path: '/emendas' }
   ];
 
   constructor(private router: Router) { }

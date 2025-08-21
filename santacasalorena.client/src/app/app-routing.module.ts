@@ -19,6 +19,11 @@ import { HotelariaComponent } from './pages/hotelaria/hotelaria.component';
 import { ClinicaEmiliaComponent } from './pages/clinica-emilia/clinica-emilia.component';
 import { CentroDiagnosticoPorImagemComponent } from './pages/centro-diagnostico-por-imagem/centro-diagnostico-por-imagem.component';
 import { UnidadesDeInternacaoComponent } from './pages/unidades-de-internacao/unidades-de-internacao.component';
+import { ConveniosComponent } from './pages/convenios/convenios.component';
+import { EspecialidadesComponent } from './pages/especialidades/especialidades.component';
+import { CapacidadeInstalacaoEProducaoComponent } from './pages/capacidade-instalacao-e-producao/capacidade-instalacao-e-producao.component';
+import { ManualDoPacienteEVisitantesComponent } from './pages/manual-do-paciente-e-visitante/manual-do-paciente-e-visitante.component';
+import { EmendasComponent } from './pages/emendas/emendas.component';
 //import { AuthGuard } from './guards/auth.guard';
 //import { RoleGuard } from './guards/role.guard';
 
@@ -42,6 +47,11 @@ const routes: Routes = [
       { path: 'clinica-emilia', component: ClinicaEmiliaComponent },
       { path: 'diagnostico-imagem', component: CentroDiagnosticoPorImagemComponent },
       { path: 'unidade-internacao', component: UnidadesDeInternacaoComponent },
+      { path: 'convenios', component: ConveniosComponent },
+      { path: 'especialidades', component: EspecialidadesComponent },
+      { path: 'capacidade-instalacao-producao', component: CapacidadeInstalacaoEProducaoComponent },
+      { path: 'manual-do-paciente-visitante', component: ManualDoPacienteEVisitantesComponent },
+      { path: 'emendas', component: EmendasComponent },
     ]
   },
   {

@@ -1,0 +1,500 @@
+/* Emendas Component Styles */
+
+.emendas-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+  padding: 80px 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+  }
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.hero-subtitle h2 {
+  font-size: 2.2rem;
+  font-weight: 300;
+  margin-bottom: 15px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-subtitle h3 {
+  font-size: 2.8rem;
+  font-weight: 600;
+  color: #ffd700;
+  position: relative;
+  z-index: 1;
+}
+
+/* Welcome Section */
+.welcome-section {
+  padding: 80px 0;
+  background: #f8f9fa;
+}
+
+.welcome-content {
+  background: white;
+  padding: 50px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border-left: 5px solid #2a5298;
+}
+
+  .welcome-content .lead {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #2a5298;
+    margin-bottom: 25px;
+  }
+
+  .welcome-content p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    text-align: justify;
+  }
+
+  .welcome-content .highlight {
+    background: linear-gradient(120deg, #ffd700 0%, #ffed4e 100%);
+    padding: 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    border-left: 4px solid #f39c12;
+  }
+
+  .welcome-content .organization-info {
+    font-style: italic;
+    color: #666;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    margin-top: 30px;
+  }
+
+/* About Platform Section */
+.about-platform-section {
+  padding: 80px 0;
+  background: white;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 50px;
+  color: #2a5298;
+  position: relative;
+}
+
+  .section-title::after {
+    content: '';
+    display: block;
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, #2a5298, #ffd700);
+    margin: 20px auto;
+    border-radius: 2px;
+  }
+
+.about-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+  .about-content p {
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+    text-align: justify;
+  }
+
+/* Rankings Sections */
+.rankings-section {
+  padding: 80px 0;
+}
+
+.federal-section {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+}
+
+.state-section {
+  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+}
+
+.municipal-section {
+  background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+}
+
+.section-title small {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #666;
+  margin-top: 10px;
+}
+
+.section-description {
+  font-size: 1.1rem;
+  text-align: center;
+  margin-bottom: 30px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mandate-info {
+  text-align: center;
+  font-weight: 600;
+  color: #2a5298;
+  margin-bottom: 40px;
+}
+
+/* Year Cards */
+.year-card {
+  background: white;
+  border-radius: 15px;
+  padding: 40px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  border-top: 5px solid #2a5298;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+  .year-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+  }
+
+.year-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2a5298;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.value-display {
+  text-align: center;
+  margin: 30px 0;
+  padding: 25px;
+  border-radius: 10px;
+  font-weight: 900;
+}
+
+.federal-value {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+}
+
+.state-value {
+  background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+  color: white;
+}
+
+.municipal-value {
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  color: white;
+}
+
+.value-display .currency {
+  font-size: 1.5rem;
+  margin-right: 10px;
+}
+
+.value-display .amount {
+  font-size: 3rem;
+}
+
+.amount-text {
+  text-align: center;
+  font-weight: 600;
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+.update-note {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  margin-top: 15px;
+}
+
+.pending-info, .resources-info, .update-info {
+  text-align: center;
+  font-weight: 600;
+  color: #2a5298;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+
+/* Summary Section */
+.summary-section {
+  padding: 80px 0;
+  background: #f8f9fa;
+}
+
+.summary-intro {
+  max-width: 900px;
+  margin: 0 auto 60px;
+  text-align: justify;
+}
+
+  .summary-intro p {
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+  }
+
+.summary-cards {
+  margin-top: 50px;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+}
+
+  .summary-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+  }
+
+.current-year {
+  border-top: 5px solid #ff9800;
+}
+
+.completed-year {
+  border-top: 5px solid #4caf50;
+}
+
+.card-header {
+  background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+  color: white;
+  padding: 25px;
+  text-align: center;
+}
+
+  .card-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .card-header small {
+    display: block;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-top: 5px;
+  }
+
+.card-body {
+  padding: 30px;
+}
+
+.card-description {
+  font-size: 1rem;
+  margin-bottom: 25px;
+  text-align: justify;
+  color: #666;
+}
+
+.values-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 25px;
+}
+
+  .values-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 1rem;
+  }
+
+    .values-list li:last-child {
+      border-bottom: none;
+    }
+
+.total-value {
+  background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+/* Special Thanks */
+.special-thanks {
+  margin-top: 60px;
+}
+
+  .special-thanks .alert {
+    border-radius: 15px;
+    padding: 30px;
+    border: none;
+  }
+
+  .special-thanks h4 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+/* Alerts */
+.alert {
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+  border: none;
+  font-weight: 500;
+}
+
+.alert-info {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  color: #1565c0;
+  border-left: 4px solid #2196f3;
+}
+
+.alert-warning {
+  background: linear-gradient(135deg, #fff3e0 0%, #ffcc02 100%);
+  color: #e65100;
+  border-left: 4px solid #ff9800;
+}
+
+.alert-success {
+  background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+  color: #2e7d32;
+  border-left: 4px solid #4caf50;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+  }
+
+  .hero-subtitle h2 {
+    font-size: 1.5rem;
+  }
+
+  .hero-subtitle h3 {
+    font-size: 1.8rem;
+  }
+
+  .welcome-content {
+    padding: 30px 20px;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .year-card {
+    padding: 25px 20px;
+  }
+
+  .value-display .amount {
+    font-size: 2rem;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-section {
+    padding: 50px 0;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle h2 {
+    font-size: 1.2rem;
+  }
+
+  .hero-subtitle h3 {
+    font-size: 1.5rem;
+  }
+
+  .welcome-section,
+  .about-platform-section,
+  .rankings-section,
+  .summary-section {
+    padding: 50px 0;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .value-display .amount {
+    font-size: 1.8rem;
+  }
+}
+
+/* Animation Classes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Utility Classes */
+.text-gradient {
+  background: linear-gradient(135deg, #2a5298 0%, #ffd700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shadow-custom {
+  box-shadow: 0 10px 30px rgba(42, 82, 152, 0.1);
+}
+
+.border-gradient {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box, linear-gradient(135deg, #2a5298, #ffd700) border-box;
+}

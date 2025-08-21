@@ -1,0 +1,86 @@
+<div class="min-vh-100">
+
+  <!-- Hero -->
+  <section class="hero-gradient text-white py-5 text-center">
+    <div class="container">
+      <h1 class="display-5 fw-bold mb-3">Manual do Paciente e Visitante</h1>
+      <p class="lead opacity-75">
+        Relacionamento seguro e humanizado entre pacientes, familiares e o hospital
+      </p>
+    </div>
+  </section>
+
+  <!-- Introdução -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <h2 class="h1 fw-bold mb-4">Cuidado e Acolhimento</h2>
+          <p class="lead text-primary mb-3">
+            Nosso manual foi desenvolvido para garantir segurança, conforto e
+            tranquilidade durante a sua estadia no hospital.
+          </p>
+          <p class="text-secondary fs-5">
+            Reunimos orientações essenciais para pacientes e visitantes, reforçando
+            o compromisso da nossa equipe em oferecer atendimento de excelência,
+            com respeito e dedicação.
+          </p>
+        </div>
+        <div class="col-lg-6">
+          <div class="text-center">
+            <img src="assets/images/casal-feliz.jpg"
+                 alt="Casal feliz representando cuidado e carinho"
+                 class="img-fluid rounded shadow">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pontos importantes -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <h2 class="h1 fw-bold text-center mb-5">
+        16 pontos importantes para uma melhor relação paciente x hospital
+      </h2>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4" *ngFor="let item of manualItems">
+          <div class="card h-100 shadow-sm card-hover border-0">
+            <div class="card-body d-flex flex-column text-center">
+              <div class="service-icon mb-3">
+                <i [class]="item.icon" class="text-primary fs-2"></i>
+              </div>
+              <h5 class="fw-bold text-secondary">{{ item.title }}</h5>
+              <p class="text-muted flex-grow-1">{{ item.description }}</p>
+              <button class="btn btn-outline-primary btn-sm mt-auto" (click)="openModal(item)">
+                Leia mais
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content rounded-3 shadow-lg">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-bold" id="detailModalLabel">{{ selectedItem?.title }}</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex align-items-center mb-3">
+          <i [class]="selectedItem?.icon" class="text-primary me-2 fs-4"></i>
+          <h6 class="mb-0">{{ selectedItem?.title }}</h6>
+        </div>
+        <div [innerHTML]="selectedItem?.fullContent"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>

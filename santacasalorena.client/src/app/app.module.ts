@@ -29,6 +29,11 @@ import { HotelariaComponent } from './pages/hotelaria/hotelaria.component';
 import { ClinicaEmiliaComponent } from './pages/clinica-emilia/clinica-emilia.component';
 import { CentroDiagnosticoPorImagemComponent } from './pages/centro-diagnostico-por-imagem/centro-diagnostico-por-imagem.component';
 import { UnidadesDeInternacaoComponent } from './pages/unidades-de-internacao/unidades-de-internacao.component';
+import { ConveniosComponent } from './pages/convenios/convenios.component';
+import { EspecialidadesComponent } from './pages/especialidades/especialidades.component';
+import { CapacidadeInstalacaoEProducaoComponent } from './pages/capacidade-instalacao-e-producao/capacidade-instalacao-e-producao.component';
+import { ManualDoPacienteEVisitantesComponent } from './pages/manual-do-paciente-e-visitante/manual-do-paciente-e-visitante.component';
+import { EmendasComponent } from './pages/emendas/emendas.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +56,12 @@ import { UnidadesDeInternacaoComponent } from './pages/unidades-de-internacao/un
     HotelariaComponent,
     ClinicaEmiliaComponent,
     CentroDiagnosticoPorImagemComponent,
-    UnidadesDeInternacaoComponent
+    UnidadesDeInternacaoComponent,
+    ConveniosComponent,
+    EspecialidadesComponent,
+    CapacidadeInstalacaoEProducaoComponent,
+    ManualDoPacienteEVisitantesComponent,
+    EmendasComponent
   ],
   imports: [
     BrowserModule,
