@@ -9,6 +9,8 @@
         public string Description { get; set; }
         public required string Content { get; set; }
         public string Category { get; set; }
+        public bool IsPublic { get; set; }
+
 
         public Guid UserId { get; set; }
         public User User { get; set; }

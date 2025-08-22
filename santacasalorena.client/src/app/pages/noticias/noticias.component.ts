@@ -9,7 +9,7 @@ interface News {
   author: string;
   category: string;
   image_url: string | null;
-  created_at: string;
+  createdAt: string;
 }
 
 @Component({
@@ -37,7 +37,7 @@ export class NoticiasComponent implements OnInit {
       author: "Assessoria de Imprensa",
       category: "Parcerias",
       image_url: null,
-      created_at: "2024-01-15T10:00:00Z"
+      createdAt: "2024-01-15T10:00:00Z"
     },
     {
       id: 2,
@@ -47,7 +47,7 @@ export class NoticiasComponent implements OnInit {
       author: "Dr. João Silva",
       category: "Medicina",
       image_url: null,
-      created_at: "2024-01-10T14:30:00Z"
+      createdAt: "2024-01-10T14:30:00Z"
     },
     {
       id: 3,
@@ -57,7 +57,7 @@ export class NoticiasComponent implements OnInit {
       author: "Direção Clínica",
       category: "Reconhecimentos",
       image_url: null,
-      created_at: "2024-01-05T09:15:00Z"
+      createdAt: "2024-01-05T09:15:00Z"
     },
     {
       id: 4,
@@ -67,7 +67,7 @@ export class NoticiasComponent implements OnInit {
       author: "Departamento de Imagem",
       category: "Tecnologia",
       image_url: null,
-      created_at: "2024-01-01T16:00:00Z"
+      createdAt: "2024-01-01T16:00:00Z"
     }
   ];
 

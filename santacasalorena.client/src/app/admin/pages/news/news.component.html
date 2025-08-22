@@ -15,21 +15,36 @@
         <!-- Conteúdo -->
         <div class="flex-grow-1">
           <h5 class="fw-semibold mb-1">{{ item.title }}</h5>
-          <p class="text-muted small mb-2">
-            ✍️ {{ item.author }} • {{ formatDate(item.created_at) }}
-          </p>
-          <span *ngIf="item.category" class="badge bg-light text-dark px-3 py-1">
-            {{ item.category }}
-          </span>
+
+          <!-- Descrição -->
+          <p class="text-muted small mb-2">{{ item.description }}</p>
+
+          <!-- Categoria + Data -->
+          <div class="d-flex flex-wrap gap-2 align-items-center">
+            <span *ngIf="item.category" class="badge bg-light text-dark px-3 py-1">
+              {{ item.category }}
+            </span>
+            <small class="text-muted" *ngIf="item.createdAt">
+              📅 {{ formatDate(item.createdAt) }}
+            </small>
+          </div>
+        </div>
+
+        <!-- Imagem -->
+        <div *ngIf="item.imageUrl" class="ms-3 mb-2 mb-sm-0">
+          <img [src]="item.imageUrl"
+               alt="{{ item.title }}"
+               class="rounded"
+               style="width: 100px; height: 70px; object-fit: cover;">
         </div>
 
         <!-- Ações -->
         <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
           <span class="badge d-flex align-items-center gap-1 px-2 py-1"
-                [class.bg-success]="item.is_published"
-                [class.bg-secondary]="!item.is_published">
-            <i class="bi" [ngClass]="item.is_published ? 'bi-check-circle' : 'bi-pencil'"></i>
-            {{ item.is_published ? 'Publicado' : 'Rascunho' }}
+                [class.bg-success]="item.isPublished"
+                [class.bg-secondary]="!item.isPublished">
+            <i class="bi" [ngClass]="item.isPublished ? 'bi-check-circle' : 'bi-pencil'"></i>
+            {{ item.isPublished ? 'Publicado' : 'Rascunho' }}
           </span>
 
           <button class="btn btn-outline-secondary btn-sm" (click)="onEditNews(item)" title="Editar">

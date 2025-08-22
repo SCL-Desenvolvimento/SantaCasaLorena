@@ -1,6 +1,8 @@
 export interface User {
-  id?: number;
+  id: string;
   username: string;
   email: string;
-  access_level?: string;
+  userType: string;
+  department: string | null;
+  photoUrl: string | null;
 }

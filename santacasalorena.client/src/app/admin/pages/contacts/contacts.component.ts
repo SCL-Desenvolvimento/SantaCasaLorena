@@ -9,14 +9,14 @@ import { Contact } from '../../../models/contact';
 })
 export class ContactsComponent {
   @Input() contacts: Contact[] = [];
-  @Output() markAsRead = new EventEmitter<number>();
-  @Output() deleteContact = new EventEmitter<number>();
+  @Output() markAsRead = new EventEmitter<string>();
+  @Output() deleteContact = new EventEmitter<string>();
 
-  onMarkAsRead(id: number) {
+  onMarkAsRead(id: string) {
     this.markAsRead.emit(id);
   }
 
-  onDeleteContact(id: number) {
+  onDeleteContact(id: string) {
     this.deleteContact.emit(id);
   }
 

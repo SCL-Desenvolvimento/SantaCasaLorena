@@ -35,15 +35,19 @@
           </span>
 
           <h2 class="card-title h3 fw-bold">{{ news.title }}</h2>
-          <p *ngIf="news.summary" class="text-muted fs-5 mt-2">{{ news.summary }}</p>
+          <p *ngIf="news.description" class="text-muted fs-5 mt-2">{{ news.description }}</p>
 
           <div class="d-flex flex-wrap gap-3 border-top pt-3 mt-3 text-muted small">
-            <span><i class="bi bi-calendar-event"></i> {{ formatDate(news.created_at) }}</span>
-            <span *ngIf="news.author"><i class="bi bi-person"></i> {{ news.author }}</span>
+            <span><i class="bi bi-calendar-event"></i> {{ formatDate(news.createdAt) }}</span>
+            <span class="badge"
+                  [class.bg-success]="news.isPublished"
+                  [class.bg-secondary]="!news.isPublished">
+              {{ news.isPublished ? 'Publicado' : 'Rascunho' }}
+            </span>
           </div>
         </div>
 
-        <img *ngIf="news.image_url" [src]="news.image_url" [alt]="news.title" class="img-fluid rounded">
+        <img *ngIf="news.imageUrl" [src]="news.imageUrl" [alt]="news.title" class="img-fluid rounded">
 
         <div class="card-body">
           <div [innerHTML]="news.content || 'Conteúdo não disponível.'" class="news-content"></div>
@@ -71,8 +75,8 @@
             <a [routerLink]="['/noticias', item.id]" class="text-decoration-none">
               <h6 class="fw-semibold mb-1">{{ item.title }}</h6>
             </a>
-            <small class="text-muted">{{ formatDate(item.created_at) }}</small>
-            <p *ngIf="item.summary" class="text-muted small">{{ item.summary }}</p>
+            <small class="text-muted">{{ formatDate(item.createdAt) }}</small>
+            <p *ngIf="item.description" class="text-muted small">{{ item.description }}</p>
           </div>
           <button class="btn btn-outline-secondary w-100" (click)="goBack()">Ver Todas</button>
         </div>

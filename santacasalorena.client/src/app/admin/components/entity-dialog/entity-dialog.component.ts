@@ -30,12 +30,11 @@ export class EntityDialogComponent implements OnChanges {
       case 'news':
         this.form = this.fb.group({
           title: [this.formData?.title || '', Validators.required],
-          summary: [this.formData?.summary || '', Validators.required],
+          description: [this.formData?.description || '', Validators.required],
           content: [this.formData?.content || '', Validators.required],
-          author: [this.formData?.author || '', Validators.required],
           category: [this.formData?.category || '', Validators.required],
-          image_url: [this.formData?.image_url || '', Validators.pattern(/https?:\/\/.+/)],
-          is_published: [this.formData?.is_published || false]
+          imageUrl: [this.formData?.imageUrl || '', Validators.pattern(/https?:\/\/.+/)],
+          isPublished: [this.formData?.isPublished || false]
         });
         break;
 
@@ -52,13 +51,7 @@ export class EntityDialogComponent implements OnChanges {
       case 'convenios':
         this.form = this.fb.group({
           name: [this.formData?.name || '', Validators.required],
-          description: [this.formData?.description || '', Validators.required],
-          category: [this.formData?.category || '', Validators.required],
-          phone: [this.formData?.phone || '', Validators.pattern(/^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/)],
-          email: [this.formData?.email || '', Validators.email],
-          website_url: [this.formData?.website_url || '', Validators.pattern(/https?:\/\/.+/)],
-          logo_url: [this.formData?.logo_url || '', Validators.pattern(/https?:\/\/.+/)],
-          is_active: [this.formData?.is_active || false]
+          imageUrl: [this.formData?.imageUrl || '', Validators.pattern(/https?:\/\/.+/)],
         });
         break;
     }

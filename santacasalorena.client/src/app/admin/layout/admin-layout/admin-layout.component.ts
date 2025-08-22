@@ -3,10 +3,9 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api';
 import { User } from '../../../models/user';
 import { News } from '../../../models/news';
-import { Service } from '../../../models/service';
-import { Convenio } from '../../../models/convenio';
 import { Contact } from '../../../models/contact';
 import { Stats } from '../../../models/stats';
+import { Agreement } from '../../../models/agreement';
 type Tab = 'dashboard' | 'news' | 'services' | 'convenios' | 'contacts';
 
 @Component({
@@ -25,8 +24,8 @@ export class AdminLayoutComponent implements OnInit {
   stats = signal<Stats>({ totalNews: 0, totalServices: 0, totalConvenios: 0, unreadContacts: 0 });
 
   news = signal<News[]>([]);
-  services = signal<Service[]>([]);
-  convenios = signal<Convenio[]>([]);
+  //services = signal<Service[]>([]);
+  convenios = signal<Agreement[]>([]);
   contacts = signal<Contact[]>([]);
 
   editingItem = signal<any | null>(null);
@@ -39,19 +38,19 @@ export class AdminLayoutComponent implements OnInit {
 
   private loadMockData() {
     this.news.set([
-      { id: 1, title: 'Notícia A', summary: 'Resumo...', content: 'Conteúdo...', author: 'Autor A', category: 'Parcerias', is_published: true, created_at: new Date().toISOString() }
+      { id: '1', title: 'Notícia A', description: 'Resumo...', content: 'Conteúdo...', imageUrl: '', category: 'Parcerias', isPublished: true, createdAt: new Date().toISOString() }
     ]);
 
-    this.services.set([
-      { id: 1, name: 'Pronto Atendimento', description: 'Atendimento 24h', category: 'Emergência', icon: 'clock', is_active: true }
-    ]);
+    //this.services.set([
+    //  { id: 1, name: 'Pronto Atendimento', description: 'Atendimento 24h', category: 'Emergência', icon: 'clock', is_active: true }
+    //]);
 
     this.convenios.set([
-      { id: 1, name: 'Unimed', description: 'Plano de saúde', category: 'Saúde', is_active: true }
+      { id: '1', name: 'Unimed', imageUrl: '' }
     ]);
 
     this.contacts.set([
-      { id: 1, name: 'João', email: 'joao@email.com', subject: 'Dúvida', message: 'Mensagem...', is_read: false, created_at: new Date().toISOString() }
+      { id: '1', name: 'João', email: 'joao@email.com', subject: 'Dúvida', message: 'Mensagem...', is_read: false, createdAt: new Date().toISOString() }
     ]);
 
     this.updateStats();
@@ -60,7 +59,7 @@ export class AdminLayoutComponent implements OnInit {
   private updateStats() {
     this.stats.set({
       totalNews: this.news().length,
-      totalServices: this.services().length,
+      totalServices: 0, /*this.services().length*/
       totalConvenios: this.convenios().length,
       unreadContacts: this.contacts().filter(c => !c.is_read).length
     });
@@ -99,13 +98,13 @@ export class AdminLayoutComponent implements OnInit {
       if (item) {
         switch (type) {
           case 'news': this.apiService.updateNews(item.id, data).subscribe(); break;
-          case 'services': this.apiService.updateService(item.id, data).subscribe(); break;
+          //case 'services': this.apiService.updateService(item.id, data).subscribe(); break;
           case 'convenios': this.apiService.updateConvenio(item.id, data).subscribe(); break;
         }
       } else {
         switch (type) {
           case 'news': this.apiService.createNews(data).subscribe(); break;
-          case 'services': this.apiService.createService(data).subscribe(); break;
+          //case 'services': this.apiService.createService(data).subscribe(); break;
           case 'convenios': this.apiService.createConvenio(data).subscribe(); break;
         }
       }
@@ -118,7 +117,7 @@ export class AdminLayoutComponent implements OnInit {
     }
   }
 
-  handleDelete(type: string, id: number) {
+  handleDelete(type: string, id: string) {
     if (!confirm('Tem certeza que deseja excluir?')) return;
 
     switch (type) {
@@ -131,7 +130,7 @@ export class AdminLayoutComponent implements OnInit {
     this.loadMockData();
   }
 
-  markAsRead(id: number) {
+  markAsRead(id: string) {
     this.apiService.markContactAsRead(id).subscribe(() => this.loadMockData());
   }
 }

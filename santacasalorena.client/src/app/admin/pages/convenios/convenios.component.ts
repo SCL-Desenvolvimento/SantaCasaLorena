@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Convenio } from '../../../models/convenio';
+import { Agreement } from '../../../models/agreement';
 
 @Component({
   selector: 'app-convenios',
@@ -8,20 +8,20 @@ import { Convenio } from '../../../models/convenio';
   styleUrl: './convenios.component.css'
 })
 export class ConveniosComponent {
-  @Input() convenios: Convenio[] = [];
+  @Input() convenios: Agreement[] = [];
   @Output() createConvenio = new EventEmitter<void>();
-  @Output() editConvenio = new EventEmitter<Convenio>();
-  @Output() deleteConvenio = new EventEmitter<number>();
+  @Output() editConvenio = new EventEmitter<Agreement>();
+  @Output() deleteConvenio = new EventEmitter<string>();
 
   onCreateConvenio() {
     this.createConvenio.emit();
   }
 
-  onEditConvenio(item: Convenio) {
+  onEditConvenio(item: Agreement) {
     this.editConvenio.emit(item);
   }
 
-  onDeleteConvenio(id: number) {
+  onDeleteConvenio(id: string) {
     this.deleteConvenio.emit(id);
   }
 }

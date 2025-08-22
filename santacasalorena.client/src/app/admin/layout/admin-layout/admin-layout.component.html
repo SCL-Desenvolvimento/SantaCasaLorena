@@ -58,12 +58,12 @@
                 (deleteNews)="handleDelete('news', $event)">
       </app-news>
 
-      <app-services *ngSwitchCase="'services'"
+      <!--<app-services *ngSwitchCase="'services'"
                     [services]="services()"
                     (createService)="openEditDialog('services')"
                     (editService)="openEditDialog('services', $event)"
                     (deleteService)="handleDelete('services', $event)">
-      </app-services>
+      </app-services>-->
 
       <app-convenios *ngSwitchCase="'convenios'"
                      [convenios]="convenios()"

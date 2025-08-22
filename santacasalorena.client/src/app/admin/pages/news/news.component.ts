@@ -11,7 +11,7 @@ export class NewsComponent {
   @Input() news: News[] = [];
   @Output() createNews = new EventEmitter<void>();
   @Output() editNews = new EventEmitter<News>();
-  @Output() deleteNews = new EventEmitter<number>();
+  @Output() deleteNews = new EventEmitter<string>();
 
   onCreateNews() {
     this.createNews.emit();
@@ -21,7 +21,7 @@ export class NewsComponent {
     this.editNews.emit(item);
   }
 
-  onDeleteNews(id: number) {
+  onDeleteNews(id: string) {
     this.deleteNews.emit(id);
   }
 

@@ -29,13 +29,13 @@
              class="d-flex justify-content-between align-items-center py-2 border-bottom">
           <div>
             <p class="mb-1 fw-semibold">{{ item.title }}</p>
-            <small class="text-muted">{{ formatDate(item.created_at) }}</small>
+            <small class="text-muted">{{ formatDate(item.createdAt) }}</small>
           </div>
           <span class="badge d-flex align-items-center gap-1"
-                [class.bg-success]="item.is_published"
-                [class.bg-secondary]="!item.is_published">
-            <i class="bi" [ngClass]="item.is_published ? 'bi-check-circle' : 'bi-pencil'"></i>
-            {{ item.is_published ? 'Publicado' : 'Rascunho' }}
+                [class.bg-success]="item.isPublished"
+                [class.bg-secondary]="!item.isPublished">
+            <i class="bi" [ngClass]="item.isPublished ? 'bi-check-circle' : 'bi-pencil'"></i>
+            {{ item.isPublished ? 'Publicado' : 'Rascunho' }}
           </span>
         </div>
       </div>
