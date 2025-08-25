@@ -12,7 +12,7 @@
 }
 
 .hero-section {
-  background: linear-gradient(135deg, #0d6efd, #0056b3);
+  background: linear-gradient(135deg, #22BCEE, #22BCEE);
   color: white;
   padding: 4rem 0;
 }
@@ -51,7 +51,7 @@
 }
 
   .categories button.active {
-    background: #4f46e5;
+    background: #22BCEE;
     color: #fff;
   }
 
@@ -69,7 +69,7 @@
 }
 
 .highlight-news {
-  margin-bottom: 3rem; /* espaço extra entre destaque e grid */
+  margin-bottom: 3rem;
 }
 
   .highlight-news .card {
@@ -84,7 +84,7 @@
     }
 
 .no-image-placeholder {
-  background: #0d6efd;
+  background: #22BCEE;
   color: white;
   display: flex;
   align-items: center;
@@ -126,7 +126,7 @@
 }
 
 .newsletter-section {
-  background: #0d6efd;
+  background: #22BCEE;
   color: white;
   padding: 3rem 0;
 }
@@ -146,6 +146,25 @@
   padding: 0.35em 0.65em;
   border-radius: 0.25rem;
 }
+
+/* Botões customizados */
+.btn-primary,
+.btn-outline-primary,
+.text-primary {
+  color: #22BCEE !important;
+  border-color: #22BCEE !important;
+}
+
+.btn-primary {
+  background-color: #22BCEE !important;
+}
+
+  .btn-primary:hover,
+  .btn-outline-primary:hover {
+    background-color: #1ca9d9 !important;
+    border-color: #1ca9d9 !important;
+    color: #fff !important;
+  }
 
 /* Animações */
 @keyframes fadeInUp {

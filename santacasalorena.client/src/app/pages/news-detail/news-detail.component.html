@@ -14,74 +14,84 @@
 </div>
 
 <div *ngIf="!loading && news" class="container my-5">
-  <div class="row">
+  <div class="row g-4">
     <!-- Conteúdo principal -->
     <div class="col-lg-8">
-      <div class="card mb-4">
-        <div class="card-body">
-          <button class="btn btn-outline-secondary mb-3" (click)="goBack()">← Voltar</button>
+      <article class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <img *ngIf="news.imageUrl" [src]="news.imageUrl" [alt]="news.title" class="img-fluid w-100 object-fit-cover news-hero">
 
-          <span *ngIf="news.category" class="badge bg-secondary mb-3">
+        <div class="card-body p-4">
+          <button class="btn btn-link text-muted mb-3 p-0" (click)="goBack()">
+            ← Voltar
+          </button>
+
+          <span *ngIf="news.category" class="badge bg-gradient mb-3 px-3 py-2">
             {{ news.category }}
           </span>
 
-          <h2 class="card-title h3 fw-bold">{{ news.title }}</h2>
-          <p *ngIf="news.description" class="text-muted fs-5 mt-2">{{ news.description }}</p>
+          <h1 class="fw-bold mb-3">{{ news.title }}</h1>
+          <p *ngIf="news.description" class="lead text-muted">{{ news.description }}</p>
 
           <div class="d-flex flex-wrap gap-3 border-top pt-3 mt-3 text-muted small">
             <span><i class="bi bi-calendar-event"></i> {{ formatDate(news.createdAt) }}</span>
-            <span class="badge"
-                  [class.bg-success]="news.isPublished"
-                  [class.bg-secondary]="!news.isPublished">
+            <span class="badge px-3"
+                  [class.bg-success-subtle]="news.isPublished"
+                  [class.bg-secondary-subtle]="!news.isPublished">
               {{ news.isPublished ? 'Publicado' : 'Rascunho' }}
             </span>
           </div>
-        </div>
 
-        <img *ngIf="news.imageUrl" [src]="news.imageUrl" [alt]="news.title" class="img-fluid rounded">
-
-        <div class="card-body">
-          <div [innerHTML]="news.content || 'Conteúdo não disponível.'" class="news-content"></div>
+          <div class="mt-4 news-content" [innerHTML]="news.content || 'Conteúdo não disponível.'"></div>
 
           <!-- Compartilhamento -->
-          <div class="border-top mt-4 pt-3">
-            <h5 class="fw-bold mb-3">Compartilhar esta notícia</h5>
+          <div class="border-top mt-5 pt-4">
+            <h5 class="fw-bold mb-3">Compartilhar</h5>
             <div class="d-flex gap-2 flex-wrap">
-              <button class="btn btn-outline-primary btn-sm" (click)="share('facebook')">Facebook</button>
-              <button class="btn btn-outline-info btn-sm" (click)="share('twitter')">Twitter</button>
-              <button class="btn btn-outline-dark btn-sm" (click)="share('linkedin')">LinkedIn</button>
-              <button class="btn btn-outline-secondary btn-sm" (click)="share('email')">E-mail</button>
+              <button class="btn btn-outline-primary btn-sm rounded-pill" (click)="share('facebook')">
+                <i class="bi bi-facebook"></i> Facebook
+              </button>
+              <button class="btn btn-outline-info btn-sm rounded-pill" (click)="share('twitter')">
+                <i class="bi bi-twitter"></i> Twitter
+              </button>
+              <button class="btn btn-outline-dark btn-sm rounded-pill" (click)="share('linkedin')">
+                <i class="bi bi-linkedin"></i> LinkedIn
+              </button>
+              <button class="btn btn-outline-secondary btn-sm rounded-pill" (click)="share('email')">
+                <i class="bi bi-envelope"></i> E-mail
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      </article>
     </div>
 
     <!-- Sidebar -->
-    <div class="col-lg-4">
-      <div *ngIf="relatedNews.length > 0" class="card mb-4">
-        <div class="card-header fw-bold">Outras Notícias</div>
-        <div class="card-body">
-          <div *ngFor="let item of relatedNews" class="mb-3 border-bottom pb-2">
-            <a [routerLink]="['/noticia', item.id]" class="text-decoration-none">
-              <h6 class="fw-semibold mb-1">{{ item.title }}</h6>
-            </a>
-            <small class="text-muted">{{ formatDate(item.createdAt) }}</small>
-            <p *ngIf="item.description" class="text-muted small">{{ item.description }}</p>
-          </div>
-          <button class="btn btn-outline-secondary w-100" (click)="goBack()">Ver Todas</button>
+    <aside class="col-lg-4">
+      <div *ngIf="relatedNews.length > 0" class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-header bg-white fw-bold fs-5">Outras Notícias</div>
+        <div class="list-group list-group-flush">
+          <a *ngFor="let item of relatedNews"
+             [routerLink]="['/noticia', item.id]"
+             class="list-group-item list-group-item-action py-3">
+            <h6 class="fw-semibold mb-1">{{ item.title }}</h6>
+            <small class="text-muted d-block mb-1">{{ formatDate(item.createdAt) }}</small>
+            <p *ngIf="item.description" class="text-muted small m-0">{{ item.description }}</p>
+          </a>
+        </div>
+        <div class="card-footer bg-white">
+          <button class="btn btn-outline-secondary w-100 rounded-pill" (click)="goBack()">Ver Todas</button>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header fw-bold">Fale Conosco</div>
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-white fw-bold fs-5">Fale Conosco</div>
         <div class="card-body small">
-          <p><strong>Telefone:</strong> (12) 3159-3344</p>
-          <p><strong>WhatsApp:</strong> (12) 98891-5484</p>
-          <p><strong>E-mail:</strong> contato@santacasalorena.org.br</p>
-          <button class="btn btn-primary w-100 mt-3" routerLink="/fale-conosco">Enviar Mensagem</button>
+          <p><i class="bi bi-telephone"></i> <strong>Telefone:</strong> (12) 3159-3344</p>
+          <p><i class="bi bi-whatsapp text-success"></i> <strong>WhatsApp:</strong> (12) 98891-5484</p>
+          <p><i class="bi bi-envelope"></i> <strong>E-mail:</strong> contato@santacasalorena.org.br</p>
+          <button class="btn btn-primary w-100 mt-3 rounded-pill" routerLink="/fale-conosco">Enviar Mensagem</button>
         </div>
       </div>
-    </div>
+    </aside>
   </div>
 </div>

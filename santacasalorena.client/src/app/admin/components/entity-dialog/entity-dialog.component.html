@@ -22,12 +22,24 @@
 
             <div class="mb-3">
               <label class="form-label">Conteúdo</label>
-              <textarea class="form-control" rows="6" formControlName="content"></textarea>
+              <quill-editor formControlName="content" [style]="{height: '250px'}"></quill-editor>
             </div>
 
             <div class="mb-3">
               <label class="form-label">Categoria</label>
-              <input type="text" class="form-control" formControlName="category">
+              <select class="form-control" formControlName="category">
+                <option value="">Selecione uma categoria</option>
+                <option value="Investimento">Investimento</option>
+                <option value="Treinamento">Treinamento</option>
+                <option value="Inovação e tecnologia">Inovação e tecnologia</option>
+                <option value="Nutrição">Nutrição</option>
+                <option value="Saúde">Saúde</option>
+                <option value="Santa casa de lorena">Santa casa de lorena</option>
+                <option value="Informativo">Informativo</option>
+                <option value="Ações sociais">Ações sociais</option>
+                <option value="Nota oficial">Nota oficial</option>
+                <option value="Doações">Doações</option>
+              </select>
             </div>
 
             <div class="mb-3">
