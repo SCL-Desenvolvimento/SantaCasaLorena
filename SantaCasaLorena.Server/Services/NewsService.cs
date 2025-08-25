@@ -57,7 +57,8 @@ namespace SantaCasaLorena.Server.Services
                 Description = dto.Description,
                 Content = dto.Content,
                 Category = dto.Category,
-                UserId = dto.UserId
+                UserId = dto.UserId,
+                IsPublished = dto.IsPublished
             };
 
             _context.News.Add(entity);
@@ -85,6 +86,7 @@ namespace SantaCasaLorena.Server.Services
             entity.Description = dto.Description;
             entity.Content = dto.Content;
             entity.Category = dto.Category;
+            entity.IsPublished = dto.IsPublished;
             entity.UserId = dto.UserId;
 
             if (!string.IsNullOrEmpty(entity.ImageUrl) && dto.File != null)

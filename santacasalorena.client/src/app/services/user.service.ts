@@ -8,7 +8,7 @@ import { User } from '../models/user';
   providedIn: 'root',
 })
 export class UserService {
-  private apiUrl = `${environment.apiUrl}/user`
+  private apiUrl = `${environment.apiUrl}/users`
 
   constructor(private http: HttpClient) { }
 
@@ -19,7 +19,7 @@ export class UserService {
     );
   }
 
-  getUserById(id: number): Observable<User> {
+  getUserById(id: string): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${id}`).pipe(
       map(response => response),
       catchError(this.handleError)
@@ -32,25 +32,25 @@ export class UserService {
     );
   }
 
-  updateUser(id: number, user: FormData): Observable<any> {
+  updateUser(id: string, user: FormData): Observable<any> {
     return this.http.put(`${this.apiUrl}/${id}`, user).pipe(
       catchError(this.handleError)
     );
   }
 
-  deleteUser(id: number): Observable<any> {
+  deleteUser(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
-  resetPassword(userId: number) {
+  resetPassword(userId: string) {
     return this.http.post(`${this.apiUrl}/reset-password/${userId}`, {}).pipe(
       catchError(this.handleError)
     );
   }
 
-  changePassword(userId: number, newPassword: string) {
+  changePassword(userId: string, newPassword: string) {
     return this.http.post<any>(`${this.apiUrl}/${userId}/change-password`, { newPassword }).pipe(
       catchError(this.handleError)
     );

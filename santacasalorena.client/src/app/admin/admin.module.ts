@@ -20,6 +20,12 @@ import { ContactsComponent } from './pages/contacts/contacts.component';
 import { ServicesComponent } from './pages/services/services.component';
 import { ConveniosComponent } from './pages/convenios/convenios.component';
 import { EntityDialogComponent } from './components/entity-dialog/entity-dialog.component';
+import { HomeBannerComponent } from './pages/home-banner/home-banner.component';
+import { PatientManualComponent } from './pages/patient-manual/patient-manual.component';
+import { ProviderComponent } from './pages/provider/provider.component';
+import { SpecialtyComponent } from './pages/specialty/specialty.component';
+import { TransparencyPortalComponent } from './pages/transparency-portal/transparency-portal.component';
+import { UsersComponent } from './pages/user/user.component';
 //import { AuthInterceptor } from '../guards/auth.interceptor';
 
 @NgModule({
@@ -33,7 +39,13 @@ import { EntityDialogComponent } from './components/entity-dialog/entity-dialog.
     ContactsComponent,
     ServicesComponent,
     ConveniosComponent,
-    EntityDialogComponent
+    EntityDialogComponent,
+    HomeBannerComponent,
+    PatientManualComponent,
+    ProviderComponent,
+    SpecialtyComponent,
+    TransparencyPortalComponent,
+    UsersComponent
   ],
   imports: [
     CommonModule,

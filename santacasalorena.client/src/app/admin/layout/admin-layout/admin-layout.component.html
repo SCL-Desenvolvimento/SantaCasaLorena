@@ -22,13 +22,6 @@
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link"
-                [class.active]="activeTab() === 'services'"
-                (click)="setActiveTab('services')">
-          <i class="bi bi-gear me-2"></i> Serviços
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link"
                 [class.active]="activeTab() === 'convenios'"
                 (click)="setActiveTab('convenios')">
           <i class="bi bi-people me-2"></i> Convênios
@@ -41,6 +34,54 @@
           <i class="bi bi-chat-dots me-2"></i> Contatos
         </button>
       </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link"
+                [class.active]="activeTab() === 'homeBanner'"
+                (click)="setActiveTab('homeBanner')">
+          <i class="bi bi-image me-2"></i> Banners
+        </button>
+      </li>
+
+      <li class="nav-item" role="presentation">
+        <button class="nav-link"
+                [class.active]="activeTab() === 'patientManual'"
+                (click)="setActiveTab('patientManual')">
+          <i class="bi bi-book me-2"></i> Manuais do Paciente
+        </button>
+      </li>
+
+      <li class="nav-item" role="presentation">
+        <button class="nav-link"
+                [class.active]="activeTab() === 'provider'"
+                (click)="setActiveTab('provider')">
+          <i class="bi bi-hospital me-2"></i> Provedores
+        </button>
+      </li>
+
+      <li class="nav-item" role="presentation">
+        <button class="nav-link"
+                [class.active]="activeTab() === 'specialty'"
+                (click)="setActiveTab('specialty')">
+          <i class="bi bi-clipboard2-pulse me-2"></i> Especialidades
+        </button>
+      </li>
+
+      <li class="nav-item" role="presentation">
+        <button class="nav-link"
+                [class.active]="activeTab() === 'transparencyPortal'"
+                (click)="setActiveTab('transparencyPortal')">
+          <i class="bi bi-archive me-2"></i> Transparência
+        </button>
+      </li>
+
+      <li class="nav-item" role="presentation">
+        <button class="nav-link"
+                [class.active]="activeTab() === 'user'"
+                (click)="setActiveTab('user')">
+          <i class="bi bi-person-badge me-2"></i> Usuários
+        </button>
+      </li>
+
     </ul>
 
     <!-- Tab Content -->
@@ -77,6 +118,48 @@
                     (markAsRead)="markAsRead($event)"
                     (deleteContact)="handleDelete('contacts', $event)">
       </app-contacts>
+      <app-home-banner *ngSwitchCase="'homeBanner'"
+                       [banners]="homeBanners()"
+                       (createBanner)="openEditDialog('homeBanner')"
+                       (editBanner)="openEditDialog('homeBanner', $event)"
+                       (deleteBanner)="handleDelete('homeBanner', $event)">
+      </app-home-banner>
+
+      <app-patient-manual *ngSwitchCase="'patientManual'"
+                          [manuals]="patientManuals()"
+                          (createManual)="openEditDialog('patientManual')"
+                          (editManual)="openEditDialog('patientManual', $event)"
+                          (deleteManual)="handleDelete('patientManual', $event)">
+      </app-patient-manual>
+
+      <app-provider *ngSwitchCase="'provider'"
+                    [providers]="providers()"
+                    (createProvider)="openEditDialog('provider')"
+                    (editProvider)="openEditDialog('provider', $event)"
+                    (deleteProvider)="handleDelete('provider', $event)">
+      </app-provider>
+
+      <app-specialty *ngSwitchCase="'specialty'"
+                     [specialties]="specialties()"
+                     (createSpecialty)="openEditDialog('specialty')"
+                     (editSpecialty)="openEditDialog('specialty', $event)"
+                     (deleteSpecialty)="handleDelete('specialty', $event)">
+      </app-specialty>
+
+      <app-transparency-portal *ngSwitchCase="'transparencyPortal'"
+                               [items]="transparencyPortal()"
+                               (createItem)="openEditDialog('transparencyPortal')"
+                               (editItem)="openEditDialog('transparencyPortal', $event)"
+                               (deleteItem)="handleDelete('transparencyPortal', $event)">
+      </app-transparency-portal>
+
+      <app-users *ngSwitchCase="'user'"
+                 [users]="users()"
+                 (createUser)="openEditDialog('user')"
+                 (editUser)="openEditDialog('user', $event)"
+                 (deleteUser)="handleDelete('user', $event)">
+      </app-users>
+
     </div>
   </div>
 

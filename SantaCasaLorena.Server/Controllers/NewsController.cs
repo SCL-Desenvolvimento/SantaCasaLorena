@@ -33,6 +33,7 @@ namespace SantaCasaLorena.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<NewsResponseDto>> Create(NewsRequestDto dto)
         {
+            dto.UserId = Guid.Parse("e943fe1f-e90e-4f86-8bdd-efd6985c6b72");
             var created = await _service.AddAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }

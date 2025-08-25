@@ -1,12 +1,40 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiService } from '../../../services/api';
+
+// Services
+import { AgreementService } from '../../../services/agreement.service';
+import { HomeBannerService } from '../../../services/home-banner.service';
+import { NewsService } from '../../../services/news.service';
+import { PatientManualService } from '../../../services/patient-manual.service';
+import { ProviderService } from '../../../services/provider.service';
+import { SpecialtyService } from '../../../services/specialty.service';
+import { TransparencyPortalService } from '../../../services/transparency-portal.service';
+import { UserService } from '../../../services/user.service';
+import { AuthService } from '../../../services/auth.service';
+
+// Models
 import { User } from '../../../models/user';
 import { News } from '../../../models/news';
 import { Contact } from '../../../models/contact';
 import { Stats } from '../../../models/stats';
 import { Agreement } from '../../../models/agreement';
-type Tab = 'dashboard' | 'news' | 'services' | 'convenios' | 'contacts';
+import { HomeBanner } from '../../../models/homeBanner';
+import { PatientManual } from '../../../models/patientManual';
+import { Providers } from '../../../models/provider';
+import { Specialty } from '../../../models/specialty';
+import { TransparencyPortal } from '../../../models/transparencyPortal';
+
+type Tab =
+  | 'dashboard'
+  | 'news'
+  | 'convenios'
+  | 'contacts'
+  | 'homeBanner'
+  | 'patientManual'
+  | 'provider'
+  | 'specialty'
+  | 'transparencyPortal'
+  | 'user';
 
 @Component({
   selector: 'app-admin-layout',
@@ -15,51 +43,95 @@ type Tab = 'dashboard' | 'news' | 'services' | 'convenios' | 'contacts';
   styleUrl: './admin-layout.component.css'
 })
 export class AdminLayoutComponent implements OnInit {
-  private apiService = inject(ApiService);
   private router = inject(Router);
 
-  // Estados com Signals (Angular 16+)
+  // Injeção dos serviços
+  private newsService = inject(NewsService);
+  private agreementService = inject(AgreementService);
+  private homeBannerService = inject(HomeBannerService);
+  private patientManualService = inject(PatientManualService);
+  private providerService = inject(ProviderService);
+  private specialtyService = inject(SpecialtyService);
+  private transparencyService = inject(TransparencyPortalService);
+  private userService = inject(UserService);
+  private authService = inject(AuthService);
+  // TODO: futuramente criar ContactService para não deixar contatos mockados.
+
+  // Estados com Signals
   activeTab = signal<Tab>('dashboard');
   user = signal<User | null>(null);
-  stats = signal<Stats>({ totalNews: 0, totalServices: 0, totalConvenios: 0, unreadContacts: 0 });
+  stats = signal<Stats>({
+    totalNews: 0,
+    totalServices: 0,
+    totalConvenios: 0,
+    unreadContacts: 0
+  });
 
   news = signal<News[]>([]);
-  //services = signal<Service[]>([]);
   convenios = signal<Agreement[]>([]);
   contacts = signal<Contact[]>([]);
+  homeBanners = signal<HomeBanner[]>([]);
+  patientManuals = signal<PatientManual[]>([]);
+  providers = signal<Providers[]>([]);
+  specialties = signal<Specialty[]>([]);
+  transparencyPortal = signal<TransparencyPortal[]>([]);
+  users = signal<User[]>([]);
 
   editingItem = signal<any | null>(null);
   isDialogOpen = signal(false);
   formData = signal<any>({});
 
   ngOnInit() {
-    this.loadMockData();
+    this.loadAllData();
   }
 
-  private loadMockData() {
-    this.news.set([
-      { id: '1', title: 'Notícia A', description: 'Resumo...', content: 'Conteúdo...', imageUrl: '', category: 'Parcerias', isPublished: true, createdAt: new Date().toISOString() }
-    ]);
+  /** 🔄 Carrega todos os dados das entidades reais (API) */
+  private loadAllData() {
+    this.newsService.getAll().subscribe(res => {
+      this.news.set(res);
+      this.updateStats();
+    });
 
-    //this.services.set([
-    //  { id: 1, name: 'Pronto Atendimento', description: 'Atendimento 24h', category: 'Emergência', icon: 'clock', is_active: true }
-    //]);
+    this.agreementService.getAll().subscribe(res => {
+      this.convenios.set(res);
+      this.updateStats();
+    });
 
-    this.convenios.set([
-      { id: '1', name: 'Unimed', imageUrl: '' }
-    ]);
+    this.homeBannerService.getAll().subscribe(res => {
+      this.homeBanners.set(res);
+    });
 
-    this.contacts.set([
-      { id: '1', name: 'João', email: 'joao@email.com', subject: 'Dúvida', message: 'Mensagem...', is_read: false, createdAt: new Date().toISOString() }
-    ]);
+    this.patientManualService.getAll().subscribe(res => {
+      this.patientManuals.set(res);
+    });
 
-    this.updateStats();
+    this.providerService.getAll().subscribe(res => {
+      this.providers.set(res);
+    });
+
+    this.specialtyService.getAll().subscribe(res => {
+      this.specialties.set(res);
+    });
+
+    this.transparencyService.getAll().subscribe(res => {
+      this.transparencyPortal.set(res);
+    });
+
+    this.userService.getUser().subscribe(res => {
+      this.users.set(res);
+    });
+
+    // TODO: substituir por contactService quando implementado
+    // this.contactService.getAll().subscribe(res => {
+    //   this.contacts.set(res);
+    //   this.updateStats();
+    // });
   }
 
   private updateStats() {
     this.stats.set({
       totalNews: this.news().length,
-      totalServices: 0, /*this.services().length*/
+      totalServices: 0, // aqui entraria se você tiver ServiceService
       totalConvenios: this.convenios().length,
       unreadContacts: this.contacts().filter(c => !c.is_read).length
     });
@@ -71,7 +143,7 @@ export class AdminLayoutComponent implements OnInit {
 
   async handleLogout() {
     try {
-      await this.apiService.logout().subscribe();
+      this.authService.logout();
       this.router.navigate(['/admin/login']);
     } catch (err) {
       console.error('Erro no logout:', err);
@@ -97,20 +169,29 @@ export class AdminLayoutComponent implements OnInit {
 
       if (item) {
         switch (type) {
-          case 'news': this.apiService.updateNews(item.id, data).subscribe(); break;
-          //case 'services': this.apiService.updateService(item.id, data).subscribe(); break;
-          case 'convenios': this.apiService.updateConvenio(item.id, data).subscribe(); break;
+          case 'news': this.newsService.update(item.id, data).subscribe(() => this.loadAllData()); break;
+          case 'convenios': this.agreementService.update(item.id, data).subscribe(() => this.loadAllData()); break;
+          case 'homeBanner': this.homeBannerService.update(item.id, data).subscribe(() => this.loadAllData()); break;
+          case 'patientManual': this.patientManualService.update(item.id, data).subscribe(() => this.loadAllData()); break;
+          case 'provider': this.providerService.update(item.id, data).subscribe(() => this.loadAllData()); break;
+          case 'specialty': this.specialtyService.update(item.id, data).subscribe(() => this.loadAllData()); break;
+          case 'transparencyPortal': this.transparencyService.update(item.id, data).subscribe(() => this.loadAllData()); break;
+          case 'user': this.userService.updateUser(item.id, data).subscribe(() => this.loadAllData()); break;
         }
       } else {
         switch (type) {
-          case 'news': this.apiService.createNews(data).subscribe(); break;
-          //case 'services': this.apiService.createService(data).subscribe(); break;
-          case 'convenios': this.apiService.createConvenio(data).subscribe(); break;
+          case 'news': this.newsService.create(data).subscribe(() => this.loadAllData()); break;
+          case 'convenios': this.agreementService.create(data).subscribe(() => this.loadAllData()); break;
+          case 'homeBanner': this.homeBannerService.create(data).subscribe(() => this.loadAllData()); break;
+          case 'patientManual': this.patientManualService.create(data).subscribe(() => this.loadAllData()); break;
+          case 'provider': this.providerService.create(data).subscribe(() => this.loadAllData()); break;
+          case 'specialty': this.specialtyService.create(data).subscribe(() => this.loadAllData()); break;
+          case 'transparencyPortal': this.transparencyService.create(data).subscribe(() => this.loadAllData()); break;
+          case 'user': this.userService.createUser(data).subscribe(() => this.loadAllData()); break;
         }
       }
 
       this.closeDialog();
-      this.loadMockData();
     } catch (err) {
       console.error('Erro ao salvar:', err);
       alert('Erro ao salvar. Tente novamente.');
@@ -121,16 +202,20 @@ export class AdminLayoutComponent implements OnInit {
     if (!confirm('Tem certeza que deseja excluir?')) return;
 
     switch (type) {
-      case 'news': this.apiService.deleteNews(id).subscribe(); break;
-      case 'services': this.apiService.deleteService(id).subscribe(); break;
-      case 'convenios': this.apiService.deleteConvenio(id).subscribe(); break;
-      case 'contacts': this.apiService.deleteContact(id).subscribe(); break;
+      case 'news': this.newsService.delete(id).subscribe(() => this.loadAllData()); break;
+      case 'convenios': this.agreementService.delete(id).subscribe(() => this.loadAllData()); break;
+      case 'homeBanner': this.homeBannerService.delete(id).subscribe(() => this.loadAllData()); break;
+      case 'patientManual': this.patientManualService.delete(id).subscribe(() => this.loadAllData()); break;
+      case 'provider': this.providerService.delete(id).subscribe(() => this.loadAllData()); break;
+      case 'specialty': this.specialtyService.delete(id).subscribe(() => this.loadAllData()); break;
+      case 'transparencyPortal': this.transparencyService.delete(id).subscribe(() => this.loadAllData()); break;
+      case 'user': this.userService.deleteUser(id).subscribe(() => this.loadAllData()); break;
+      // TODO: quando implementar ContactService -> case 'contacts': this.contactService.delete(id)...
     }
-
-    this.loadMockData();
   }
 
   markAsRead(id: string) {
-    this.apiService.markContactAsRead(id).subscribe(() => this.loadMockData());
+    // TODO: implementar via ContactService
+    console.warn("TODO: criar ContactService e implementar markAsRead");
   }
 }

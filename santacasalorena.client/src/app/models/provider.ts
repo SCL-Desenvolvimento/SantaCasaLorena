@@ -1,4 +1,4 @@
-export interface Provider {
+export interface Providers {
   id: string;
   imageUrl: string;
   name: string;

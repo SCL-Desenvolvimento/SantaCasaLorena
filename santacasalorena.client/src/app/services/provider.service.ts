@@ -1,7 +1,8 @@
-import { Injectable, Provider } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { Providers } from '../models/provider';
 
 @Injectable({
   providedIn: 'root',
@@ -11,28 +12,28 @@ export class ProviderService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<Provider[]> {
-    return this.http.get<Provider[]>(this.apiUrl).pipe(
+  getAll(): Observable<Providers[]> {
+    return this.http.get<Providers[]>(this.apiUrl).pipe(
       map(r => r),
       catchError(this.handleError)
     );
   }
 
-  getById(id: string): Observable<Provider> {
-    return this.http.get<Provider>(`${this.apiUrl}/${id}`).pipe(
+  getById(id: string): Observable<Providers> {
+    return this.http.get<Providers>(`${this.apiUrl}/${id}`).pipe(
       map(r => r),
       catchError(this.handleError)
     );
   }
 
-  create(dto: any): Observable<Provider> {
-    return this.http.post<Provider>(this.apiUrl, dto).pipe(
+  create(dto: any): Observable<Providers> {
+    return this.http.post<Providers>(this.apiUrl, dto).pipe(
       catchError(this.handleError)
     );
   }
 
-  update(id: string, dto: any): Observable<Provider> {
-    return this.http.put<Provider>(`${this.apiUrl}/${id}`, dto).pipe(
+  update(id: string, dto: any): Observable<Providers> {
+    return this.http.put<Providers>(`${this.apiUrl}/${id}`, dto).pipe(
       catchError(this.handleError)
     );
   }

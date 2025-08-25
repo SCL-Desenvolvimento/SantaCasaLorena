@@ -1,0 +1,40 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="h4 fw-bold mb-0">🏥 Provedores</h2>
+  <button class="btn btn-primary d-flex align-items-center" (click)="onCreateProvider()">
+    <i class="bi bi-plus-lg me-2"></i> Novo Prestador
+  </button>
+</div>
+
+<div class="row g-3">
+  <div *ngFor="let item of providers" class="col-12">
+    <div class="card shadow-sm border-0 rounded-3 provider-card">
+      <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+
+        <!-- Conteúdo -->
+        <div class="flex-grow-1">
+          <h5 class="fw-semibold mb-1">{{ item.name }}</h5>
+          <p class="text-muted small mb-1">Início: {{ item.startYear }} | Fim: {{ item.endYear || 'Ativo' }}</p>
+        </div>
+
+        <!-- Imagem -->
+        <div *ngIf="item.imageUrl" class="ms-3">
+          <img [src]="item.imageUrl"
+               alt="{{ item.name }}"
+               class="rounded"
+               style="width: 90px; height: 60px; object-fit: cover;">
+        </div>
+
+        <!-- Ações -->
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-outline-secondary btn-sm" (click)="onEditProvider(item)">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn btn-outline-danger btn-sm" (click)="onDeleteProvider(item.id)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

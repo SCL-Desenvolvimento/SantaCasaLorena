@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /SantaCasaLorena.Server/Migrations
 /SantaCasaLorena.Server/wwwroot
+/SantaCasaLorena.Server/Uploads
