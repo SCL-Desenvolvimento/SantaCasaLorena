@@ -1,4 +1,13 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Agreement } from '../../models/agreement';
+import { AgreementService } from '../../services/agreement.service';
+import { environment } from '../../../environments/environment';
+import { HomeBanner } from '../../models/homeBanner';
+import { HomeBannerService } from '../../services/home-banner.service';
+import { Router } from '@angular/router';
+import { NewsService } from '../../services/news.service';
+import { News } from '../../models/news';
+type BannerVM = HomeBanner & { currentImage: string };
 
 @Component({
   selector: 'app-home',
@@ -6,38 +15,49 @@ import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
 
   @ViewChild('heroCarousel') heroCarousel!: ElementRef;
 
-  basePath: string = '../../../assets/img/carrossel/';
-
-  heroSlides: any[] = [
-    { num: '3' },
-    { num: '5' },
-    { num: '3' }
-  ];
+  heroSlides: BannerVM[] = [];
 
   currentSlide = 0;
-  currentTranslate: number = 0;
-  currentTransition: string = 'transform 0.5s ease-in-out';
+  currentTranslate = 0;
+  currentTransition = 'transform 0.5s ease-in-out';
   intervalId: any;
+
   // controle de drag
   private startX = 0;
   private isDragging = false;
 
   heroServices = [
     {
-      icon: 'bi-clock', title: 'Pronto Atendimento', description: 'Mais de 25 mil casos por ano, situações de urgência e emergência.', color: 'bg-danger'
+      image: 'assets/img/paginas/home_prontoatendimento.jpg',
+      title: 'Pronto Atendimento',
+      description: 'Mais de 25 mil casos por ano, situações de urgência e emergência.',
+      color: 'bg-danger',
+      link: '/pronto-atendimento'
     },
     {
-      icon: 'bi-building', title: 'Hotelaria', description: 'Satisfazendo todas as necessidades dos pacientes bem como a integridade física.', color: 'bg-primary'
+      image: 'assets/img/paginas/home_hotelaria.jpg',
+      title: 'Hotelaria',
+      description: 'Satisfazendo todas as necessidades dos pacientes bem como a integridade física.',
+      color: 'bg-primary',
+      link: '/hotelaria'
     },
     {
-      icon: 'bi-stethoscope', title: 'Clínica Emília', description: 'Equipe médica especializada de alto nível técnico garantindo assim o atendimento com qualidade.', color: 'bg-success'
+      image: 'assets/img/paginas/home_clinicaemilia.jpg',
+      title: 'Clínica Emília',
+      description: 'Equipe médica especializada de alto nível técnico garantindo assim o atendimento com qualidade.',
+      color: 'bg-success',
+      link: '/clinica-emilia'
     },
     {
-      icon: 'bi-heart', title: 'Centro de Diagnóstico', description: 'Planejadas para oferecer aos nossos pacientes todo acolhimento e segurança necessários.', color: 'bg-purple'
+      image: 'assets/img/paginas/home_diagnosticoimagem.jpg',
+      title: 'Centro de Diagnóstico',
+      description: 'Planejadas para oferecer aos nossos pacientes todo acolhimento e segurança necessários.',
+      color: 'bg-purple',
+      link: '/diagnostico-imagem'
     }
   ];
 
@@ -51,17 +71,8 @@ export class HomeComponent implements OnInit {
   convenios = {
     title: 'Convênios',
     description: 'Uma série de convênios atendidos em nossa unidade, que levam aos nossos pacientes toda a dedicação, qualidade e suporte.',
-    items: [
-      { name: 'Convênio 1', logo: '' },
-      { name: 'Convênio 2', logo: '' },
-      { name: 'Convênio 3', logo: '' },
-      { name: 'Convênio 4', logo: '' },
-      { name: 'Convênio 5', logo: '' },
-      { name: 'Convênio 6', logo: '' }
-    ]
+    items: [] as Agreement[]
   };
-
-  newsSection = { title: 'Últimas Notícias' };
 
   cta = {
     bgGradient: '#22BCEE',
@@ -71,26 +82,72 @@ export class HomeComponent implements OnInit {
   };
 
   // Apenas placeholders para simular notícias locais
-  news: any[] = [];
-  placeholderNews = [1, 2, 3];
+  news: News[] = [];
+  newsSection = { title: 'Últimas Notícias' };
+
+  constructor(private agreementService: AgreementService,
+    private bannerService: HomeBannerService,
+    private newsService: NewsService,
+    private router: Router) { }
 
   ngOnInit(): void {
-    this.updateImages();
-    this.updateTranslate();
-    this.startAutoSlide();
+    this.loadAgreement();
+    this.loadBanner();
+    this.loadNews();
   }
 
-  updateImages(): void {
-    const width = window.innerWidth;
-    let prefix = 'Desktop_-1920x540-';
-    if (width < 768) {
-      prefix = 'Mobile_-600x600-';
-    } else if (width < 1280) {
-      prefix = 'Tablet_-1280x800-';
-    }
-    this.heroSlides.forEach(slide => {
-      slide.image = this.basePath + prefix + slide.num + '.png';
+  ngOnDestroy(): void {
+    clearInterval(this.intervalId);
+  }
+
+  loadNews(): void {
+    this.newsService.getAll().subscribe({
+      next: (data) => {
+        this.news = data.filter(item => item.isPublished).map(n => ({
+          ...n,
+          imageUrl: `${environment.imageServerUrl}${n.imageUrl}`
+        }));
+      },
+      error: (err) => {
+        console.error('Erro ao carregar notícias:', err);
+      }
     });
+  }
+
+  loadBanner(): void {
+    this.bannerService.getAll().subscribe({
+      next: (data: HomeBanner[]) => {
+        // ordena por "order" e cria o VM com currentImage
+        const sorted = data.slice().sort((a, b) => a.order - b.order);
+        this.heroSlides = sorted.map(b => ({
+          ...b,
+          currentImage: this.pickImageForWidth(b, window.innerWidth)
+        }));
+
+        this.currentSlide = 0;
+        this.updateTranslate();
+        this.startAutoSlide();
+      },
+      error: (err) => console.error('Erro ao carregar banners', err)
+    });
+  }
+
+  loadAgreement() {
+    this.agreementService.getAll().subscribe({
+      next: (data) => {
+        this.convenios.items = data.map(con => ({
+          ...con,
+          imageUrl: `${environment.imageServerUrl}${con.imageUrl}`
+        }));
+      },
+      error: (err) => console.error('Erro ao carregar convênios', err)
+    });
+  }
+
+  private pickImageForWidth(slide: HomeBanner, width: number): string {
+    if (width < 768) return `${environment.imageServerUrl}${slide.mobileImageUrl}`;
+    if (width < 1280) return `${environment.imageServerUrl}${slide.tabletImageUrl} `;
+    return `${environment.imageServerUrl}${slide.desktopImageUrl}`;
   }
 
   updateTranslate(): void {
@@ -99,33 +156,53 @@ export class HomeComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event): void {
-    this.updateImages();
+    // atualiza a imagem atual de cada slide conforme o breakpoint
+    const w = window.innerWidth;
+    this.heroSlides = this.heroSlides.map(s => ({
+      ...s,
+      currentImage: this.pickImageForWidth(s, w)
+    }));
   }
 
   startAutoSlide(): void {
+    if (!this.heroSlides.length) return;
+
+    clearInterval(this.intervalId);
+
+    const current = this.heroSlides[this.currentSlide];
+    const delay = (current?.timeSeconds ?? 5) * 1000;
+
     this.intervalId = setInterval(() => {
       this.nextSlide();
-    }, 5000); // troca a cada 5s
+    }, delay);
   }
 
+
   nextSlide(): void {
-    if (!this.heroSlides || this.heroSlides.length === 0) return;
+    if (!this.heroSlides.length) return;
     this.currentSlide = (this.currentSlide + 1) % this.heroSlides.length;
     this.updateTranslate();
+    this.startAutoSlide(); // reinicia com o tempo do novo slide
   }
 
   prevSlide(): void {
-    if (!this.heroSlides || this.heroSlides.length === 0) return;
+    if (!this.heroSlides.length) return;
     this.currentSlide =
       (this.currentSlide - 1 + this.heroSlides.length) % this.heroSlides.length;
     this.updateTranslate();
+    this.startAutoSlide();
   }
 
   goToSlide(index: number): void {
     this.currentSlide = index;
     this.updateTranslate();
-    clearInterval(this.intervalId);
-    this.startAutoSlide(); // reinicia o timer ao clicar
+    this.startAutoSlide();
+  }
+
+  onSlideClick(slide: BannerVM): void {
+    // evita navegação se foi um drag
+    if (this.isDragging) return;
+    if (slide.newsId) this.router.navigate(['/newsDetail', slide.newsId]);
   }
 
   // ===== Eventos de drag =====

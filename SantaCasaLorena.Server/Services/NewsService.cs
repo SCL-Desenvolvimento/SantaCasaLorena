@@ -26,7 +26,9 @@ namespace SantaCasaLorena.Server.Services
                     Title = n.Title,
                     Description = n.Description,
                     Content = n.Content,
-                    Category = n.Category
+                    Category = n.Category,
+                    IsPublished = n.IsPublished,
+                    CreatedAt = n.CreatedAt
                 })
                 .ToListAsync();
         }
@@ -43,7 +45,9 @@ namespace SantaCasaLorena.Server.Services
                     Title = n.Title,
                     Description = n.Description,
                     Content = n.Content,
-                    Category = n.Category
+                    Category = n.Category,
+                    IsPublished = n.IsPublished,
+                    CreatedAt = n.CreatedAt
                 })
                 .FirstOrDefaultAsync();
         }
@@ -64,8 +68,6 @@ namespace SantaCasaLorena.Server.Services
             _context.News.Add(entity);
             await _context.SaveChangesAsync();
 
-            var user = await _context.Users.FindAsync(dto.UserId);
-
             return new NewsResponseDto
             {
                 Id = entity.Id,
@@ -73,14 +75,15 @@ namespace SantaCasaLorena.Server.Services
                 Title = entity.Title,
                 Description = entity.Description,
                 Content = entity.Content,
-                Category = entity.Category
+                Category = entity.Category,
+                IsPublished = entity.IsPublished,
+                CreatedAt = entity.CreatedAt
             };
         }
 
         public async Task<NewsResponseDto> UpdateAsync(Guid id, NewsRequestDto dto)
         {
-            var entity = await _context.News.FindAsync(id);
-            if (entity == null) throw new Exception("Notícia não encontrada");
+            var entity = await _context.News.FindAsync(id) ?? throw new Exception("Notícia não encontrada");
 
             entity.Title = dto.Title;
             entity.Description = dto.Description;
@@ -88,24 +91,20 @@ namespace SantaCasaLorena.Server.Services
             entity.Category = dto.Category;
             entity.IsPublished = dto.IsPublished;
             entity.UserId = dto.UserId;
+            entity.UpdatedAt = DateTime.Now;
 
             if (!string.IsNullOrEmpty(entity.ImageUrl) && dto.File != null)
             {
                 if (File.Exists(entity.ImageUrl))
-                {
                     File.Delete(entity.ImageUrl);
-                }
             }
 
             if (dto.File != null)
-            {
                 entity.ImageUrl = await ProcessarMidiasAsync(dto.File);
-            }
+            
 
             _context.News.Update(entity);
             await _context.SaveChangesAsync();
-
-            var user = await _context.Users.FindAsync(dto.UserId);
 
             return new NewsResponseDto
             {
@@ -114,7 +113,9 @@ namespace SantaCasaLorena.Server.Services
                 Title = entity.Title,
                 Description = entity.Description,
                 Content = entity.Content,
-                Category = entity.Category
+                Category = entity.Category,
+                IsPublished = entity.IsPublished,
+                CreatedAt = entity.CreatedAt
             };
         }
 

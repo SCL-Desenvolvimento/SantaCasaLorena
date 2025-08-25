@@ -4,7 +4,10 @@
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public required string ImageUrl { get; set; }
+        public required string DesktopImageUrl { get; set; }
+        public required string TabletImageUrl { get; set; }
+        public required string MobileImageUrl { get; set; }
+
         public int TimeSeconds { get; set; } = 5;
         public int Order { get; set; } = 1;
 

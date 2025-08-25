@@ -23,6 +23,7 @@ import { PatientManual } from '../../../models/patientManual';
 import { Providers } from '../../../models/provider';
 import { Specialty } from '../../../models/specialty';
 import { TransparencyPortal } from '../../../models/transparencyPortal';
+import { environment } from '../../../../environments/environment';
 
 type Tab =
   | 'dashboard'
@@ -88,16 +89,31 @@ export class AdminLayoutComponent implements OnInit {
   /** 🔄 Carrega todos os dados das entidades reais (API) */
   private loadAllData() {
     this.newsService.getAll().subscribe(res => {
+      res = res.map(news => ({
+        ...news,
+        imageUrl: `${environment.imageServerUrl}${news.imageUrl}`,
+      }))
       this.news.set(res);
       this.updateStats();
     });
 
     this.agreementService.getAll().subscribe(res => {
+      res = res.map(conv => ({
+        ...conv,
+        imageUrl: `${environment.imageServerUrl}${conv.imageUrl}`,
+      }))
+
       this.convenios.set(res);
       this.updateStats();
     });
 
     this.homeBannerService.getAll().subscribe(res => {
+      res = res.map(ban => ({
+        ...ban,
+        desktopImageUrl: `${environment.imageServerUrl}${ban.desktopImageUrl}`,
+        mobileImageUrl: `${environment.imageServerUrl}${ban.mobileImageUrl}`,
+        tabletImageUrl: `${environment.imageServerUrl}${ban.tabletImageUrl}`
+      }))
       this.homeBanners.set(res);
     });
 
@@ -106,18 +122,37 @@ export class AdminLayoutComponent implements OnInit {
     });
 
     this.providerService.getAll().subscribe(res => {
+      res = res.map(prov => ({
+        ...prov,
+        imageUrl: `${environment.imageServerUrl}${prov.imageUrl}`,
+      }))
+
       this.providers.set(res);
     });
 
     this.specialtyService.getAll().subscribe(res => {
+      res = res.map(spec => ({
+        ...spec,
+        imageUrl: `${environment.imageServerUrl}${spec.imageUrl}`,
+      }))
+
       this.specialties.set(res);
     });
 
     this.transparencyService.getAll().subscribe(res => {
+      res = res.map(trans => ({
+        ...trans,
+        fileUrl: `${environment.imageServerUrl}${trans.fileUrl}`,
+      }))
       this.transparencyPortal.set(res);
     });
 
     this.userService.getUser().subscribe(res => {
+      res = res.map(usu => ({
+        ...usu,
+        photoUrl: `${environment.imageServerUrl}${usu.photoUrl}`,
+      }))
+
       this.users.set(res);
     });
 

@@ -24,6 +24,7 @@ import { EspecialidadesComponent } from './pages/especialidades/especialidades.c
 import { CapacidadeInstalacaoEProducaoComponent } from './pages/capacidade-instalacao-e-producao/capacidade-instalacao-e-producao.component';
 import { ManualDoPacienteEVisitantesComponent } from './pages/manual-do-paciente-e-visitante/manual-do-paciente-e-visitante.component';
 import { EmendasComponent } from './pages/emendas/emendas.component';
+import { NewsDetailComponent } from './pages/news-detail/news-detail.component';
 //import { AuthGuard } from './guards/auth.guard';
 //import { RoleGuard } from './guards/role.guard';
 
@@ -37,6 +38,7 @@ const routes: Routes = [
       { path: 'instalacoes', component: InstalacoesComponent },
       { path: 'servicos', component: ServicosComponent },
       { path: 'noticias', component: NoticiasComponent },
+      { path: 'noticia/:id', component: NewsDetailComponent },
       { path: 'fale-conosco', component: FaleConoscoComponent },
       { path: 'humanizacao', component: HumanizacaoComponent },
       { path: 'sociais', component: AcoesSociaisAmbientaisComponent },

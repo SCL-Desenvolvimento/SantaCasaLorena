@@ -2,7 +2,7 @@
 {
     public class NewsRequestDto
     {
-        public IFormFile File { get; set; }
+        public IFormFile? File { get; set; }
         public required string Title { get; set; }
         public string Description { get; set; }
         public required string Content { get; set; }
@@ -19,5 +19,7 @@
         public string Description { get; set; }
         public required string Content { get; set; }
         public string Category { get; set; }
+        public bool IsPublished { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

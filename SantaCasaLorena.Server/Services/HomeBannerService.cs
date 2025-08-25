@@ -3,6 +3,7 @@ using SantaCasaLorena.Server.Context;
 using SantaCasaLorena.Server.DTOs;
 using SantaCasaLorena.Server.Entities;
 using SantaCasaLorena.Server.Interfaces;
+using System.Drawing;
 
 namespace SantaCasaLorena.Server.Services
 {
@@ -18,14 +19,7 @@ namespace SantaCasaLorena.Server.Services
         public async Task<IEnumerable<HomeBannerResponseDto>> GetAllAsync()
         {
             return await _context.HomeBanners
-                .Select(b => new HomeBannerResponseDto
-                {
-                    Id = b.Id,
-                    imageUrl = b.ImageUrl,
-                    TimeSeconds = b.TimeSeconds,
-                    Order = b.Order,
-                    NewsId = b.NewsId
-                })
+                .Select(b => MapToResponse(b))
                 .ToListAsync();
         }
 
@@ -33,22 +27,21 @@ namespace SantaCasaLorena.Server.Services
         {
             return await _context.HomeBanners
                 .Where(b => b.Id == id)
-                .Select(b => new HomeBannerResponseDto
-                {
-                    Id = b.Id,
-                    imageUrl = b.ImageUrl,
-                    TimeSeconds = b.TimeSeconds,
-                    Order = b.Order,
-                    NewsId = b.NewsId
-                })
+                .Select(b => MapToResponse(b))
                 .FirstOrDefaultAsync();
         }
 
         public async Task<HomeBannerResponseDto> AddAsync(HomeBannerRequestDto dto)
         {
+            // validação obrigatória
+            if (dto.DesktopFile == null || dto.TabletFile == null || dto.MobileFile == null)
+                throw new Exception("Os 3 arquivos (desktop, tablet, mobile) são obrigatórios.");
+
             var entity = new HomeBanner
             {
-                ImageUrl = await ProcessarMidiasAsync(dto.File),
+                DesktopImageUrl = await ProcessarMidiasAsync(dto.DesktopFile, 1920, 540),
+                TabletImageUrl = await ProcessarMidiasAsync(dto.TabletFile, 1280, 800),
+                MobileImageUrl = await ProcessarMidiasAsync(dto.MobileFile, 600, 600),
                 TimeSeconds = dto.TimeSeconds,
                 Order = dto.Order,
                 NewsId = dto.NewsId
@@ -57,14 +50,7 @@ namespace SantaCasaLorena.Server.Services
             _context.HomeBanners.Add(entity);
             await _context.SaveChangesAsync();
 
-            return new HomeBannerResponseDto
-            {
-                Id = entity.Id,
-                imageUrl = entity.ImageUrl,
-                NewsId = entity.NewsId,
-                Order = entity.Order,
-                TimeSeconds = entity.TimeSeconds
-            };
+            return MapToResponse(entity);
         }
 
         public async Task<HomeBannerResponseDto> UpdateAsync(Guid id, HomeBannerRequestDto dto)
@@ -76,30 +62,19 @@ namespace SantaCasaLorena.Server.Services
             entity.Order = dto.Order;
             entity.NewsId = dto.NewsId;
 
-            if (!string.IsNullOrEmpty(entity.ImageUrl) && dto.File != null)
-            {
-                if (File.Exists(entity.ImageUrl))
-                {
-                    File.Delete(entity.ImageUrl);
-                }
-            }
+            if (dto.DesktopFile != null)
+                entity.DesktopImageUrl = await ProcessarMidiasAsync(dto.DesktopFile, 1920, 540);
 
-            if (dto.File != null)
-            {
-                entity.ImageUrl = await ProcessarMidiasAsync(dto.File);
-            }
+            if (dto.TabletFile != null)
+                entity.TabletImageUrl = await ProcessarMidiasAsync(dto.TabletFile, 1280, 800);
+
+            if (dto.MobileFile != null)
+                entity.MobileImageUrl = await ProcessarMidiasAsync(dto.MobileFile, 600, 600);
 
             _context.HomeBanners.Update(entity);
             await _context.SaveChangesAsync();
 
-            return new HomeBannerResponseDto
-            {
-                Id = entity.Id,
-                imageUrl = entity.ImageUrl,
-                NewsId = entity.NewsId,
-                Order = entity.Order,
-                TimeSeconds = entity.TimeSeconds
-            };
+            return MapToResponse(entity);
         }
 
         public async Task<bool> DeleteAsync(Guid id)
@@ -112,29 +87,40 @@ namespace SantaCasaLorena.Server.Services
             return true;
         }
 
-        private static async Task<string?> ProcessarMidiasAsync(IFormFile midia)
+        private static async Task<string> ProcessarMidiasAsync(IFormFile file, int larguraEsperada, int alturaEsperada)
         {
-            if (midia == null) return null;
+            if (file == null) throw new Exception("Arquivo inválido.");
 
-            // Define o caminho para a pasta "Usuarios"
+            using var img = Image.FromStream(file.OpenReadStream());
+
+            if (img.Width != larguraEsperada || img.Height != alturaEsperada)
+                throw new Exception($"A imagem deve ter {larguraEsperada}x{alturaEsperada}px");
+
             var baseDirectory = Path.Combine("Uploads", "HomeBanner").Replace("\\", "/");
+            if (!Directory.Exists(baseDirectory)) Directory.CreateDirectory(baseDirectory);
 
-            // Verifica se a pasta "Usuarios" existe, e a cria caso não exista
-            if (!Directory.Exists(baseDirectory))
-            {
-                Directory.CreateDirectory(baseDirectory);
-            }
+            var filePath = Path.Combine(baseDirectory, Guid.NewGuid() + Path.GetExtension(file.FileName)).Replace("\\", "/");
 
-            // Gera o caminho completo para o arquivo dentro da pasta "Usuarios"
-            var filePath = Path.Combine(baseDirectory, Guid.NewGuid() + Path.GetExtension(midia.FileName)).Replace("\\", "/");
-
-            // Salva o arquivo no caminho especificado
             await using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                await midia.CopyToAsync(stream);
+                await file.CopyToAsync(stream);
             }
 
             return filePath;
+        }
+
+        private static HomeBannerResponseDto MapToResponse(HomeBanner entity)
+        {
+            return new HomeBannerResponseDto
+            {
+                Id = entity.Id,
+                DesktopImageUrl = entity.DesktopImageUrl,
+                TabletImageUrl = entity.TabletImageUrl,
+                MobileImageUrl = entity.MobileImageUrl,
+                NewsId = entity.NewsId,
+                Order = entity.Order,
+                TimeSeconds = entity.TimeSeconds
+            };
         }
     }
 }

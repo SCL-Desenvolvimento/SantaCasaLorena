@@ -13,6 +13,18 @@ export class EntityDialogComponent implements OnChanges {
   @Input() formData: any = {};
   @Output() save = new EventEmitter<any>();
   @Output() close = new EventEmitter<void>();
+  tabLabels: Record<string, string> = {
+    dashboard: 'Dashboard',
+    news: 'Notícia',
+    convenios: 'Convênio',
+    contacts: 'Contato',
+    homeBanner: 'Banner da Home',
+    patientManual: 'Manual do Paciente',
+    provider: 'Prestador',
+    specialty: 'Especialidade',
+    transparencyPortal: 'Portal da Transparência',
+    user: 'Usuário',
+  };
 
   form!: FormGroup;
 
@@ -46,7 +58,9 @@ export class EntityDialogComponent implements OnChanges {
 
       case 'homeBanner':
         this.form = this.fb.group({
-          file: [null],
+          DesktopFile: [null, this.editingItem ? [] : [Validators.required]],
+          TabletFile: [null, this.editingItem ? [] : [Validators.required]],
+          MobileFile: [null, this.editingItem ? [] : [Validators.required]],
           timeSeconds: [this.formData?.timeSeconds || 5, [Validators.required, Validators.min(1)]],
           order: [this.formData?.order || 1, [Validators.required, Validators.min(1)]],
           newsId: [this.formData?.newsId || null]
@@ -112,11 +126,11 @@ export class EntityDialogComponent implements OnChanges {
   handleSave() {
     if (this.form.valid) {
       const formValue = this.form.value;
-
       const formData = new FormData();
+
       for (const key of Object.keys(formValue)) {
         if (formValue[key] instanceof File) {
-          formData.append(key, formValue[key]);
+          formData.append(key, formValue[key]); // DesktopFile, TabletFile, MobileFile
         } else if (formValue[key] !== null && formValue[key] !== undefined) {
           formData.append(key, formValue[key]);
         }

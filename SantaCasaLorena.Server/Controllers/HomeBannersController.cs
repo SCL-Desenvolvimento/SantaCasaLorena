@@ -31,14 +31,14 @@ namespace SantaCasaLorena.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<HomeBannerResponseDto>> Create(HomeBannerRequestDto dto)
+        public async Task<ActionResult<HomeBannerResponseDto>> Create([FromForm] HomeBannerRequestDto dto)
         {
             var created = await _service.AddAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult<HomeBannerResponseDto>> Update(Guid id, HomeBannerRequestDto dto)
+        public async Task<ActionResult<HomeBannerResponseDto>> Update(Guid id, [FromForm] HomeBannerRequestDto dto)
         {
             var updated = await _service.UpdateAsync(id, dto);
             return Ok(updated);

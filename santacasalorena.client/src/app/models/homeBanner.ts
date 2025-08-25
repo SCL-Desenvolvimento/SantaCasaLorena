@@ -1,6 +1,8 @@
 export interface HomeBanner {
   id: string;
-  imageUrl: string;
+  desktopImageUrl: string;
+  tabletImageUrl: string;
+  mobileImageUrl: string;
   timeSeconds: number;
   order: number;
   newsId: string | null;

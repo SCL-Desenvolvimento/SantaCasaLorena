@@ -14,15 +14,6 @@
 </div>
 
 <div *ngIf="!loading && news" class="container my-5">
-  <!-- Breadcrumb -->
-  <nav class="mb-4">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-      <li class="breadcrumb-item"><a routerLink="/noticias">Notícias</a></li>
-      <li class="breadcrumb-item active">{{ news.title }}</li>
-    </ol>
-  </nav>
-
   <div class="row">
     <!-- Conteúdo principal -->
     <div class="col-lg-8">
@@ -72,7 +63,7 @@
         <div class="card-header fw-bold">Outras Notícias</div>
         <div class="card-body">
           <div *ngFor="let item of relatedNews" class="mb-3 border-bottom pb-2">
-            <a [routerLink]="['/noticias', item.id]" class="text-decoration-none">
+            <a [routerLink]="['/noticia', item.id]" class="text-decoration-none">
               <h6 class="fw-semibold mb-1">{{ item.title }}</h6>
             </a>
             <small class="text-muted">{{ formatDate(item.createdAt) }}</small>

@@ -41,6 +41,7 @@ namespace SantaCasaLorena.Server.Controllers
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<NewsResponseDto>> Update(Guid id, NewsRequestDto dto)
         {
+            dto.UserId = Guid.Parse("e943fe1f-e90e-4f86-8bdd-efd6985c6b72");
             var updated = await _service.UpdateAsync(id, dto);
             return Ok(updated);
         }

@@ -57,7 +57,6 @@
       </div>
     </div>
   </section>-->
-
   <!-- Lista -->
   <section class="news-section">
     <div class="container">
@@ -75,11 +74,11 @@
           <div class="card shadow-sm h-100">
             <div class="row g-0">
               <div class="col-md-4">
-                <img *ngIf="filteredNews[0].image_url"
-                     [src]="filteredNews[0].image_url"
+                <img *ngIf="filteredNews[0].imageUrl"
+                     [src]="filteredNews[0].imageUrl"
                      class="img-fluid h-100 object-fit-cover"
                      alt="{{filteredNews[0].title}}" />
-                <div *ngIf="!filteredNews[0].image_url" class="no-image-placeholder">
+                <div *ngIf="!filteredNews[0].imageUrl" class="no-image-placeholder">
                   <i class="bi bi-calendar3 display-6"></i>
                   <p class="mb-0 ms-2">Imagem não disponível</p>
                 </div>
@@ -94,12 +93,14 @@
                   </small>
                 </div>
                 <h3 class="fw-bold">{{ filteredNews[0].title }}</h3>
-                <p class="text-muted">{{ filteredNews[0].summary }}</p>
+                <p class="text-muted">{{ filteredNews[0].description }}</p>
                 <div class="d-flex justify-content-between align-items-center">
-                  <small class="text-muted"><i class="bi bi-person"></i> {{ filteredNews[0].author }}</small>
-                  <button class="btn btn-outline-primary btn-sm">
+                  <!--<small class="text-muted"><i class="bi bi-person">
+                    </i> {{ filteredNews[0].author }}
+                    </small>-->
+                  <a [routerLink]="['/noticia', filteredNews[0].id]" class="btn btn-outline-primary btn-sm">
                     Ler mais <i class="bi bi-arrow-right"></i>
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>
@@ -110,11 +111,11 @@
         <div class="row g-4">
           <div class="col-md-6 col-lg-4" *ngFor="let item of filteredNews.slice(1)">
             <div class="card h-100 shadow-sm news-card">
-              <img *ngIf="item.image_url"
-                   [src]="item.image_url"
+              <img *ngIf="item.imageUrl"
+                   [src]="item.imageUrl"
                    class="card-img-top"
                    alt="{{item.title}}" />
-              <div *ngIf="!item.image_url" class="no-image-grid">
+              <div *ngIf="!item.imageUrl" class="no-image-grid">
                 <i class="bi bi-calendar3 display-6"></i>
               </div>
               <div class="card-body">
@@ -125,13 +126,15 @@
                   </small>
                 </div>
                 <h5 class="card-title">{{ item.title }}</h5>
-                <p class="card-text text-muted">{{ item.summary }}</p>
+                <p class="card-text text-muted">{{ item.description }}</p>
               </div>
               <div class="card-footer bg-white d-flex justify-content-between align-items-center">
-                <small class="text-muted"><i class="bi bi-person"></i> {{ item.author }}</small>
-                <button class="btn btn-link btn-sm text-primary">
+                <!--<small class="text-muted">
+                  <i class="bi bi-person"></i> {{ item.author }}
+                </small>-->
+                <a [routerLink]="['/noticia', item.id]" class="btn btn-link btn-sm text-primary">
                   Ler mais <i class="bi bi-arrow-right"></i>
-                </button>
+                </a>
               </div>
             </div>
           </div>

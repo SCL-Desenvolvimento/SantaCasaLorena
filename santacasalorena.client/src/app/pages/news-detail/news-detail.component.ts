@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { News } from '../../models/news';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NewsService } from '../../services/news.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-news-detail',
@@ -17,7 +19,7 @@ export class NewsDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    //private newsService: NewsService
+    private newsService: NewsService
   ) { }
 
   ngOnInit(): void {
@@ -26,26 +28,33 @@ export class NewsDetailComponent implements OnInit {
   }
 
   loadNewsDetail(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    //this.newsService.getNewsById(id).subscribe({
-    //  next: (res) => {
-    //    this.news = res;
-    //    this.loading = false;
-    //  },
-    //  error: () => {
-    //    this.error = 'Notícia não encontrada';
-    //    this.loading = false;
-    //  }
-    //});
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id)
+      return;
+
+    this.newsService.getById(id).subscribe({
+      next: (res) => {
+        this.news = res;
+        this.news.imageUrl = `${environment.imageServerUrl}${this.news.imageUrl}`;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'Notícia não encontrada';
+        this.loading = false;
+      }
+    });
   }
 
   loadRelatedNews(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    //this.newsService.getRelatedNews().subscribe({
-    //  next: (res: NewsResponse) => {
-    //    this.relatedNews = res.news.filter(n => n.id !== id);
-    //  }
-    //});
+    const id = this.route.snapshot.paramMap.get('id');
+    this.newsService.getAll().subscribe({
+      next: (res) => {
+        this.relatedNews = res.filter(n => n.id !== id).map(n => ({
+          ...n,
+          imageUrl: `${environment.imageServerUrl}${n.imageUrl}`
+        }));
+      }
+    });
   }
 
   formatDate(date: string | undefined): string {

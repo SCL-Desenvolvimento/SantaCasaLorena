@@ -1,18 +1,11 @@
-<div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,.5);">
-  <div class="modal-dialog modal-lg">
+<div class="modal fade show d-block" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-
-      <!-- HEADER -->
       <div class="modal-header">
-        <h5 class="modal-title">
-          {{ editingItem ? 'Editar' : 'Criar' }}
-          {{ activeTab === 'news' ? 'Notícia' : activeTab === 'services' ? 'Serviço' : 'Convênio' }}
-        </h5>
+        <h5 class="modal-title">{{ editingItem ? 'Editar' : 'Adicionar' }} {{ activeTab | titlecase }}</h5>
         <button type="button" class="btn-close" (click)="close.emit()"></button>
       </div>
-
-      <!-- BODY -->
-      <div class="modal-body" *ngIf="form">
+      <div class="modal-body">
         <form [formGroup]="form">
 
           <!-- NEWS -->
@@ -40,8 +33,8 @@
             <div class="mb-3">
               <label class="form-label">Imagem</label>
               <input type="file" class="form-control" (change)="onFileSelected($event, 'file')">
-              <div *ngIf="form.get('imageFile')?.value">
-                <small class="text-success">Selecionado: {{ form.get('imageFile')?.value?.name }}</small>
+              <div *ngIf="form.get('file')?.value">
+                <small class="text-success">Selecionado: {{ form.get('file')?.value?.name }}</small>
               </div>
             </div>
 
@@ -54,39 +47,57 @@
           <!-- CONVENIOS -->
           <ng-container *ngIf="activeTab === 'convenios'">
             <div class="mb-3">
-              <label class="form-label">Nome do Convênio</label>
+              <label class="form-label">Nome</label>
               <input type="text" class="form-control" formControlName="name">
             </div>
-
             <div class="mb-3">
               <label class="form-label">Logo</label>
               <input type="file" class="form-control" (change)="onFileSelected($event, 'file')">
-              <div *ngIf="form.get('imageFile')?.value">
-                <small class="text-success">Selecionado: {{ form.get('imageFile')?.value?.name }}</small>
+              <div *ngIf="form.get('file')?.value">
+                <small class="text-success">Selecionado: {{ form.get('file')?.value?.name }}</small>
               </div>
             </div>
           </ng-container>
 
-          <!-- HOME BANNER -->
+          <!-- HOMEBANNER -->
           <ng-container *ngIf="activeTab === 'homeBanner'">
-            <div class="mb-3">
-              <label class="form-label">Imagem</label>
-              <input type="file" class="form-control" (change)="onFileSelected($event, 'file')">
-              <div *ngIf="form.get('imageFile')?.value">
-                <small class="text-success">Selecionado: {{ form.get('imageFile')?.value?.name }}</small>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Tempo (segundos)</label>
-              <input type="number" class="form-control" formControlName="timeSeconds">
-            </div>
             <div class="mb-3">
               <label class="form-label">Ordem</label>
               <input type="number" class="form-control" formControlName="order">
             </div>
+
             <div class="mb-3">
-              <label class="form-label">Notícia associada</label>
-              <input type="text" class="form-control" formControlName="newsId">
+              <label class="form-label">Tempo de exibição (segundos)</label>
+              <input type="number" class="form-control" formControlName="timeSeconds">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Notícia Relacionada (opcional)</label>
+              <input type="text" class="form-control" formControlName="newsId" placeholder="ID da notícia ou vazio">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Imagem Desktop (1920x540)</label>
+              <input type="file" class="form-control" (change)="onFileSelected($event, 'DesktopFile')">
+              <div *ngIf="form.get('DesktopFile')?.value">
+                <small class="text-success">Selecionado: {{ form.get('DesktopFile')?.value?.name }}</small>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Imagem Tablet (1280x800)</label>
+              <input type="file" class="form-control" (change)="onFileSelected($event, 'TabletFile')">
+              <div *ngIf="form.get('TabletFile')?.value">
+                <small class="text-success">Selecionado: {{ form.get('TabletFile')?.value?.name }}</small>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Imagem Mobile (600x600)</label>
+              <input type="file" class="form-control" (change)="onFileSelected($event, 'MobileFile')">
+              <div *ngIf="form.get('MobileFile')?.value">
+                <small class="text-success">Selecionado: {{ form.get('MobileFile')?.value?.name }}</small>
+              </div>
             </div>
           </ng-container>
 
@@ -97,80 +108,7 @@
               <input type="text" class="form-control" formControlName="title">
             </div>
             <div class="mb-3">
-              <label class="form-label">Conteúdo</label>
-              <textarea class="form-control" rows="4" formControlName="content"></textarea>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Imagem</label>
-              <input type="file" class="form-control" (change)="onFileSelected($event, 'file')">
-              <div *ngIf="form.get('imageFile')?.value">
-                <small class="text-success">Selecionado: {{ form.get('imageFile')?.value?.name }}</small>
-              </div>
-            </div>
-          </ng-container>
-
-          <!-- PROVIDER -->
-          <ng-container *ngIf="activeTab ==='provider'">
-            <div class="mb-3">
-              <label class="form-label">Nome</label>
-              <input type="text" class="form-control" formControlName="name">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Imagem</label>
-              <input type="file" class="form-control" (change)="onFileSelected($event, 'file')">
-              <div *ngIf="form.get('imageFile')?.value">
-                <small class="text-success">Selecionado: {{ form.get('imageFile')?.value?.name }}</small>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Ano Inicial</label>
-              <input type="number" class="form-control" formControlName="startYear">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Ano Final</label>
-              <input type="number" class="form-control" formControlName="endYear">
-            </div>
-          </ng-container>
-
-          <!-- SPECIALTY -->
-          <ng-container *ngIf="activeTab ==='specialty'">
-            <div class="mb-3">
-              <label class="form-label">Nome</label>
-              <input type="text" class="form-control" formControlName="name">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Tipo</label>
-              <input type="text" class="form-control" formControlName="type">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Imagem</label>
-              <input type="file" class="form-control" (change)="onFileSelected($event, 'file')">
-              <div *ngIf="form.get('imageFile')?.value">
-                <small class="text-success">Selecionado: {{ form.get('imageFile')?.value?.name }}</small>
-              </div>
-            </div>
-          </ng-container>
-
-          <!-- TRANSPARENCY PORTAL -->
-          <ng-container *ngIf="activeTab ==='transparencyPortal'">
-            <div class="mb-3">
-              <label class="form-label">Nome do Acordo</label>
-              <input type="text" class="form-control" formControlName="agreementName">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Tipo</label>
-              <input type="text" class="form-control" formControlName="type">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Ano Inicial</label>
-              <input type="number" class="form-control" formControlName="startYear">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Ano Final</label>
-              <input type="number" class="form-control" formControlName="endYear">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Arquivo</label>
+              <label class="form-label">Arquivo PDF</label>
               <input type="file" class="form-control" (change)="onFileSelected($event, 'file')">
               <div *ngIf="form.get('file')?.value">
                 <small class="text-success">Selecionado: {{ form.get('file')?.value?.name }}</small>
@@ -178,41 +116,73 @@
             </div>
           </ng-container>
 
-          <!-- USER -->
-          <ng-container *ngIf="activeTab ==='user'">
+          <!-- PROVIDER -->
+          <ng-container *ngIf="activeTab === 'provider'">
             <div class="mb-3">
-              <label class="form-label">Usuário</label>
-              <input type="text" class="form-control" formControlName="username">
+              <label class="form-label">Nome</label>
+              <input type="text" class="form-control" formControlName="name">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Especialidade</label>
+              <input type="text" class="form-control" formControlName="specialty">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Foto</label>
+              <input type="file" class="form-control" (change)="onFileSelected($event, 'file')">
+              <div *ngIf="form.get('file')?.value">
+                <small class="text-success">Selecionado: {{ form.get('file')?.value?.name }}</small>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- SPECIALTY -->
+          <ng-container *ngIf="activeTab === 'specialty'">
+            <div class="mb-3">
+              <label class="form-label">Nome</label>
+              <input type="text" class="form-control" formControlName="name">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Descrição</label>
+              <textarea class="form-control" rows="3" formControlName="description"></textarea>
+            </div>
+          </ng-container>
+
+          <!-- TRANSPARENCY PORTAL -->
+          <ng-container *ngIf="activeTab === 'transparencyPortal'">
+            <div class="mb-3">
+              <label class="form-label">Título</label>
+              <input type="text" class="form-control" formControlName="title">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Link</label>
+              <input type="url" class="form-control" formControlName="link">
+            </div>
+          </ng-container>
+
+          <!-- USER -->
+          <ng-container *ngIf="activeTab === 'user'">
+            <div class="mb-3">
+              <label class="form-label">Nome</label>
+              <input type="text" class="form-control" formControlName="name">
             </div>
             <div class="mb-3">
               <label class="form-label">Email</label>
               <input type="email" class="form-control" formControlName="email">
             </div>
             <div class="mb-3">
-              <label class="form-label">Tipo de Usuário</label>
-              <input type="text" class="form-control" formControlName="userType">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Departamento</label>
-              <input type="text" class="form-control" formControlName="department">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Foto</label>
-              <input type="file" class="form-control" (change)="onFileSelected($event, 'file')">
-              <div *ngIf="form.get('photoFile')?.value">
-                <small class="text-success">Selecionado: {{ form.get('photoFile')?.value?.name }}</small>
-              </div>
+              <label class="form-label">Senha</label>
+              <input type="password" class="form-control" formControlName="password">
             </div>
           </ng-container>
         </form>
       </div>
 
-      <!-- FOOTER -->
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="close.emit()">Cancelar</button>
-        <button type="button" class="btn btn-primary" (click)="handleSave()" [disabled]="form.invalid">Salvar</button>
+        <button type="button" class="btn btn-primary" (click)="handleSave()" [disabled]="form.invalid">
+          {{ editingItem ? 'Salvar alterações' : 'Adicionar' }}
+        </button>
       </div>
-
     </div>
   </div>
 </div>

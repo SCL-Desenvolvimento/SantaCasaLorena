@@ -10,10 +10,15 @@
            (touchmove)="onDragMove($event)"
            (touchend)="onDragEnd($event)">
 
-    <div class="carousel-container" [style.transform]="'translateX(' + currentTranslate + '%)'" [style.transition]="currentTransition">
+    <div class="carousel-container"
+         [style.transform]="'translateX(' + currentTranslate + '%)'"
+         [style.transition]="currentTransition">
+
       <div class="carousel-slide"
            *ngFor="let slide of heroSlides; let i = index"
-           [style.backgroundImage]="'url(' + slide.image + ')'">
+           [style.backgroundImage]="'url(' + slide.currentImage + ')'"
+           [class.clickable]="!!slide.newsId"
+           (click)="onSlideClick(slide)">
       </div>
     </div>
 
@@ -42,7 +47,6 @@
     </div>
   </section>
 
-
   <!-- Services Section -->
   <section class="py-5 bg-light">
     <div class="container">
@@ -52,20 +56,23 @@
         <p class="text-muted">Oferecemos uma ampla gama de serviços médicos com qualidade e dedicação.</p>
       </div>
 
-      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-        <div *ngFor="let service of heroServices" class="col">
-          <div class="card h-100 shadow-sm border-0 service-card">
-            <div class="card-body text-center">
-              <div [class]="service.color + ' service-icon mx-auto mb-3'">
-                <i [class]="'bi ' + service.icon"></i>
+      <div class="row g-4">
+        <div *ngFor="let service of heroServices" class="col-12 col-sm-6 col-lg-3">
+          <!-- Usa routerLink para rotas internas -->
+          <a [routerLink]="service.link" class="text-decoration-none">
+            <div class="card h-100 shadow-lg border-0 rounded-4 service-card">
+              <div class="card-body text-center p-4">
+                <div class="service-icon-wrapper mx-auto mb-3">
+                  <img [src]="service.image"
+                       [alt]="service.title"
+                       class="img-fluid rounded-3"
+                       style="width: 130px; height: 130px; object-fit: cover;" />
+                </div>
+                <h5 class="card-title fw-semibold mb-2">{{ service.title }}</h5>
+                <p class="card-text text-muted small">{{ service.description }}</p>
               </div>
-              <h5 class="card-title fw-semibold">{{ service.title }}</h5>
-              <p class="card-text text-muted">{{ service.description }}</p>
-              <!--<a class="stretched-link text-decoration-none fw-semibold" href="#">
-                Saiba mais <i class="bi bi-arrow-right"></i>
-              </a>-->
             </div>
-          </div>
+          </a>
         </div>
       </div>
     </div>
@@ -91,12 +98,20 @@
     <div class="container">
       <h2 class="fw-bold mb-3">{{ convenios.title }}</h2>
       <p class="text-muted mb-4 mx-auto" style="max-width:700px;">{{ convenios.description }}</p>
+
       <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
         <div *ngFor="let conv of convenios.items" class="col">
           <div class="bg-white p-3 rounded shadow-sm">
-            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height:64px;">
-              <img *ngIf="conv.logo" [src]="conv.logo" [alt]="conv.name" style="max-height:40px;">
-              <span *ngIf="!conv.logo" class="text-muted small">{{ conv.name }}</span>
+            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 100%;">
+              <img *ngIf="conv.imageUrl"
+                   [src]="conv.imageUrl"
+                   [alt]="conv.name"
+                   class="img-fluid"
+                   style="max-height: 100%; max-width: 100%; object-fit: contain;" />
+
+              <span *ngIf="!conv.imageUrl" class="text-muted small">
+                {{ conv.name }}
+              </span>
             </div>
           </div>
         </div>
@@ -107,38 +122,30 @@
   <!-- News -->
   <section class="py-5 bg-white">
     <div class="container">
-      <h2 class="fw-bold mb-4">{{ newsSection.title }}</h2>
-      <div class="row g-4" *ngIf="news.length > 0; else newsPlaceholder">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">{{ newsSection.title }}</h2>
+        <a routerLink="/noticias" class="text-primary fw-semibold text-decoration-none">
+          Ver todas as notícias <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+
+      <div class="row g-4">
         <div class="col-12 col-md-6 col-lg-4" *ngFor="let item of news">
           <div class="card h-100 shadow-sm border-0 news-card">
-            <img *ngIf="item.image_url" [src]="item.image_url" [alt]="item.title" class="card-img-top">
+            <img *ngIf="item.imageUrl" [src]="item.imageUrl" [alt]="item.title" class="card-img-top">
             <div class="card-body">
               <h5 class="card-title">{{ item.title }}</h5>
               <small *ngIf="item.category" class="text-primary fw-bold">{{ item.category }}</small>
               <p class="card-text mt-2">
-                {{ item.summary || (item.content?.substring(0, 150) + '...') }}
+                {{ item.description || (item.content.substring(0, 150) + '...') }}
               </p>
-              <a href="#" class="fw-semibold text-decoration-none">Continue lendo <i class="bi bi-arrow-right"></i></a>
+              <a [routerLink]="['/noticia', item.id]" class="fw-semibold text-decoration-none">
+                Continue lendo <i class="bi bi-arrow-right"></i>
+              </a>
             </div>
           </div>
         </div>
       </div>
-      <ng-template #newsPlaceholder>
-        <div class="row g-4">
-          <div class="col-12 col-md-6 col-lg-4" *ngFor="let ph of placeholderNews">
-            <div class="card h-100 shadow-sm border-0">
-              <div class="bg-light" style="height:192px;"></div>
-              <div class="card-body">
-                <h5 class="card-title">Notícia em Destaque {{ ph }}</h5>
-                <small class="fw-bold" style="color: #22BCEE;">Categoria</small>
-                <p class="card-text text-muted">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ng-template>
     </div>
   </section>
 
