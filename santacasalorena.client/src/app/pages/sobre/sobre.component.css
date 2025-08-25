@@ -1,6 +1,6 @@
 /* Hero */
 .hero-gradient {
-  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 50%, #198754 100%);
+  background: linear-gradient(135deg, #22BCEE, #22BCEE);
   background-size: 200% 200%;
   animation: gradientMove 8s ease infinite;
   position: relative;
@@ -99,7 +99,7 @@ section {
   left: 50%;
   transform: translateX(-50%);
   width: 4px;
-  background: linear-gradient(to bottom, #0d6efd, #198754);
+  background: linear-gradient(to bottom, #0d6efd, #22BCEE);
   border-radius: 2px;
 }
 
@@ -114,13 +114,23 @@ section {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  width: 20px;
-  height: 20px;
-  background: #0d6efd;
-  border: 4px solid #fff;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
+  background: #fff; /* fundo branco atrás da imagem */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.2);
   z-index: 2;
+  overflow: hidden; /* garante que a imagem fique circular */
+}
+
+.timeline-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* mantém proporção */
+  border-radius: 50%;
 }
 
 .timeline-content {
@@ -243,11 +253,12 @@ section {
 
 /* Cores personalizadas */
 .text-primary {
-  color: #0d6efd !important;
+  color: #22BCEE !important;
+  border-color: #22BCEE !important;
 }
 
 .bg-primary {
-  background-color: #0d6efd !important;
+  background-color: #22BCEE !important;
 }
 
 /* Espaçamentos */

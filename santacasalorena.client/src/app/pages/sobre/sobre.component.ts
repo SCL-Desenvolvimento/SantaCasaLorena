@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { ProviderService } from '../../services/provider.service';
+import { Providers } from '../../models/provider';
+import { environment } from '../../../environments/environment';
 
 interface Secao {
   titulo: string;
@@ -16,6 +19,7 @@ interface Valor {
 
 interface Provedor {
   periodo: string;
+  imagem: string;
   nome: string;
   descricao?: string;
 }
@@ -102,24 +106,22 @@ export class SobreComponent {
     }
   ];
 
-  provedores: Provedor[] = [
-    { periodo: '1867 - 1879', nome: 'Dr. Joaquim Pedro Vilhaça' },
-    { periodo: '1879 - 1926', nome: 'Conde Moreira de Lima' },
-    { periodo: '1926 - 1944', nome: 'Dr. Antônio Gama Rodrigues' },
-    { periodo: '1944 - 1947', nome: 'Dr. Euclides Braga' },
-    { periodo: '1947 - 1949', nome: 'Dr. Salim Felix' },
-    { periodo: '1949 - 1951', nome: 'Dr. José Machado Coelho de Castro' },
-    { periodo: '1951 - 1958', nome: 'Sr. Augusto Sveberi' },
-    { periodo: '1958 - 1961', nome: 'Sr. Raul Penha Nunes' },
-    { periodo: '1961 - 1962', nome: 'Sr. Sebastião Plínio de Sampaio' },
-    { periodo: '1962 - 1966', nome: 'Sr Raul Penha Nunes' },
-    { periodo: '1966 - 1979', nome: 'Sr. Américo Nogueira' },
-    { periodo: '1979 - 2000', nome: 'Irmã Maria da Glória Castanheira' },
-    { periodo: '2000 - 2000', nome: 'Sra. Célia Carvalho de Castro' },
-    { periodo: '2001 - 2005', nome: 'Sr. Juares Nilton Guimarães' },
-    { periodo: '2005 - 2015', nome: 'Paulo Sérgio Moure dos Reis' },
-    { periodo: '2015 - 2017', nome: 'Paola de Gara Geronimi' },
-    { periodo: '2017 - 2018', nome: 'Luiz Geraldo Rangel Ferraz' },
-    { periodo: '2018 - 2023', nome: 'Dr. Mário Teixeira da Silva' }
-  ];
+  providers: Providers[] = [];
+
+  constructor(private providerService: ProviderService) { }
+
+  ngOnInit(): void {
+    this.loadProviders();
+  }
+
+  private loadProviders(): void {
+    this.providerService.getAll().subscribe(data => {
+      const sorted = data.slice().sort((a, b) => a.startYear - b.startYear);
+
+      this.providers = sorted.map(pro => ({
+        ...pro,
+        imageUrl: `${environment.imageServerUrl}${pro.imageUrl}`
+      }));
+    });
+  }
 }

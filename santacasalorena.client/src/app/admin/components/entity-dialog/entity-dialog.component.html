@@ -2,7 +2,9 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">{{ editingItem ? 'Editar' : 'Adicionar' }} {{ activeTab | titlecase }}</h5>
+        <h5 class="modal-title">
+          {{ editingItem ? 'Editar' : 'Adicionar' }} {{ tabLabels[activeTab] }}
+        </h5>
         <button type="button" class="btn-close" (click)="close.emit()"></button>
       </div>
       <div class="modal-body">
@@ -134,10 +136,7 @@
               <label class="form-label">Nome</label>
               <input type="text" class="form-control" formControlName="name">
             </div>
-            <div class="mb-3">
-              <label class="form-label">Especialidade</label>
-              <input type="text" class="form-control" formControlName="specialty">
-            </div>
+
             <div class="mb-3">
               <label class="form-label">Foto</label>
               <input type="file" class="form-control" (change)="onFileSelected($event, 'file')">
@@ -145,6 +144,24 @@
                 <small class="text-success">Selecionado: {{ form.get('file')?.value?.name }}</small>
               </div>
             </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Ano de Início</label>
+                <input type="number"
+                       class="form-control"
+                       formControlName="startYear">
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Ano de Fim</label>
+                <input type="number"
+                       class="form-control"
+                       formControlName="endYear">
+                <small class="text-muted">Deixe vazio se ainda estiver ativo</small>
+              </div>
+            </div>
+
           </ng-container>
 
           <!-- SPECIALTY -->

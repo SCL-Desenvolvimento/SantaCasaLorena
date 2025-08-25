@@ -20,7 +20,7 @@ export class EntityDialogComponent implements OnChanges {
     contacts: 'Contato',
     homeBanner: 'Banner da Home',
     patientManual: 'Manual do Paciente',
-    provider: 'Prestador',
+    provider: 'Provedor',
     specialty: 'Especialidade',
     transparencyPortal: 'Portal da Transparência',
     user: 'Usuário',
