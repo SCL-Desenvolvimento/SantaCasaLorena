@@ -64,7 +64,7 @@ export class HomeComponent implements OnInit {
   newsSection = { title: 'Últimas Notícias' };
 
   cta = {
-    bgGradient: 'linear-gradient(135deg, #0d6efd, #198754)',
+    bgGradient: '#22BCEE',
     title: 'Manual do Paciente e Visitante',
     description: 'Este manual foi desenvolvido para facilitar o relacionamento entre o paciente, familiares e o hospital garantindo total segurança, conforto e tranquilidade ao utilizar nossos serviços.',
     buttonLabel: 'Clique aqui para acessar'

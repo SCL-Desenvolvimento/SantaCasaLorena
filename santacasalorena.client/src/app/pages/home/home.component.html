@@ -130,7 +130,7 @@
               <div class="bg-light" style="height:192px;"></div>
               <div class="card-body">
                 <h5 class="card-title">Notícia em Destaque {{ ph }}</h5>
-                <small class="text-primary fw-bold">Categoria</small>
+                <small class="fw-bold" style="color: #22BCEE;">Categoria</small>
                 <p class="card-text text-muted">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 </p>
@@ -147,7 +147,9 @@
     <div class="container">
       <h2 class="fw-bold mb-3">{{ cta.title }}</h2>
       <p class="mb-4 mx-auto" style="max-width:700px;">{{ cta.description }}</p>
-      <button class="btn btn-light btn-lg text-primary">{{ cta.buttonLabel }}</button>
+      <button class="btn btn-light btn-lg" style="color: #22BCEE;">
+        {{ cta.buttonLabel }}
+      </button>
     </div>
   </section>
 

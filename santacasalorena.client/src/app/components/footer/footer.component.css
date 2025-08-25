@@ -5,3 +5,9 @@
   .link-hover:hover {
     color: #ffffff;
   }
+
+.logo {
+  height: 50px;
+  width: auto;
+  display: block;
+}

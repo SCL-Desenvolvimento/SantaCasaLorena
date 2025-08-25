@@ -93,8 +93,8 @@
   }
 
   .indicator.active {
-    background: #fff;
-    border: 2px solid #0d6efd;
+    background: #22BCEE;
+    border: 2px solid #22BCEE;
   }
 
 
@@ -128,7 +128,7 @@
   align-items: center;
   justify-content: center;
   font-size: 1.4rem;
-  color: var(--bs-primary);
+  color: #22BCEE;
 }
 
 .news-card img {
