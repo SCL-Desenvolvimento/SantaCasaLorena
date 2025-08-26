@@ -5,76 +5,43 @@
     <div class="container">
       <h1 class="display-5 fw-bold mb-3">Transparência e Detalhamento de Despesas</h1>
       <p class="lead opacity-75">
-        Acompanhe nesta página os balanços anuais, contendo dados detalhados sobre despesas.
+        Acompanhe nesta página os documentos de transparência da instituição.
       </p>
     </div>
   </section>
 
-  <!-- Convênios -->
+  <!-- Conteúdo dinâmico -->
   <section class="py-5 bg-light">
     <div class="container">
-      <h2 class="h1 fw-bold text-center mb-5">Convênios</h2>
 
-      <!-- Convênio Estadual -->
-      <div class="mb-5">
-        <h3 class="h3 fw-bold mb-4">
-          <i class="bi bi-building me-2 text-primary"></i>Estadual
-        </h3>
-        <div class="row g-4">
-          <div class="col-md-6" *ngFor="let convenio of conveniosEstaduais">
-            <div class="card h-100 shadow-sm border-0 card-hover">
-              <div class="card-body p-4">
-                <span class="badge bg-success mb-2">{{ convenio.tipo }}</span>
-                <h5 class="fw-bold">{{ convenio.nome }}</h5>
-                <p class="text-secondary">{{ convenio.periodo }}</p>
-                <button class="btn btn-outline-primary btn-sm" (click)="downloadConvenio(convenio)">
-                  <i class="bi bi-download me-1"></i> Baixar
-                </button>
+      <div *ngFor="let group of groupedData" class="mb-5">
+        <!-- Nome da categoria -->
+        <h2 class="h1 fw-bold text-center mb-5">{{ group.category }}</h2>
+
+        <!-- Loop nos tipos dentro da categoria -->
+        <div *ngFor="let typeGroup of group.types" class="mb-4">
+          <h3 class="h3 fw-bold mb-4" *ngIf="typeGroup.type">
+            <i class="bi bi-folder2-open me-2 text-primary"></i>{{ typeGroup.type }}
+          </h3>
+
+          <!-- Cards -->
+          <div class="row g-4">
+            <div class="col-md-6" *ngFor="let item of typeGroup.items">
+              <div class="card h-100 shadow-sm border-0 card-hover">
+                <div class="card-body p-4">
+                  <span class="badge bg-secondary mb-2">{{ item.type || group.category }}</span>
+                  <h5 class="fw-bold">{{ item.title }}</h5>
+                  <p class="text-secondary mb-1" *ngIf="item.description">{{ item.description }}</p>
+                  <p class="text-secondary">{{ getPeriodo(item) }}</p>
+
+                  <button class="btn btn-outline-primary btn-sm" (click)="downloadItem(item)">
+                    <i class="bi bi-download me-1"></i> Abrir Arquivo
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Convênio Municipal -->
-      <div class="mb-5">
-        <h3 class="h3 fw-bold mb-4">
-          <i class="bi bi-bank me-2 text-primary"></i>Municipal
-        </h3>
-        <div class="row g-4">
-          <div class="col-md-6" *ngFor="let convenio of conveniosMunicipais">
-            <div class="card h-100 shadow-sm border-0 card-hover">
-              <div class="card-body p-4">
-                <span class="badge bg-info mb-2">{{ convenio.tipo }}</span>
-                <h5 class="fw-bold">{{ convenio.nome }}</h5>
-                <p class="text-secondary">{{ convenio.periodo }}</p>
-                <button class="btn btn-outline-primary btn-sm" (click)="downloadConvenio(convenio)">
-                  <i class="bi bi-download me-1"></i> Baixar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Emendas -->
-      <div>
-        <h3 class="h3 fw-bold mb-4">
-          <i class="bi bi-file-earmark-text me-2 text-primary"></i>Emendas
-        </h3>
-        <div class="row g-4">
-          <div class="col-md-6" *ngFor="let emenda of emendas">
-            <div class="card h-100 shadow-sm border-0 card-hover">
-              <div class="card-body p-4">
-                <span class="badge bg-warning text-dark mb-2">{{ emenda.tipo }}</span>
-                <h5 class="fw-bold">{{ emenda.nome }}</h5>
-                <p class="text-secondary">{{ emenda.periodo }}</p>
-                <button class="btn btn-outline-primary btn-sm" (click)="downloadConvenio(emenda)">
-                  <i class="bi bi-download me-1"></i> Baixar
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 

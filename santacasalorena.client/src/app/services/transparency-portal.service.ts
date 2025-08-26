@@ -15,7 +15,10 @@ export class TransparencyPortalService {
 
   getAll(): Observable<TransparencyPortal[]> {
     return this.http.get<TransparencyPortal[]>(this.apiUrl).pipe(
-      map(response => response),
+      map(response => response.map(item => ({
+        ...item,
+        fileUrl: `${environment.imageServerUrl}${item.fileUrl}`
+      }))),
       catchError(this.handleError)
     );
   }

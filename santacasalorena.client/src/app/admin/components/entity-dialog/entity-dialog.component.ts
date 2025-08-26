@@ -94,11 +94,14 @@ export class EntityDialogComponent implements OnChanges {
 
       case 'transparencyPortal':
         this.form = this.fb.group({
-          agreementName: [this.formData?.agreementName || '', Validators.required],
-          type: [this.formData?.type || '', Validators.required],
-          startYear: [this.formData?.startYear || new Date().getFullYear(), Validators.required],
+          category: [this.formData?.category || '', Validators.required],
+          title: [this.formData?.title || '', Validators.required],
+          description: [this.formData?.description || ''],
+          type: [this.formData?.type || ''],
+          year: [this.formData?.year || null],
+          startYear: [this.formData?.startYear || null],
           endYear: [this.formData?.endYear || null],
-          file: [null]
+          file: [null, this.editingItem ? [] : [Validators.required]]
         });
         break;
 

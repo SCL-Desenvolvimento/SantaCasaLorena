@@ -21,11 +21,15 @@ namespace SantaCasaLorena.Server.Services
                 .Select(t => new TransparencyPortalResponseDto
                 {
                     Id = t.Id,
-                    AgreementName = t.AgreementName,
+                    Category = t.Category,
+                    Title = t.Title,
+                    Description = t.Description,
                     Type = t.Type,
+                    Year = t.Year,
                     StartYear = t.StartYear,
                     EndYear = t.EndYear,
-                    FileUrl = t.FileUrl
+                    FileUrl = t.FileUrl,
+                    CreatedAt = t.CreatedAt
                 })
                 .ToListAsync();
         }
@@ -37,11 +41,15 @@ namespace SantaCasaLorena.Server.Services
                 .Select(t => new TransparencyPortalResponseDto
                 {
                     Id = t.Id,
-                    AgreementName = t.AgreementName,
+                    Category = t.Category,
+                    Title = t.Title,
+                    Description = t.Description,
                     Type = t.Type,
+                    Year = t.Year,
                     StartYear = t.StartYear,
                     EndYear = t.EndYear,
-                    FileUrl = t.FileUrl
+                    FileUrl = t.FileUrl,
+                    CreatedAt = t.CreatedAt
                 })
                 .FirstOrDefaultAsync();
         }
@@ -50,8 +58,11 @@ namespace SantaCasaLorena.Server.Services
         {
             var entity = new TransparencyPortal
             {
-                AgreementName = dto.AgreementName,
+                Category = dto.Category,
+                Title = dto.Title,
+                Description = dto.Description,
                 Type = dto.Type,
+                Year = dto.Year,
                 StartYear = dto.StartYear,
                 EndYear = dto.EndYear,
                 FileUrl = await ProcessarMidiasAsync(dto.File)
@@ -63,21 +74,28 @@ namespace SantaCasaLorena.Server.Services
             return new TransparencyPortalResponseDto
             {
                 Id = entity.Id,
-                AgreementName = entity.AgreementName,
+                Category = entity.Category,
+                Title = entity.Title,
+                Description = entity.Description,
                 Type = entity.Type,
+                Year = entity.Year,
                 StartYear = entity.StartYear,
                 EndYear = entity.EndYear,
-                FileUrl = entity.FileUrl
+                FileUrl = entity.FileUrl,
+                CreatedAt = entity.CreatedAt
             };
         }
 
         public async Task<TransparencyPortalResponseDto> UpdateAsync(Guid id, TransparencyPortalRequestDto dto)
         {
             var entity = await _context.TransparencyPortals.FindAsync(id);
-            if (entity == null) throw new Exception("Portal não encontrado");
+            if (entity == null) throw new Exception("Registro não encontrado");
 
-            entity.AgreementName = dto.AgreementName;
+            entity.Category = dto.Category;
+            entity.Title = dto.Title;
+            entity.Description = dto.Description;
             entity.Type = dto.Type;
+            entity.Year = dto.Year;
             entity.StartYear = dto.StartYear;
             entity.EndYear = dto.EndYear;
 
@@ -100,11 +118,15 @@ namespace SantaCasaLorena.Server.Services
             return new TransparencyPortalResponseDto
             {
                 Id = entity.Id,
-                AgreementName = entity.AgreementName,
+                Category = entity.Category,
+                Title = entity.Title,
+                Description = entity.Description,
                 Type = entity.Type,
+                Year = entity.Year,
                 StartYear = entity.StartYear,
                 EndYear = entity.EndYear,
-                FileUrl = entity.FileUrl
+                FileUrl = entity.FileUrl,
+                CreatedAt = entity.CreatedAt
             };
         }
 
@@ -122,19 +144,14 @@ namespace SantaCasaLorena.Server.Services
         {
             if (midia == null) return null;
 
-            // Define o caminho para a pasta "Usuarios"
             var baseDirectory = Path.Combine("Uploads", "PortalTransparencia").Replace("\\", "/");
-
-            // Verifica se a pasta "Usuarios" existe, e a cria caso não exista
             if (!Directory.Exists(baseDirectory))
             {
                 Directory.CreateDirectory(baseDirectory);
             }
 
-            // Gera o caminho completo para o arquivo dentro da pasta "Usuarios"
             var filePath = Path.Combine(baseDirectory, Guid.NewGuid() + Path.GetExtension(midia.FileName)).Replace("\\", "/");
 
-            // Salva o arquivo no caminho especificado
             await using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await midia.CopyToAsync(stream);

@@ -178,14 +178,62 @@
 
           <!-- TRANSPARENCY PORTAL -->
           <ng-container *ngIf="activeTab === 'transparencyPortal'">
+
+            <!-- Categoria -->
+            <div class="mb-3">
+              <label class="form-label">Categoria</label>
+              <select class="form-select" formControlName="category">
+                <option value="">Selecione...</option>
+                <option value="Convenio">Convênio</option>
+                <option value="Emenda">Emenda Parlamentar</option>
+                <option value="Estatuto">Estatuto</option>
+                <option value="Dirigente">Quadro de Dirigentes</option>
+                <option value="DemonstracaoFinanceira">Demonstração Financeira</option>
+              </select>
+            </div>
+
+            <!-- Título -->
             <div class="mb-3">
               <label class="form-label">Título</label>
               <input type="text" class="form-control" formControlName="title">
             </div>
-            <div class="mb-3">
-              <label class="form-label">Link</label>
-              <input type="url" class="form-control" formControlName="link">
+
+            <!-- Descrição (opcional) -->
+            <div class="mb-3" *ngIf="form.get('category')?.value === 'Emenda'">
+              <label class="form-label">Descrição</label>
+              <input type="text" class="form-control" formControlName="description">
             </div>
+
+            <!-- Tipo (Estadual / Municipal, etc.) -->
+            <div class="mb-3" *ngIf="form.get('category')?.value === 'Convenio'">
+              <label class="form-label">Tipo</label>
+              <input type="text" class="form-control" formControlName="type">
+            </div>
+
+            <!-- Ano único -->
+            <div class="mb-3" *ngIf="['Emenda','DemonstracaoFinanceira','Convenio'].includes(form.get('category')?.value)">
+              <label class="form-label">Ano</label>
+              <input type="number" class="form-control" formControlName="year">
+            </div>
+
+            <!-- Intervalo de anos -->
+            <div class="row" *ngIf="['Convenio','Dirigente'].includes(form.get('category')?.value)">
+              <div class="col">
+                <label class="form-label">Ano Inicial</label>
+                <input type="number" class="form-control" formControlName="startYear">
+              </div>
+              <div class="col">
+                <label class="form-label">Ano Final</label>
+                <input type="number" class="form-control" formControlName="endYear">
+              </div>
+            </div>
+
+            <!-- Upload -->
+            <div class="mb-3">
+              <label class="form-label">Arquivo</label>
+              <input type="file" class="form-control" (change)="onFileSelected($event, 'file')">
+            </div>
+
           </ng-container>
 
           <!-- USER -->

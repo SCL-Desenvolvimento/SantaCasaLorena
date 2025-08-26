@@ -77,9 +77,23 @@ namespace SantaCasaLorena.Server.Context
             modelBuilder.Entity<TransparencyPortal>(entity =>
             {
                 entity.HasKey(t => t.Id);
-                entity.Property(t => t.AgreementName).HasMaxLength(200).IsRequired();
-                entity.Property(t => t.Type).HasMaxLength(100).IsRequired();
-                entity.Property(t => t.FileUrl).IsRequired();
+
+                entity.Property(t => t.Category)
+                      .HasMaxLength(100)
+                      .IsRequired();
+
+                entity.Property(t => t.Title)
+                      .HasMaxLength(200)
+                      .IsRequired();
+
+                entity.Property(t => t.Description)
+                      .HasMaxLength(500);
+
+                entity.Property(t => t.Type)
+                      .HasMaxLength(100);
+
+                entity.Property(t => t.FileUrl)
+                      .IsRequired();
             });
 
             // SPECIALTIES
