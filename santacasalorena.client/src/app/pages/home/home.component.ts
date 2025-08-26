@@ -103,10 +103,18 @@ export class HomeComponent implements OnInit, OnDestroy {
   loadNews(): void {
     this.newsService.getAll().subscribe({
       next: (data) => {
-        this.news = data.filter(item => item.isPublished).map(n => ({
-          ...n,
-          imageUrl: `${environment.imageServerUrl}${n.imageUrl}`
-        }));
+        this.news = data
+          .filter(item => item.isPublished)
+          .sort((a, b) => {
+            if (!a.createdAt) return 1;
+            if (!b.createdAt) return -1;
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          })
+          .slice(0, 3)
+          .map(n => ({
+            ...n,
+            imageUrl: `${environment.imageServerUrl}${n.imageUrl}`
+          }));
       },
       error: (err) => {
         console.error('Erro ao carregar notícias:', err);

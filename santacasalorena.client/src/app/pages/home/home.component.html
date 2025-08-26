@@ -154,9 +154,9 @@
     <div class="container">
       <h2 class="fw-bold mb-3">{{ cta.title }}</h2>
       <p class="mb-4 mx-auto" style="max-width:700px;">{{ cta.description }}</p>
-      <button class="btn btn-light btn-lg" style="color: #22BCEE;">
+      <a [routerLink]="['/manual-do-paciente-visitante']" class="btn btn-light btn-lg" style="color: #22BCEE;">
         {{ cta.buttonLabel }}
-      </button>
+      </a>
     </div>
   </section>
 
