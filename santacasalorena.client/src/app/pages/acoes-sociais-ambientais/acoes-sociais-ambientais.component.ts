@@ -68,6 +68,7 @@ export class AcoesSociaisAmbientaisComponent implements OnInit {
     }
   ];
 
+
   voluntariadoStats: VoluntariadoStat[] = [
     {
       number: '216',
@@ -118,32 +119,32 @@ export class AcoesSociaisAmbientaisComponent implements OnInit {
     {
       title: 'Solidariedade',
       description: 'Promovemos o espírito de solidariedade através de ações voluntárias que beneficiam pacientes e comunidade.',
-      icon: 'fas fa-hands-helping'
+      icon: 'bi-people'
     },
     {
       title: 'Respeito à Diversidade',
       description: 'Acolhemos e respeitamos todas as religiões e culturas, oferecendo assistência espiritual inclusiva.',
-      icon: 'fas fa-dove'
+      icon: 'bi-peace'
     },
     {
       title: 'Transparência',
       description: 'Mantemos total transparência em nossas ações, com organização regulamentada e prestação de contas.',
-      icon: 'fas fa-eye'
+      icon: 'bi-eye'
     },
     {
       title: 'Impacto Social',
       description: 'Buscamos gerar impacto positivo na sociedade lorenense através de mecanismos sustentáveis.',
-      icon: 'fas fa-heart'
+      icon: 'bi-heart'
     },
     {
       title: 'Autonomia',
       description: 'Garantimos autonomia aos voluntários para organizar e direcionar suas atividades de forma independente.',
-      icon: 'fas fa-user-check'
+      icon: 'bi-person-check'
     },
     {
       title: 'Sustentabilidade',
       description: 'Promovemos práticas sustentáveis através do bazar de peças usadas e reutilização de materiais.',
-      icon: 'fas fa-recycle'
+      icon: 'bi-recycle'
     }
   ];
 

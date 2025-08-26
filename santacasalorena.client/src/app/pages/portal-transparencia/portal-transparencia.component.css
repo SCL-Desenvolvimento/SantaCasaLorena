@@ -1,6 +1,6 @@
 /* ================= HERO ================= */
 .hero-gradient {
-  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 50%, #198754 100%);
+  background: linear-gradient(#22BCEE, #22BCEE);
   background-size: 200% 200%;
   animation: gradientMove 8s ease infinite;
   position: relative;
@@ -84,7 +84,7 @@ section {
 }
 
 .text-primary {
-  color: #0d6efd !important;
+  color: #22BCEE !important;
 }
 
 .text-secondary {
@@ -118,8 +118,8 @@ section {
 }
 
 .btn-outline-primary {
-  border: 2px solid #0d6efd;
-  color: #0d6efd;
+  border: 2px solid #22BCEE;
+  color: #22BCEE;
   font-weight: 600;
   padding: 8px 16px;
   border-radius: 2rem;
@@ -127,7 +127,7 @@ section {
 }
 
   .btn-outline-primary:hover {
-    background-color: #0d6efd;
+    background-color: #22BCEE;
     color: #fff;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);

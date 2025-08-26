@@ -18,22 +18,22 @@ export class CentroDiagnosticoPorImagemComponent {
 
   services = [
     {
-      icon: 'bi bi-heart-pulse',
+      icon: 'fas fa-heart-pulse',
       name: 'Tomografia',
       description: 'Exames de tomografia computadorizada com imagens de alta definição.'
     },
     {
-      icon: 'bi bi-person-lines-fill',
+      icon: 'fas fa-user-doctor',
       name: 'Ressonância Magnética',
       description: 'Tecnologia avançada para diagnósticos neurológicos e ortopédicos.'
     },
     {
-      icon: 'bi bi-hospital',
+      icon: 'fas fa-hospital',
       name: 'Ultrassonografia',
       description: 'Procedimentos rápidos, seguros e sem radiação.'
     },
     {
-      icon: 'bi bi-x-ray',
+      icon: 'fas fa-x-ray',
       name: 'Raio-X Digital',
       description: 'Imagens com qualidade superior e entrega ágil de laudos.'
     }
@@ -72,14 +72,6 @@ export class CentroDiagnosticoPorImagemComponent {
       const bootstrapModal = new (window as any).bootstrap.Modal(modal);
       bootstrapModal.show();
     }
-  }
-
-  openContact() {
-    window.location.href = 'tel:+551231234567'; // substitua pelo telefone real
-  }
-
-  openLocation() {
-    window.open('https://www.google.com/maps?q=Santa+Casa+de+Lorena', '_blank');
   }
 }
 

@@ -1,6 +1,6 @@
 /* Hero */
 .hero-gradient {
-  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 50%, #198754 100%);
+  background: linear-gradient(#22BCEE, #22BCEE);
   background-size: 200% 200%;
   animation: gradientMove 8s ease infinite;
   position: relative;
@@ -82,7 +82,7 @@
 
 /* Texto */
 .text-primary {
-  color: #0d6efd !important;
+  color: #22BCEE !important;
 }
 
 .bg-primary {

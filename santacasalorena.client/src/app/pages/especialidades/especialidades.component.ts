@@ -35,7 +35,7 @@ export class EspecialidadesComponent {
       { id: 8, nome: 'Especialista em Dor', icone: 'fas fa-band-aid', tipo: 'clinica' },
       { id: 9, nome: 'Fisioterapia', icone: 'fas fa-walking', tipo: 'clinica' },
       { id: 10, nome: 'Fonoaudiologia', icone: 'fas fa-comment-medical', tipo: 'clinica' },
-      { id: 11, nome: 'Gastroenterologia', icone: 'fas fa-stomach', tipo: 'clinica' },
+      { id: 11, nome: 'Gastroenterologia', icone: 'fas fa-utensils', tipo: 'clinica' },
       { id: 12, nome: 'Geriatria', icone: 'fas fa-user-clock', tipo: 'clinica' },
       { id: 13, nome: 'Ginecologia / Obstetrícia', icone: 'fas fa-baby', tipo: 'clinica' },
       { id: 14, nome: 'Neurologia', icone: 'fas fa-brain', tipo: 'clinica' },
@@ -43,7 +43,7 @@ export class EspecialidadesComponent {
       { id: 16, nome: 'Psicologia', icone: 'fas fa-head-side-virus', tipo: 'clinica' },
       { id: 17, nome: 'Psiquiatria', icone: 'fas fa-user-friends', tipo: 'clinica' },
       { id: 18, nome: 'Pediatria', icone: 'fas fa-child', tipo: 'clinica' },
-      { id: 19, nome: 'Urologia', icone: 'fas fa-kidneys', tipo: 'clinica' },
+      { id: 19, nome: 'Urologia', icone: 'fas fa-tint', tipo: 'clinica' },
 
       // Cirúrgicas
       { id: 20, nome: 'Cirurgia Cardiovascular', icone: 'fas fa-heart-pulse', tipo: 'cirurgica' },

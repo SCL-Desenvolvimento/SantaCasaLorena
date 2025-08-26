@@ -35,21 +35,19 @@ export class ClinicaEmiliaComponent {
   amenidades = [
     {
       titulo: 'Painéis Decorativos',
-      icon: 'bi-palette'
+      icon: 'fas fa-palette'
     },
     {
       titulo: 'Frigobar',
-      icon: 'bi-snow'
+      icon: 'fas fa-snowflake'
     },
     {
       titulo: 'Televisores',
-      icon: 'bi-tv'
+      icon: 'fas fa-tv'
     },
     {
       titulo: 'Sofá Cama',
-      icon: 'bi-couch'
+      icon: 'fas fa-couch'
     }
   ];
-
-
 }

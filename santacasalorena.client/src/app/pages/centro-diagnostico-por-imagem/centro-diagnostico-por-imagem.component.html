@@ -41,7 +41,7 @@
           <div class="card h-100 shadow-sm card-hover border-0 text-center">
             <div class="card-body p-4">
               <div class="icon-circle mb-3 mx-auto bg-primary">
-                <i class="bi fs-4 text-white" [ngClass]="service.icon"></i>
+                <i class="fa fs-4 text-white" [ngClass]="service.icon"></i>
               </div>
               <h5 class="fw-bold mb-2">{{ service.name }}</h5>
               <p class="text-secondary small mb-0">{{ service.description }}</p>
@@ -85,26 +85,6 @@
                  (click)="openImageModal(image)">
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="py-5 hero-gradient text-white text-center">
-    <div class="container">
-      <h2 class="h1 fw-bold mb-3">Agende seu Exame</h2>
-      <p class="lead opacity-75 mb-4">
-        Entre em contato conosco para agendar seu exame por telefone ou presencialmente.
-      </p>
-      <div>
-        <button class="btn btn-light btn-lg me-3 rounded-pill shadow-sm" (click)="openContact()">
-          <i class="fas fa-phone me-2"></i>
-          Ligar Agora
-        </button>
-        <button class="btn btn-outline-light btn-lg rounded-pill shadow-sm" (click)="openLocation()">
-          <i class="fas fa-map-marker-alt me-2"></i>
-          Ver Localização
-        </button>
       </div>
     </div>
   </section>
