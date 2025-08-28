@@ -5,9 +5,7 @@ import { Router } from '@angular/router';
 import { AgreementService } from '../../../services/agreement.service';
 import { HomeBannerService } from '../../../services/home-banner.service';
 import { NewsService } from '../../../services/news.service';
-import { PatientManualService } from '../../../services/patient-manual.service';
 import { ProviderService } from '../../../services/provider.service';
-import { SpecialtyService } from '../../../services/specialty.service';
 import { TransparencyPortalService } from '../../../services/transparency-portal.service';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
@@ -19,9 +17,7 @@ import { Contact } from '../../../models/contact';
 import { Stats } from '../../../models/stats';
 import { Agreement } from '../../../models/agreement';
 import { HomeBanner } from '../../../models/homeBanner';
-import { PatientManual } from '../../../models/patientManual';
 import { Providers } from '../../../models/provider';
-import { Specialty } from '../../../models/specialty';
 import { TransparencyPortal } from '../../../models/transparencyPortal';
 import { environment } from '../../../../environments/environment';
 
@@ -50,9 +46,7 @@ export class AdminLayoutComponent implements OnInit {
   private newsService = inject(NewsService);
   private agreementService = inject(AgreementService);
   private homeBannerService = inject(HomeBannerService);
-  private patientManualService = inject(PatientManualService);
   private providerService = inject(ProviderService);
-  private specialtyService = inject(SpecialtyService);
   private transparencyService = inject(TransparencyPortalService);
   private userService = inject(UserService);
   private authService = inject(AuthService);
@@ -72,9 +66,7 @@ export class AdminLayoutComponent implements OnInit {
   convenios = signal<Agreement[]>([]);
   contacts = signal<Contact[]>([]);
   homeBanners = signal<HomeBanner[]>([]);
-  patientManuals = signal<PatientManual[]>([]);
   providers = signal<Providers[]>([]);
-  specialties = signal<Specialty[]>([]);
   transparencyPortal = signal<TransparencyPortal[]>([]);
   users = signal<User[]>([]);
 
@@ -117,10 +109,6 @@ export class AdminLayoutComponent implements OnInit {
       this.homeBanners.set(res);
     });
 
-    this.patientManualService.getAll().subscribe(res => {
-      this.patientManuals.set(res);
-    });
-
     this.providerService.getAll().subscribe(res => {
       res = res.map(prov => ({
         ...prov,
@@ -128,15 +116,6 @@ export class AdminLayoutComponent implements OnInit {
       }))
 
       this.providers.set(res);
-    });
-
-    this.specialtyService.getAll().subscribe(res => {
-      res = res.map(spec => ({
-        ...spec,
-        imageUrl: `${environment.imageServerUrl}${spec.imageUrl}`,
-      }))
-
-      this.specialties.set(res);
     });
 
     this.transparencyService.getAll().subscribe(res => {
@@ -207,9 +186,7 @@ export class AdminLayoutComponent implements OnInit {
           case 'news': this.newsService.update(item.id, data).subscribe(() => this.loadAllData()); break;
           case 'convenios': this.agreementService.update(item.id, data).subscribe(() => this.loadAllData()); break;
           case 'homeBanner': this.homeBannerService.update(item.id, data).subscribe(() => this.loadAllData()); break;
-          case 'patientManual': this.patientManualService.update(item.id, data).subscribe(() => this.loadAllData()); break;
           case 'provider': this.providerService.update(item.id, data).subscribe(() => this.loadAllData()); break;
-          case 'specialty': this.specialtyService.update(item.id, data).subscribe(() => this.loadAllData()); break;
           case 'transparencyPortal': this.transparencyService.update(item.id, data).subscribe(() => this.loadAllData()); break;
           case 'user': this.userService.updateUser(item.id, data).subscribe(() => this.loadAllData()); break;
         }
@@ -218,9 +195,7 @@ export class AdminLayoutComponent implements OnInit {
           case 'news': this.newsService.create(data).subscribe(() => this.loadAllData()); break;
           case 'convenios': this.agreementService.create(data).subscribe(() => this.loadAllData()); break;
           case 'homeBanner': this.homeBannerService.create(data).subscribe(() => this.loadAllData()); break;
-          case 'patientManual': this.patientManualService.create(data).subscribe(() => this.loadAllData()); break;
           case 'provider': this.providerService.create(data).subscribe(() => this.loadAllData()); break;
-          case 'specialty': this.specialtyService.create(data).subscribe(() => this.loadAllData()); break;
           case 'transparencyPortal': this.transparencyService.create(data).subscribe(() => this.loadAllData()); break;
           case 'user': this.userService.createUser(data).subscribe(() => this.loadAllData()); break;
         }
@@ -240,9 +215,7 @@ export class AdminLayoutComponent implements OnInit {
       case 'news': this.newsService.delete(id).subscribe(() => this.loadAllData()); break;
       case 'convenios': this.agreementService.delete(id).subscribe(() => this.loadAllData()); break;
       case 'homeBanner': this.homeBannerService.delete(id).subscribe(() => this.loadAllData()); break;
-      case 'patientManual': this.patientManualService.delete(id).subscribe(() => this.loadAllData()); break;
       case 'provider': this.providerService.delete(id).subscribe(() => this.loadAllData()); break;
-      case 'specialty': this.specialtyService.delete(id).subscribe(() => this.loadAllData()); break;
       case 'transparencyPortal': this.transparencyService.delete(id).subscribe(() => this.loadAllData()); break;
       case 'user': this.userService.deleteUser(id).subscribe(() => this.loadAllData()); break;
       // TODO: quando implementar ContactService -> case 'contacts': this.contactService.delete(id)...

@@ -59,8 +59,6 @@ builder.Services.AddScoped<IHomeBannerService, HomeBannerService>();
 builder.Services.AddScoped<IAgreementService, AgreementService>();
 builder.Services.AddScoped<IProviderService, ProviderService>();
 builder.Services.AddScoped<ITransparencyPortalService, TransparencyPortalService>();
-builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
-builder.Services.AddScoped<IPatientManualService, PatientManualService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

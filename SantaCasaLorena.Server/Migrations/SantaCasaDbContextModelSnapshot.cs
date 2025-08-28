@@ -126,32 +126,6 @@ namespace SantaCasaLorena.Server.Migrations
                     b.ToTable("News");
                 });
 
-            modelBuilder.Entity("SantaCasaLorena.Server.Entities.PatientManual", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("FileUrl")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PatientManuals");
-                });
-
             modelBuilder.Entity("SantaCasaLorena.Server.Entities.Provider", b =>
                 {
                     b.Property<Guid>("Id")
@@ -178,33 +152,6 @@ namespace SantaCasaLorena.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Providers");
-                });
-
-            modelBuilder.Entity("SantaCasaLorena.Server.Entities.Specialty", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar(150)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Specialties");
                 });
 
             modelBuilder.Entity("SantaCasaLorena.Server.Entities.TransparencyPortal", b =>

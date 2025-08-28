@@ -13,9 +13,6 @@ namespace SantaCasaLorena.Server.Context
         public DbSet<News> News { get; set; }
         public DbSet<Provider> Providers { get; set; }
         public DbSet<TransparencyPortal> TransparencyPortals { get; set; }
-        public DbSet<Specialty> Specialties { get; set; }
-        public DbSet<PatientManual> PatientManuals { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -95,28 +92,6 @@ namespace SantaCasaLorena.Server.Context
                 entity.Property(t => t.FileUrl)
                       .IsRequired();
             });
-
-            // SPECIALTIES
-            modelBuilder.Entity<Specialty>(entity =>
-            {
-                entity.HasKey(s => s.Id);
-                entity.Property(s => s.Name).HasMaxLength(150).IsRequired();
-
-                // Type e ImageUrl agora são NOT NULL (string normal)
-                entity.Property(s => s.Type).IsRequired();
-                entity.Property(s => s.ImageUrl).IsRequired();
-            });
-
-            // PATIENT MANUAL
-            modelBuilder.Entity<PatientManual>(entity =>
-            {
-                entity.HasKey(m => m.Id);
-                entity.Property(m => m.Title).HasMaxLength(200).IsRequired();
-
-                // Content agora é obrigatório (não é mais nullable)
-                entity.Property(m => m.Content).IsRequired();
-            });
-
         }
     }
 }

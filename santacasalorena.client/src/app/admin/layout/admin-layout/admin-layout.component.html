@@ -44,25 +44,9 @@
 
       <li class="nav-item" role="presentation">
         <button class="nav-link"
-                [class.active]="activeTab() === 'patientManual'"
-                (click)="setActiveTab('patientManual')">
-          <i class="bi bi-book me-2"></i> Manuais do Paciente
-        </button>
-      </li>
-
-      <li class="nav-item" role="presentation">
-        <button class="nav-link"
                 [class.active]="activeTab() === 'provider'"
                 (click)="setActiveTab('provider')">
           <i class="bi bi-hospital me-2"></i> Provedores
-        </button>
-      </li>
-
-      <li class="nav-item" role="presentation">
-        <button class="nav-link"
-                [class.active]="activeTab() === 'specialty'"
-                (click)="setActiveTab('specialty')">
-          <i class="bi bi-clipboard2-pulse me-2"></i> Especialidades
         </button>
       </li>
 
@@ -99,13 +83,6 @@
                 (deleteNews)="handleDelete('news', $event)">
       </app-news>
 
-      <!--<app-services *ngSwitchCase="'services'"
-                    [services]="services()"
-                    (createService)="openEditDialog('services')"
-                    (editService)="openEditDialog('services', $event)"
-                    (deleteService)="handleDelete('services', $event)">
-      </app-services>-->
-
       <app-convenios *ngSwitchCase="'convenios'"
                      [convenios]="convenios()"
                      (createConvenio)="openEditDialog('convenios')"
@@ -125,26 +102,12 @@
                        (deleteBanner)="handleDelete('homeBanner', $event)">
       </app-home-banner>
 
-      <app-patient-manual *ngSwitchCase="'patientManual'"
-                          [manuals]="patientManuals()"
-                          (createManual)="openEditDialog('patientManual')"
-                          (editManual)="openEditDialog('patientManual', $event)"
-                          (deleteManual)="handleDelete('patientManual', $event)">
-      </app-patient-manual>
-
       <app-provider *ngSwitchCase="'provider'"
                     [providers]="providers()"
                     (createProvider)="openEditDialog('provider')"
                     (editProvider)="openEditDialog('provider', $event)"
                     (deleteProvider)="handleDelete('provider', $event)">
       </app-provider>
-
-      <app-specialty *ngSwitchCase="'specialty'"
-                     [specialties]="specialties()"
-                     (createSpecialty)="openEditDialog('specialty')"
-                     (editSpecialty)="openEditDialog('specialty', $event)"
-                     (deleteSpecialty)="handleDelete('specialty', $event)">
-      </app-specialty>
 
       <app-transparency-portal *ngSwitchCase="'transparencyPortal'"
                                [items]="transparencyPortal()"
