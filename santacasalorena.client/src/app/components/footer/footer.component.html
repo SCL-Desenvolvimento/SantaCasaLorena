@@ -54,10 +54,14 @@
       <div class="col-12 col-md-6 col-lg-3">
         <h4 class="h6 mb-3 fw-bold">Links Úteis</h4>
         <ul class="list-unstyled small">
-          <li><a href="#" class="text-secondary text-decoration-none link-hover">Resultado de Exames</a></li>
-          <li><a href="#" class="text-secondary text-decoration-none link-hover">Portal da Transparência</a></li>
-          <li><a href="#" class="text-secondary text-decoration-none link-hover">Manual do Paciente</a></li>
-          <li><a href="#" class="text-secondary text-decoration-none link-hover">Doações</a></li>
+          <li>
+            <a href="https://1741prd-vivace-portal.cloudmv.com.br:432/login" target="_blank" class="text-secondary text-decoration-none link-hover">
+              Resultado de Exames
+            </a>
+          </li>
+          <li><a [routerLink]="['/transparencia']" class="text-secondary text-decoration-none link-hover">Portal da Transparência</a></li>
+          <li><a [routerLink]="['/manual-do-paciente-visitante']" class="text-secondary text-decoration-none link-hover">Manual do Paciente</a></li>
+          <!--<li><a href="#" class="text-secondary text-decoration-none link-hover">Doações</a></li>-->
         </ul>
       </div>
 

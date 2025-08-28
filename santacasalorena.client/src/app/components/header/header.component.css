@@ -16,12 +16,18 @@
 }
 
   .nav-link:hover {
-    color: #0d6efd;
+    color: #22BCEE;
+  }
+
+  .nav-link.active,
+  .dropdown-item.active {
+    color: #22BCEE !important;
+    background-color: transparent !important;
   }
 
 /* Botões de destaque */
 .btn-donation {
-  background: #dc3545;
+  background: #FF0000;
   color: #fff;
   font-weight: 600;
   border-radius: 50px;
@@ -35,7 +41,7 @@
   }
 
 .btn-exam {
-  background: #0d6efd;
+  background: #22BCEE;
   color: #fff;
   font-weight: 600;
   border-radius: 50px;

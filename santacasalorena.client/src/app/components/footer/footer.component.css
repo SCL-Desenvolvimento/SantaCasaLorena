@@ -11,3 +11,7 @@
   width: auto;
   display: block;
 }
+
+.text-primary {
+  color: #22BCEE !important;
+}

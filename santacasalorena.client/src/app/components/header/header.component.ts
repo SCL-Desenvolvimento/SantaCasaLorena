@@ -32,7 +32,7 @@ export class HeaderComponent {
         { name: 'Clínica Emília', path: '/clinica-emilia' },
         { name: 'Centro de Diagnóstico por Imagem', path: '/diagnostico-imagem' },
         { name: 'Unidade de Internação', path: '/unidade-internacao' },
-        { name: 'Particular / Convênio', path: '/particular-convenio' }
+      //  { name: 'Particular / Convênio', path: '/particular-convenio' }
       ]
     },
     {
@@ -60,4 +60,10 @@ export class HeaderComponent {
     this.router.navigate([path]);
     this.isMenuOpen = false; // Fecha menu no mobile
   }
+
+  navigateToExternal(url: string) {
+    window.open(url, '_blank');
+    this.isMenuOpen = false;
+  }
+
 }

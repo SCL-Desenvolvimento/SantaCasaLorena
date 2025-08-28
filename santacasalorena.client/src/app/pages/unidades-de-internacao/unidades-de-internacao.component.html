@@ -1,83 +1,166 @@
 <div class="min-vh-100">
 
   <!-- Hero -->
-  <section class="hero-gradient text-white py-5 text-center">
-    <div class="container">
-      <h1 class="display-5 fw-bold mb-3">Unidade de Internação</h1>
-      <p class="lead opacity-75">Cuidado, tecnologia e humanização no atendimento</p>
+  <section class="hero-gradient text-white py-5 text-center position-relative overflow-hidden">
+    <div class="hero-particles"></div>
+    <div class="container position-relative">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <h1 class="display-4 fw-bold mb-4 animate-fade-in">Unidades de Internação</h1>
+          <p class="lead opacity-90 mb-4 animate-fade-in-delay">
+            Cuidado, tecnologia e humanização no atendimento hospitalar
+          </p>
+          <div class="hero-stats d-flex justify-content-center gap-4 flex-wrap animate-fade-in-delay-2">
+            <div class="stat-item">
+              <div class="stat-number">{{ totalLeitos }}</div>
+              <div class="stat-label">Leitos Totais</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">{{ leitosSus }}</div>
+              <div class="stat-label">Leitos SUS</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">10</div>
+              <div class="stat-label">Leitos UTI</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- Introdução -->
   <section class="py-5 bg-white">
     <div class="container">
-      <div class="row align-items-center">
+      <div class="row align-items-center g-5">
         <div class="col-lg-6">
-          <h2 class="h1 fw-bold mb-4">Ambiente moderno e acolhedor</h2>
-          <p class="lead text-primary mb-3">
-            As Unidades de Internação da Santa Casa foram projetadas para oferecer conforto e
-            segurança durante o processo de recuperação de nossos pacientes.
-          </p>
-          <p class="text-secondary fs-5">
-            Estruturadas com tecnologia de ponta e atenção ao bem-estar dos pacientes e familiares,
-            garantimos excelência em assistência hospitalar com foco na humanização.
-          </p>
+          <div class="content-wrapper">
+            <span class="badge bg-primary-light text-primary mb-3 px-3 py-2">
+              <i class="fas fa-hospital me-2"></i>Excelência em Saúde
+            </span>
+            <h2 class="display-6 fw-bold mb-4 text-dark">
+              Ambiente moderno e <span class="text-primary">acolhedor</span>
+            </h2>
+            <p class="lead text-primary mb-4">
+              As Unidades de Internação da Santa Casa foram projetadas para oferecer conforto e
+              segurança durante o processo de recuperação de nossos pacientes.
+            </p>
+            <p class="text-secondary fs-5 mb-4">
+              Estruturadas com tecnologia de ponta e atenção ao bem-estar dos pacientes e familiares,
+              garantimos excelência em assistência hospitalar com foco na humanização.
+            </p>
+            <div class="d-flex gap-3 flex-wrap">
+              <div class="feature-item">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                <span>Tecnologia de Ponta</span>
+              </div>
+              <div class="feature-item">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                <span>Atendimento Humanizado</span>
+              </div>
+              <div class="feature-item">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                <span>Ambiente Acolhedor</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-lg-6 text-center">
-          <img src="assets/img/paginas/unidade-internacao.jpg"
-               alt="Unidade de Internação moderna"
-               class="img-fluid rounded shadow">
+        <div class="col-lg-6">
+          <div class="image-wrapper position-relative">
+            <img src="assets/img/paginas/unidade-internacao.jpg"
+                 alt="Unidade de Internação moderna"
+                 class="img-fluid rounded-4 shadow-lg main-image">
+            <div class="floating-card">
+              <div class="d-flex align-items-center">
+                <div class="icon-circle bg-success me-3">
+                  <i class="fas fa-award text-white"></i>
+                </div>
+                <div>
+                  <div class="fw-bold">Certificação de Qualidade</div>
+                  <small class="text-muted">Padrões internacionais</small>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- UTI Section -->
-  <section class="py-5 bg-light">
+  <section class="py-5 bg-gradient-light">
     <div class="container">
-      <div class="card shadow-sm border-0">
-        <div class="card-body p-5">
-          <div class="icon-circle bg-primary mx-auto mb-4">
-            <i class="fas fa-heartbeat fs-3 text-white"></i>
-          </div>
-          <h3 class="h4 fw-bold text-primary text-center mb-4">UTI - Unidade de Terapia Intensiva</h3>
-          <p class="fs-5 text-secondary text-center mb-5">
-            Com 10 leitos equipados com os mais modernos recursos, a UTI da Santa Casa de Lorena
-            atende aos mais altos padrões de qualidade em medicina intensiva.
-          </p>
+      <div class="card shadow-lg border-0 overflow-hidden">
+        <div class="card-body p-0">
+          <div class="row g-0">
+            <div class="col-lg-6 p-5 d-flex flex-column justify-content-center">
+              <div class="icon-circle bg-primary mx-auto mb-4">
+                <i class="fas fa-heartbeat fs-3 text-white"></i>
+              </div>
+              <h3 class="h3 fw-bold text-primary text-center mb-4">UTI - Unidade de Terapia Intensiva</h3>
+              <p class="fs-5 text-secondary text-center mb-5">
+                Com 10 leitos equipados com os mais modernos recursos, a UTI da Santa Casa de Lorena
+                atende aos mais altos padrões de qualidade em medicina intensiva.
+              </p>
 
-          <div class="row g-4">
-            <div class="col-md-6">
-              <div class="card h-100 shadow-sm card-hover border-0">
-                <div class="card-body p-4 text-center">
-                  <div class="icon-circle bg-primary mb-3 mx-auto">
-                    <i class="fas fa-users text-white fs-4"></i>
+              <div class="row g-3">
+                <div class="col-12">
+                  <div class="feature-card p-4 rounded-3 bg-white shadow-sm">
+                    <div class="d-flex align-items-start">
+                      <div class="icon-circle bg-primary me-3 flex-shrink-0">
+                        <i class="fas fa-users"></i>
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-2">Humanização e Conforto</h6>
+                        <p class="text-secondary small mb-0">
+                          Leitos em boxes individuais, com acesso independente para familiares,
+                          televisores individuais e ambiente acolhedor para recuperação.
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <h5 class="fw-bold mb-2">Humanização e Conforto</h5>
-                  <p class="text-secondary small mb-0">
-                    Leitos em boxes individuais, com acesso independente para familiares,
-                    televisores individuais e ambiente acolhedor para recuperação.
-                  </p>
+                </div>
+
+                <div class="col-12">
+                  <div class="feature-card p-4 rounded-3 bg-white shadow-sm">
+                    <div class="d-flex align-items-start">
+                      <div class="icon-circle bg-primary me-3 flex-shrink-0">
+                        <i class="fas fa-shield-alt"></i>
+                      </div>
+                      <div>
+                        <h6 class="fw-bold mb-2">Tecnologia e Segurança</h6>
+                        <p class="text-secondary small mb-0">
+                          Equipamentos modernos, central de monitoramento e posto de enfermagem com
+                          visualização ampla de todos os leitos.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <div class="col-md-6">
-              <div class="card h-100 shadow-sm card-hover border-0">
-                <div class="card-body p-4 text-center">
-                  <div class="icon-circle bg-primary mb-3 mx-auto">
-                    <i class="fas fa-shield-alt text-white fs-4"></i>
+            <div class="col-lg-6 bg-primary-gradient d-flex align-items-center justify-content-center p-5">
+              <div class="text-center text-dark">
+                <div class="display-1 fw-bold mb-3">10</div>
+                <h4 class="mb-3">Leitos Equipados</h4>
+                <p class="opacity-90">Com tecnologia de ponta para cuidados intensivos</p>
+                <div class="row g-3 mt-4">
+                  <div class="col-6">
+                    <div class="stat-box">
+                      <div class="h4 fw-bold">7</div>
+                      <small>Leitos SUS</small>
+                    </div>
                   </div>
-                  <h5 class="fw-bold mb-2">Tecnologia e Segurança</h5>
-                  <p class="text-secondary small mb-0">
-                    Equipamentos modernos, central de monitoramento e posto de enfermagem com
-                    visualização ampla de todos os leitos.
-                  </p>
+                  <div class="col-6">
+                    <div class="stat-box">
+                      <div class="h4 fw-bold">24h</div>
+                      <small>Monitoramento</small>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -86,27 +169,101 @@
   <!-- Unidades -->
   <section class="py-5 bg-white">
     <div class="container">
-      <h2 class="h1 fw-bold text-center mb-5">Nossas Unidades</h2>
+      <div class="text-center mb-5">
+        <span class="badge bg-primary-light text-primary mb-3 px-3 py-2">
+          <i class="fas fa-building me-2"></i>Nossas Instalações
+        </span>
+        <h2 class="display-5 fw-bold mb-4">Unidades Especializadas</h2>
+        <p class="lead text-secondary">Conheça nossas unidades e suas especialidades</p>
+      </div>
+
       <div class="row g-4">
-        <div class="col-lg-6 col-md-12" *ngFor="let unidade of unidades">
-          <div class="card h-100 shadow-sm card-hover border-0">
+        <div class="col-lg-6 col-md-12" *ngFor="let unidade of unidades; let i = index">
+          <div class="card h-100 shadow-lg card-hover border-0 overflow-hidden modern-card">
+
+            <!-- Slideshow de Imagens -->
+            <div class="image-slideshow position-relative"
+                 (mouseenter)="pauseSlideshow('unidade-' + i)"
+                 (mouseleave)="resumeSlideshow('unidade-' + i, unidade.imagens.length)">
+
+              <div class="slides-container">
+                <div class="slide"
+                     *ngFor="let imagem of unidade.imagens; let slideIndex = index"
+                     [class.active]="getCurrentSlideIndex('unidade-' + i) === slideIndex">
+                  <img [src]="imagem.url"
+                       [alt]="imagem.alt"
+                       class="slide-image">
+                </div>
+              </div>
+
+              <!-- Controles do Slide -->
+              <div class="slide-controls">
+                <button class="slide-btn prev-btn"
+                        (click)="prevSlide('unidade-' + i, unidade.imagens.length)"
+                        type="button">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="slide-btn next-btn"
+                        (click)="nextSlide('unidade-' + i, unidade.imagens.length)"
+                        type="button">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+
+              <!-- Indicadores -->
+              <div class="slide-indicators">
+                <button *ngFor="let imagem of unidade.imagens; let slideIndex = index"
+                        class="indicator"
+                        [class.active]="getCurrentSlideIndex('unidade-' + i) === slideIndex"
+                        (click)="goToSlide('unidade-' + i, slideIndex)"
+                        type="button">
+                </button>
+              </div>
+
+              <!-- Overlay com informações -->
+              <div class="slide-overlay">
+                <div class="slide-info">
+                  <span class="slide-counter">
+                    {{ getCurrentSlideIndex('unidade-' + i) + 1 }} / {{ unidade.imagens.length }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
             <div class="card-body p-4">
-              <div class="d-flex align-items-center mb-3">
-                <div class="icon-circle bg-primary me-3">
-                  <i [class]="unidade.icon" class="fs-4 text-white"></i>
+              <div class="d-flex align-items-start mb-3">
+                <div class="icon-circle bg-primary me-3 flex-shrink-0">
+                  <i [class]="unidade.icon" class="text-white"></i>
                 </div>
-                <h5 class="fw-bold mb-0">{{ unidade.titulo }}</h5>
-              </div>
-              <p class="text-secondary small">{{ unidade.descricao }}</p>
-              <div *ngIf="unidade.informacoes" class="bg-light rounded p-3 mt-3">
-                <div *ngFor="let info of unidade.informacoes" class="mb-2">
-                  <small class="text-muted fw-bold">{{ info.label }}:</small>
-                  <small class="d-block">{{ info.valor }}</small>
+                <div class="flex-grow-1">
+                  <h5 class="fw-bold mb-2 card-title">{{ unidade.titulo }}</h5>
+                  <p class="text-secondary mb-3 card-description">{{ unidade.descricao }}</p>
                 </div>
               </div>
-              <div class="mt-3">
-                <span class="badge bg-primary">{{ unidade.leitos }} leitos</span>
-                <span class="badge bg-secondary ms-2" *ngIf="unidade.leitosSus">{{ unidade.leitosSus }} SUS</span>
+
+              <div *ngIf="unidade.informacoes" class="info-section bg-light rounded-3 p-3 mb-3">
+                <h6 class="fw-bold mb-3 text-primary">
+                  <i class="fas fa-info-circle me-2"></i>Informações Técnicas
+                </h6>
+                <div class="row g-2">
+                  <div *ngFor="let info of unidade.informacoes" class="col-12">
+                    <div class="info-item">
+                      <small class="text-muted fw-bold">{{ info.label }}:</small>
+                      <small class="d-block text-dark">{{ info.valor }}</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="badges">
+                  <span class="badge bg-primary-gradient">
+                    <i class="fas fa-bed me-1"></i>{{ unidade.leitos || 'N/A' }} leitos
+                  </span>
+                  <span class="badge bg-success ms-2" *ngIf="unidade.leitosSus">
+                    <i class="fas fa-heart me-1"></i>{{ unidade.leitosSus }} SUS
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -116,32 +273,58 @@
   </section>
 
   <!-- Estatísticas -->
-  <section class="py-5 bg-light">
+  <section class="py-5 bg-gradient-dark text-white">
     <div class="container">
-      <h2 class="h1 fw-bold text-center mb-5">Nossos Números</h2>
+      <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold mb-4">Nossos Números</h2>
+        <p class="lead opacity-90">Dados que demonstram nossa capacidade e compromisso</p>
+      </div>
+
       <div class="row g-4 text-center">
-        <div class="col-md-3 col-6">
-          <div class="card shadow-sm card-hover border-0 p-4">
-            <h4 class="display-6 fw-bold text-primary">{{ totalLeitos }}</h4>
-            <p class="text-secondary small">Total de Leitos</p>
+        <div class="col-lg-3 col-md-6">
+          <div class="stat-card p-4 rounded-4 bg-white-10 backdrop-blur">
+            <div class="stat-icon mb-3">
+              <i class="fas fa-bed fs-1 text-primary"></i>
+            </div>
+            <h3 class="display-4 fw-bold text-white counter" [attr.data-target]="totalLeitos">
+              {{ totalLeitos }}
+            </h3>            <p class="text-white-75 mb-0">Total de Leitos</p>
+            <small class="text-white-50">Capacidade total de internação</small>
           </div>
         </div>
-        <div class="col-md-3 col-6">
-          <div class="card shadow-sm card-hover border-0 p-4">
-            <h4 class="display-6 fw-bold text-primary">{{ leitosSus }}</h4>
-            <p class="text-secondary small">Leitos SUS</p>
+
+        <div class="col-lg-3 col-md-6">
+          <div class="stat-card p-4 rounded-4 bg-white-10 backdrop-blur">
+            <div class="stat-icon mb-3">
+              <i class="fas fa-heart fs-1 text-success"></i>
+            </div>
+            <h3 class="display-4 fw-bold text-white counter" [attr.data-target]="leitosSus">
+              {{ leitosSus }}
+            </h3>            <p class="text-white-75 mb-0">Leitos SUS</p>
+            <small class="text-white-50">Atendimento público gratuito</small>
           </div>
         </div>
-        <div class="col-md-3 col-6">
-          <div class="card shadow-sm card-hover border-0 p-4">
-            <h4 class="display-6 fw-bold text-primary">{{ apartamentosPrivados }}</h4>
-            <p class="text-secondary small">Apartamentos Privados</p>
+
+        <div class="col-lg-3 col-md-6">
+          <div class="stat-card p-4 rounded-4 bg-white-10 backdrop-blur">
+            <div class="stat-icon mb-3">
+              <i class="fas fa-star fs-1 text-warning"></i>
+            </div>
+            <h3 class="display-4 fw-bold text-white counter" [attr.data-target]="apartamentosPrivados">
+              {{ apartamentosPrivados }}
+            </h3>            <p class="text-white-75 mb-0">Apartamentos Premium</p>
+            <small class="text-white-50">Alto padrão de conforto</small>
           </div>
         </div>
-        <div class="col-md-3 col-6">
-          <div class="card shadow-sm card-hover border-0 p-4">
-            <h4 class="display-6 fw-bold text-primary">10</h4>
-            <p class="text-secondary small">Leitos UTI</p>
+
+        <div class="col-lg-3 col-md-6">
+          <div class="stat-card p-4 rounded-4 bg-white-10 backdrop-blur">
+            <div class="stat-icon mb-3">
+              <i class="fas fa-heartbeat fs-1 text-danger"></i>
+            </div>
+            <h3 class="display-4 fw-bold text-white counter" data-target="10">10</h3>
+            <p class="text-white-75 mb-0">Leitos UTI</p>
+            <small class="text-white-50">Cuidados intensivos 24h</small>
           </div>
         </div>
       </div>
@@ -149,3 +332,4 @@
   </section>
 
 </div>
+

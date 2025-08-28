@@ -37,7 +37,8 @@
           <ng-template #noChildren>
             <a class="nav-link fw-medium"
                [routerLink]="item.path"
-               routerLinkActive="text-primary">
+               routerLinkActive="active"
+               [routerLinkActiveOptions]="{ exact: true }">
               {{ item.name }}
             </a>
           </ng-template>
@@ -46,10 +47,10 @@
 
       <!-- CTA Desktop -->
       <div class="d-none d-lg-flex gap-2">
-        <a routerLink="/" class="btn btn-donation">
+        <!--<a routerLink="/" class="btn btn-donation">
           Doação
-        </a>
-        <a routerLink="/" class="btn btn-exam">
+        </a>-->
+        <a (click)="navigateToExternal('https://1741prd-vivace-portal.cloudmv.com.br:432/login')" class="btn btn-exam">
           Resultado de exames
         </a>
       </div>
@@ -93,10 +94,10 @@
         </ng-container>
 
         <!-- CTA Mobile -->
-        <a class="btn btn-donation mt-3" (click)="navigateTo('/')">
+        <!--<a class="btn btn-donation mt-3" (click)="navigateTo('/')">
           Doação
-        </a>
-        <a class="btn btn-exam mt-2" (click)="navigateTo('/')">
+        </a>-->
+        <a class="btn btn-exam mt-2" (click)="navigateToExternal('https://1741prd-vivace-portal.cloudmv.com.br:432/login')">
           Resultado de exames
         </a>
       </nav>

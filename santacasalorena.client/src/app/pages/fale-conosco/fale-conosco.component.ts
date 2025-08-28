@@ -21,7 +21,7 @@ export class FaleConoscoComponent {
     { icon: 'bi-telephone-fill', title: "Telefone", details: ["(12) 3159-3344", "(12) 3159-3349"], color: "bg-primary" },
     { icon: 'bi-whatsapp', title: "WhatsApp", details: ["(12) 98891-5484", "Ambulatório Convênio"], color: "bg-success" },
     { icon: 'bi-geo-alt-fill', title: "Endereço", details: ["Rua Dom Bosco - 562", "Centro, Lorena/SP"], color: "bg-danger" },
-    { icon: 'bi-envelope-fill', title: "E-mail", details: ["contato@santacasalorena.org.br", "Atendimento geral"], color: "bg-purple" }
+    { icon: 'bi-envelope-fill', title: "E-mail", details: ["contato@santacasalorena.org.br", "Atendimento geral"], color: "bg-info" }
   ];
 
   departments = [
