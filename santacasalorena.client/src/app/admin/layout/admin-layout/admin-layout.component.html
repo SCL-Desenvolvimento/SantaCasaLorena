@@ -95,6 +95,7 @@
                     (markAsRead)="markAsRead($event)"
                     (deleteContact)="handleDelete('contacts', $event)">
       </app-contacts>
+
       <app-home-banner *ngSwitchCase="'homeBanner'"
                        [banners]="homeBanners()"
                        (createBanner)="openEditDialog('homeBanner')"

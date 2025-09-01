@@ -1,6 +1,7 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr'; // <-- import do toastr
+import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
 
 // Services
 import { AgreementService } from '../../../services/agreement.service';
@@ -51,7 +52,7 @@ export class AdminLayoutComponent implements OnInit {
   private transparencyService = inject(TransparencyPortalService);
   private userService = inject(UserService);
   private authService = inject(AuthService);
-  private toastr = inject(ToastrService); // <-- injetando toastr
+  private toastr = inject(ToastrService);
 
   // Estados com Signals
   activeTab = signal<Tab>('dashboard');
@@ -79,7 +80,6 @@ export class AdminLayoutComponent implements OnInit {
     this.loadAllData();
   }
 
-  /** 🔄 Carrega todos os dados das entidades reais (API) */
   private loadAllData() {
     this.newsService.getAll().subscribe({
       next: res => {
@@ -91,7 +91,7 @@ export class AdminLayoutComponent implements OnInit {
         this.updateStats();
         this.toastr.success('Notícias carregadas com sucesso!');
       },
-      error: err => this.toastr.error('Erro ao carregar notícias')
+      error: () => this.toastr.error('Erro ao carregar notícias')
     });
 
     this.agreementService.getAll().subscribe({
@@ -104,7 +104,7 @@ export class AdminLayoutComponent implements OnInit {
         this.updateStats();
         this.toastr.success('Convênios carregados com sucesso!');
       },
-      error: err => this.toastr.error('Erro ao carregar convênios')
+      error: () => this.toastr.error('Erro ao carregar convênios')
     });
 
     this.homeBannerService.getAll().subscribe({
@@ -118,7 +118,7 @@ export class AdminLayoutComponent implements OnInit {
         this.homeBanners.set(res);
         this.toastr.success('Banners carregados com sucesso!');
       },
-      error: err => this.toastr.error('Erro ao carregar banners')
+      error: () => this.toastr.error('Erro ao carregar banners')
     });
 
     this.providerService.getAll().subscribe({
@@ -130,7 +130,7 @@ export class AdminLayoutComponent implements OnInit {
         this.providers.set(res);
         this.toastr.success('Prestadores carregados com sucesso!');
       },
-      error: err => this.toastr.error('Erro ao carregar prestadores')
+      error: () => this.toastr.error('Erro ao carregar prestadores')
     });
 
     this.transparencyService.getAll().subscribe({
@@ -142,7 +142,7 @@ export class AdminLayoutComponent implements OnInit {
         this.transparencyPortal.set(res);
         this.toastr.success('Portais de transparência carregados com sucesso!');
       },
-      error: err => this.toastr.error('Erro ao carregar portais de transparência')
+      error: () => this.toastr.error('Erro ao carregar portais de transparência')
     });
 
     this.userService.getUser().subscribe({
@@ -154,7 +154,7 @@ export class AdminLayoutComponent implements OnInit {
         this.users.set(res);
         this.toastr.success('Usuários carregados com sucesso!');
       },
-      error: err => this.toastr.error('Erro ao carregar usuários')
+      error: () => this.toastr.error('Erro ao carregar usuários')
     });
   }
 
@@ -172,13 +172,23 @@ export class AdminLayoutComponent implements OnInit {
   }
 
   async handleLogout() {
-    try {
-      this.authService.logout();
-      this.router.navigate(['/login']);
-      this.toastr.success('Logout realizado com sucesso!');
-    } catch (err) {
-      console.error('Erro no logout:', err);
-      this.toastr.error('Erro ao fazer logout');
+    const result = await Swal.fire({
+      title: 'Tem certeza?',
+      text: 'Deseja realmente sair do sistema?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, sair',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        this.authService.logout();
+        this.router.navigate(['/login']);
+        this.toastr.success('Logout realizado com sucesso!');
+      } catch {
+        this.toastr.error('Erro ao fazer logout');
+      }
     }
   }
 
@@ -220,14 +230,22 @@ export class AdminLayoutComponent implements OnInit {
       }
 
       this.closeDialog();
-    } catch (err) {
-      console.error('Erro ao salvar:', err);
+    } catch {
       this.toastr.error('Erro ao salvar. Tente novamente.');
     }
   }
 
-  handleDelete(type: string, id: string) {
-    if (!confirm('Tem certeza que deseja excluir?')) return;
+  async handleDelete(type: string, id: string) {
+    const result = await Swal.fire({
+      title: 'Tem certeza?',
+      text: 'Não será possível reverter!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!result.isConfirmed) return;
 
     switch (type) {
       case 'news': this.newsService.delete(id).subscribe(() => { this.loadAllData(); this.toastr.success('Notícia excluída!'); }); break;

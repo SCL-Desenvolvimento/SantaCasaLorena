@@ -38,7 +38,6 @@ export class AuthService {
 
   logout(): void {
     this.clearToken();
-    location.href = '/';
   }
 
   /** ------------------- Token Helpers ------------------- **/
