@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr'; // <-- import do toastr
 
 // Services
 import { AgreementService } from '../../../services/agreement.service';
@@ -50,7 +51,7 @@ export class AdminLayoutComponent implements OnInit {
   private transparencyService = inject(TransparencyPortalService);
   private userService = inject(UserService);
   private authService = inject(AuthService);
-  // TODO: futuramente criar ContactService para não deixar contatos mockados.
+  private toastr = inject(ToastrService); // <-- injetando toastr
 
   // Estados com Signals
   activeTab = signal<Tab>('dashboard');
@@ -80,72 +81,87 @@ export class AdminLayoutComponent implements OnInit {
 
   /** 🔄 Carrega todos os dados das entidades reais (API) */
   private loadAllData() {
-    this.newsService.getAll().subscribe(res => {
-      res = res.map(news => ({
-        ...news,
-        imageUrl: `${environment.imageServerUrl}${news.imageUrl}`,
-      }))
-      this.news.set(res);
-      this.updateStats();
+    this.newsService.getAll().subscribe({
+      next: res => {
+        res = res.map(news => ({
+          ...news,
+          imageUrl: `${environment.imageServerUrl}${news.imageUrl}`,
+        }));
+        this.news.set(res);
+        this.updateStats();
+        this.toastr.success('Notícias carregadas com sucesso!');
+      },
+      error: err => this.toastr.error('Erro ao carregar notícias')
     });
 
-    this.agreementService.getAll().subscribe(res => {
-      res = res.map(conv => ({
-        ...conv,
-        imageUrl: `${environment.imageServerUrl}${conv.imageUrl}`,
-      }))
-
-      this.convenios.set(res);
-      this.updateStats();
+    this.agreementService.getAll().subscribe({
+      next: res => {
+        res = res.map(conv => ({
+          ...conv,
+          imageUrl: `${environment.imageServerUrl}${conv.imageUrl}`,
+        }));
+        this.convenios.set(res);
+        this.updateStats();
+        this.toastr.success('Convênios carregados com sucesso!');
+      },
+      error: err => this.toastr.error('Erro ao carregar convênios')
     });
 
-    this.homeBannerService.getAll().subscribe(res => {
-      res = res.map(ban => ({
-        ...ban,
-        desktopImageUrl: `${environment.imageServerUrl}${ban.desktopImageUrl}`,
-        mobileImageUrl: `${environment.imageServerUrl}${ban.mobileImageUrl}`,
-        tabletImageUrl: `${environment.imageServerUrl}${ban.tabletImageUrl}`
-      }))
-      this.homeBanners.set(res);
+    this.homeBannerService.getAll().subscribe({
+      next: res => {
+        res = res.map(ban => ({
+          ...ban,
+          desktopImageUrl: `${environment.imageServerUrl}${ban.desktopImageUrl}`,
+          mobileImageUrl: `${environment.imageServerUrl}${ban.mobileImageUrl}`,
+          tabletImageUrl: `${environment.imageServerUrl}${ban.tabletImageUrl}`
+        }));
+        this.homeBanners.set(res);
+        this.toastr.success('Banners carregados com sucesso!');
+      },
+      error: err => this.toastr.error('Erro ao carregar banners')
     });
 
-    this.providerService.getAll().subscribe(res => {
-      res = res.map(prov => ({
-        ...prov,
-        imageUrl: `${environment.imageServerUrl}${prov.imageUrl}`,
-      }))
-
-      this.providers.set(res);
+    this.providerService.getAll().subscribe({
+      next: res => {
+        res = res.map(prov => ({
+          ...prov,
+          imageUrl: `${environment.imageServerUrl}${prov.imageUrl}`,
+        }));
+        this.providers.set(res);
+        this.toastr.success('Prestadores carregados com sucesso!');
+      },
+      error: err => this.toastr.error('Erro ao carregar prestadores')
     });
 
-    this.transparencyService.getAll().subscribe(res => {
-      res = res.map(trans => ({
-        ...trans,
-        fileUrl: `${environment.imageServerUrl}${trans.fileUrl}`,
-      }))
-      this.transparencyPortal.set(res);
+    this.transparencyService.getAll().subscribe({
+      next: res => {
+        res = res.map(trans => ({
+          ...trans,
+          fileUrl: `${environment.imageServerUrl}${trans.fileUrl}`,
+        }));
+        this.transparencyPortal.set(res);
+        this.toastr.success('Portais de transparência carregados com sucesso!');
+      },
+      error: err => this.toastr.error('Erro ao carregar portais de transparência')
     });
 
-    this.userService.getUser().subscribe(res => {
-      res = res.map(usu => ({
-        ...usu,
-        photoUrl: `${environment.imageServerUrl}${usu.photoUrl}`,
-      }))
-
-      this.users.set(res);
+    this.userService.getUser().subscribe({
+      next: res => {
+        res = res.map(usu => ({
+          ...usu,
+          photoUrl: `${environment.imageServerUrl}${usu.photoUrl}`,
+        }));
+        this.users.set(res);
+        this.toastr.success('Usuários carregados com sucesso!');
+      },
+      error: err => this.toastr.error('Erro ao carregar usuários')
     });
-
-    // TODO: substituir por contactService quando implementado
-    // this.contactService.getAll().subscribe(res => {
-    //   this.contacts.set(res);
-    //   this.updateStats();
-    // });
   }
 
   private updateStats() {
     this.stats.set({
       totalNews: this.news().length,
-      totalServices: 0, // aqui entraria se você tiver ServiceService
+      totalServices: 0,
       totalConvenios: this.convenios().length,
       unreadContacts: this.contacts().filter(c => !c.is_read).length
     });
@@ -158,9 +174,11 @@ export class AdminLayoutComponent implements OnInit {
   async handleLogout() {
     try {
       this.authService.logout();
-      this.router.navigate(['/admin/login']);
+      this.router.navigate(['/login']);
+      this.toastr.success('Logout realizado com sucesso!');
     } catch (err) {
       console.error('Erro no logout:', err);
+      this.toastr.error('Erro ao fazer logout');
     }
   }
 
@@ -183,28 +201,28 @@ export class AdminLayoutComponent implements OnInit {
 
       if (item) {
         switch (type) {
-          case 'news': this.newsService.update(item.id, data).subscribe(() => this.loadAllData()); break;
-          case 'convenios': this.agreementService.update(item.id, data).subscribe(() => this.loadAllData()); break;
-          case 'homeBanner': this.homeBannerService.update(item.id, data).subscribe(() => this.loadAllData()); break;
-          case 'provider': this.providerService.update(item.id, data).subscribe(() => this.loadAllData()); break;
-          case 'transparencyPortal': this.transparencyService.update(item.id, data).subscribe(() => this.loadAllData()); break;
-          case 'user': this.userService.updateUser(item.id, data).subscribe(() => this.loadAllData()); break;
+          case 'news': this.newsService.update(item.id, data).subscribe(() => { this.loadAllData(); this.toastr.success('Notícia atualizada!'); }); break;
+          case 'convenios': this.agreementService.update(item.id, data).subscribe(() => { this.loadAllData(); this.toastr.success('Convênio atualizado!'); }); break;
+          case 'homeBanner': this.homeBannerService.update(item.id, data).subscribe(() => { this.loadAllData(); this.toastr.success('Banner atualizado!'); }); break;
+          case 'provider': this.providerService.update(item.id, data).subscribe(() => { this.loadAllData(); this.toastr.success('Prestador atualizado!'); }); break;
+          case 'transparencyPortal': this.transparencyService.update(item.id, data).subscribe(() => { this.loadAllData(); this.toastr.success('Portal de transparência atualizado!'); }); break;
+          case 'user': this.userService.updateUser(item.id, data).subscribe(() => { this.loadAllData(); this.toastr.success('Usuário atualizado!'); }); break;
         }
       } else {
         switch (type) {
-          case 'news': this.newsService.create(data).subscribe(() => this.loadAllData()); break;
-          case 'convenios': this.agreementService.create(data).subscribe(() => this.loadAllData()); break;
-          case 'homeBanner': this.homeBannerService.create(data).subscribe(() => this.loadAllData()); break;
-          case 'provider': this.providerService.create(data).subscribe(() => this.loadAllData()); break;
-          case 'transparencyPortal': this.transparencyService.create(data).subscribe(() => this.loadAllData()); break;
-          case 'user': this.userService.createUser(data).subscribe(() => this.loadAllData()); break;
+          case 'news': this.newsService.create(data).subscribe(() => { this.loadAllData(); this.toastr.success('Notícia criada!'); }); break;
+          case 'convenios': this.agreementService.create(data).subscribe(() => { this.loadAllData(); this.toastr.success('Convênio criado!'); }); break;
+          case 'homeBanner': this.homeBannerService.create(data).subscribe(() => { this.loadAllData(); this.toastr.success('Banner criado!'); }); break;
+          case 'provider': this.providerService.create(data).subscribe(() => { this.loadAllData(); this.toastr.success('Prestador criado!'); }); break;
+          case 'transparencyPortal': this.transparencyService.create(data).subscribe(() => { this.loadAllData(); this.toastr.success('Portal de transparência criado!'); }); break;
+          case 'user': this.userService.createUser(data).subscribe(() => { this.loadAllData(); this.toastr.success('Usuário criado!'); }); break;
         }
       }
 
       this.closeDialog();
     } catch (err) {
       console.error('Erro ao salvar:', err);
-      alert('Erro ao salvar. Tente novamente.');
+      this.toastr.error('Erro ao salvar. Tente novamente.');
     }
   }
 
@@ -212,18 +230,16 @@ export class AdminLayoutComponent implements OnInit {
     if (!confirm('Tem certeza que deseja excluir?')) return;
 
     switch (type) {
-      case 'news': this.newsService.delete(id).subscribe(() => this.loadAllData()); break;
-      case 'convenios': this.agreementService.delete(id).subscribe(() => this.loadAllData()); break;
-      case 'homeBanner': this.homeBannerService.delete(id).subscribe(() => this.loadAllData()); break;
-      case 'provider': this.providerService.delete(id).subscribe(() => this.loadAllData()); break;
-      case 'transparencyPortal': this.transparencyService.delete(id).subscribe(() => this.loadAllData()); break;
-      case 'user': this.userService.deleteUser(id).subscribe(() => this.loadAllData()); break;
-      // TODO: quando implementar ContactService -> case 'contacts': this.contactService.delete(id)...
+      case 'news': this.newsService.delete(id).subscribe(() => { this.loadAllData(); this.toastr.success('Notícia excluída!'); }); break;
+      case 'convenios': this.agreementService.delete(id).subscribe(() => { this.loadAllData(); this.toastr.success('Convênio excluído!'); }); break;
+      case 'homeBanner': this.homeBannerService.delete(id).subscribe(() => { this.loadAllData(); this.toastr.success('Banner excluído!'); }); break;
+      case 'provider': this.providerService.delete(id).subscribe(() => { this.loadAllData(); this.toastr.success('Prestador excluído!'); }); break;
+      case 'transparencyPortal': this.transparencyService.delete(id).subscribe(() => { this.loadAllData(); this.toastr.success('Portal de transparência excluído!'); }); break;
+      case 'user': this.userService.deleteUser(id).subscribe(() => { this.loadAllData(); this.toastr.success('Usuário excluído!'); }); break;
     }
   }
 
   markAsRead(id: string) {
-    // TODO: implementar via ContactService
     console.warn("TODO: criar ContactService e implementar markAsRead");
   }
 }

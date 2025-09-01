@@ -23,6 +23,6 @@ export class UsersComponent {
   }
 
   onDeleteUser(id: string) {
-    this.deleteUser.emit(id); // ✅ sempre ID
+    this.deleteUser.emit(id);
   }
 }
