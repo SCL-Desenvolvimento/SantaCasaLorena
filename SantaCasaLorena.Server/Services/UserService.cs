@@ -26,8 +26,6 @@ namespace SantaCasaLorena.Server.Services
                     Id = u.Id,
                     Username = u.Username,
                     Email = u.Email,
-                    UserType = u.UserType,
-                    Department = u.Department,
                     PhotoUrl = u.PhotoUrl
                 })
                 .ToListAsync();
@@ -42,8 +40,6 @@ namespace SantaCasaLorena.Server.Services
                     Id = u.Id,
                     Username = u.Username,
                     Email = u.Email,
-                    UserType = u.UserType,
-                    Department = u.Department,
                     PhotoUrl = u.PhotoUrl
                 })
                 .FirstOrDefaultAsync();
@@ -56,8 +52,6 @@ namespace SantaCasaLorena.Server.Services
                 Username = dto.Username,
                 Email = dto.Email,
                 PasswordHash = _passwordHasher.HashPassword(null!, dto.Password ?? "SantaCasa123"),
-                UserType = dto.UserType,
-                Department = dto.Department,
                 PhotoUrl = dto.File == null ? "Uploads/Usuarios/padrao.png" : await ProcessarMidiasAsync(dto.File)
             };
 
@@ -69,22 +63,16 @@ namespace SantaCasaLorena.Server.Services
                 Id = entity.Id,
                 Username = entity.Username,
                 Email = entity.Email,
-                UserType = entity.UserType,
-                Department = entity.Department,
                 PhotoUrl = entity.PhotoUrl
             };
         }
 
         public async Task<UserResponseDto> UpdateAsync(Guid id, UserRequestDto dto)
         {
-            var entity = await _context.Users.FindAsync(id);
-            if (entity == null) 
-                throw new Exception("Usuário não encontrado");
-
+            var entity = await _context.Users.FindAsync(id) ?? throw new Exception("Usuário não encontrado");
+            
             entity.Username = dto.Username;
             entity.Email = dto.Email;
-            entity.UserType = dto.UserType;
-            entity.Department = dto.Department;
 
             if (!string.IsNullOrEmpty(dto.Password))
                 _passwordHasher.HashPassword(null!, dto.Password);
@@ -112,8 +100,6 @@ namespace SantaCasaLorena.Server.Services
                 Id = entity.Id,
                 Username = entity.Username,
                 Email = entity.Email,
-                UserType = entity.UserType,
-                Department = entity.Department,
                 PhotoUrl = entity.PhotoUrl
             };
         }

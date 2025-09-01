@@ -9,7 +9,6 @@ export interface JwtPayload {
   email: string;
   username: string;
   role: string;
-  department: string;
   [key: string]: any;
 }
 
@@ -23,22 +22,17 @@ export class AuthService {
   /** ------------------- Auth Methods ------------------- **/
 
   login(userName: string, password: string): Observable<any> {
-    return this.http.post<{ precisaTrocarSenha: false; userId: number; token: string }>(`${this.apiUrl}/login`, { userName, password })
+    return this.http.post<{ userId: number; token: string }>(`${this.apiUrl}/login`, { userName, password })
       .pipe(
         tap(res => {
-          if (!res.precisaTrocarSenha) {
-            // guarda token quando login válido
-            this.storeToken(res.token)
-          } else {
-            // garante que não fique token inválido
-            this.clearToken();
-          }
+          // guarda token direto após login válido
+          this.storeToken(res.token);
         })
       );
   }
 
-  register(email: string, password: string): Observable<any> {
-    return this.http.post<{ token?: string }>(`${this.apiUrl}/register`, { email, password })
+  register(user: FormData): Observable<any> {
+    return this.http.post<{ token?: string }>(`${this.apiUrl}/register`, user)
       .pipe(tap(res => res.token && this.storeToken(res.token)));
   }
 

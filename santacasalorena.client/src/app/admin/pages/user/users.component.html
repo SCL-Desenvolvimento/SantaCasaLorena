@@ -16,13 +16,12 @@
         <div class="flex-grow-1">
           <h5 class="fw-semibold mb-1">{{ user.username }}</h5>
           <p class="text-muted small mb-1">{{ user.email }}</p>
-          <p class="text-muted small mb-1">Tipo: {{ user.userType }}</p>
-          <p class="text-muted small mb-1" *ngIf="user.department">Departamento: {{ user.department }}</p>
         </div>
 
         <!-- Foto -->
         <div *ngIf="user.photoUrl" class="ms-3">
-          <img [src]="user.photoUrl" alt="{{ user.username }}" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+          <img [src]="user.photoUrl" alt="{{ user.username }}" class="rounded-circle"
+               style="width: 60px; height: 60px; object-fit: cover;">
         </div>
 
         <!-- Ações -->

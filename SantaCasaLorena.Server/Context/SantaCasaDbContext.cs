@@ -26,7 +26,6 @@ namespace SantaCasaLorena.Server.Context
                 entity.Property(u => u.Username).HasMaxLength(100).IsRequired();
                 entity.Property(u => u.Email).HasMaxLength(200).IsRequired();
                 entity.Property(u => u.PasswordHash).IsRequired();
-                entity.Property(u => u.UserType).HasMaxLength(50).IsRequired();
             });
 
             // NEWS

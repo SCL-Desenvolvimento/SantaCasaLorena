@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SantaCasaLorena.Server.DTOs;
 using SantaCasaLorena.Server.Interfaces;
 
@@ -30,6 +31,7 @@ namespace SantaCasaLorena.Server.Controllers
             return Ok(item);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<NewsResponseDto>> Create(NewsRequestDto dto)
         {
@@ -38,6 +40,7 @@ namespace SantaCasaLorena.Server.Controllers
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
+        [Authorize]
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<NewsResponseDto>> Update(Guid id, NewsRequestDto dto)
         {
@@ -46,6 +49,7 @@ namespace SantaCasaLorena.Server.Controllers
             return Ok(updated);
         }
 
+        [Authorize]
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult> Delete(Guid id)
         {

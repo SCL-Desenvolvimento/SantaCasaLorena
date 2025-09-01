@@ -22,8 +22,8 @@ import { EntityDialogComponent } from './components/entity-dialog/entity-dialog.
 import { HomeBannerComponent } from './pages/home-banner/home-banner.component';
 import { ProviderComponent } from './pages/provider/provider.component';
 import { TransparencyPortalComponent } from './pages/transparency-portal/transparency-portal.component';
-import { UsersComponent } from './pages/user/user.component';
-//import { AuthInterceptor } from '../guards/auth.interceptor';
+import { UsersComponent } from './pages/user/users.component';
+import { AuthInterceptor } from '../guards/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -49,10 +49,10 @@ import { UsersComponent } from './pages/user/user.component';
     QuillModule.forRoot()
   ],
   providers: [
-    //{
-    //  provide: HTTP_INTERCEPTORS,
-    //  useClass: AuthInterceptor, multi: true
-    //}
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor, multi: true
+    }
   ]
 })
 export class AdminModule { }

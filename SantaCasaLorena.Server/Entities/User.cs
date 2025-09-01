@@ -7,8 +7,6 @@
         public required string Username { get; set; }
         public required string Email { get; set; }
         public required string PasswordHash { get; set; } 
-        public required string UserType { get; set; }
-        public string? Department { get; set; }
         public string? PhotoUrl { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

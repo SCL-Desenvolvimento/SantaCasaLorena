@@ -36,8 +36,6 @@ namespace SantaCasaLorena.Server.Controllers
             {
                 Email = dto.Email,
                 Username = dto.Username,
-                UserType = dto.UserType,
-                Department = dto.Department,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
                 PhotoUrl = dto.File == null ? "Uploads/Usuarios/padrao.png" : await ProcessarMidiasAsync(dto.File),
@@ -54,7 +52,8 @@ namespace SantaCasaLorena.Server.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == dto.UserName);
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == dto.UserName);
 
             if (user == null)
                 return Unauthorized("Usuário não encontrado.");
@@ -64,47 +63,35 @@ namespace SantaCasaLorena.Server.Controllers
             if (result != PasswordVerificationResult.Success)
                 return Unauthorized("Senha inválida.");
 
-            // Verifica se ainda é a senha padrão "MV"
-            bool precisaTrocarSenha = _passwordHasher.VerifyHashedPassword(null!, user.PasswordHash, "MV")
-                                        == PasswordVerificationResult.Success;
-
-            if (precisaTrocarSenha)
-            {
-                // NÃO gera token ainda
-                return Ok(new { precisaTrocarSenha = true, userId = user.Id });
-            }
-
-            // Se já alterou a senha, então gera o token normalmente
+            // Gera o token diretamente
             var token = GenerateJwtToken(user);
 
-            return Ok(new { token, precisaTrocarSenha = false, userId = user.Id });
+            return Ok(new { userId = user.Id, token });
         }
-
+         
         private string GenerateJwtToken(User user)
         {
-            var claims = new List<Claim>
+            if (string.IsNullOrWhiteSpace(_config["Jwt:Key"]) ||
+                string.IsNullOrWhiteSpace(_config["Jwt:Issuer"]) ||
+                string.IsNullOrWhiteSpace(_config["Jwt:Audience"]))
             {
-                new("id", user.Id.ToString()),
-                new("email", user.Email ?? ""),
-                new("username", user.Username),
-                new("department", user.Department),
-                new("role", user.UserType),
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                throw new InvalidOperationException("JWT configuration is missing in appsettings.json.");
+            }
+
+            var claims = new[]
+            {
+                new Claim("id", user.Id.ToString()),
+                new Claim("email", user.Email ?? string.Empty),
+                new Claim("username", user.Username),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            var secretKey = _config["Jwt:Key"];
-            var issuer = _config["Jwt:Issuer"];
-            var audience = _config["Jwt:Audience"];
-
-            if (string.IsNullOrEmpty(secretKey) || string.IsNullOrEmpty(issuer) || string.IsNullOrEmpty(audience))
-                throw new InvalidOperationException("JWT configuration is missing in appsettings.");
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: issuer,
-                audience: audience,
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(2),
                 signingCredentials: creds
@@ -112,7 +99,6 @@ namespace SantaCasaLorena.Server.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
 
         private static async Task<string> ProcessarMidiasAsync(IFormFile midia)
         {

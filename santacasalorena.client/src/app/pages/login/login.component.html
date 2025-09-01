@@ -1,0 +1,62 @@
+<div class="login-container">
+  <div class="login-card">
+    <!-- Logo da Santa Casa de Lorena -->
+    <div class="logo-container">
+      <img src="assets/img/logo/logo.svg" alt="Logo Santa Casa de Lorena" class="logo-image">
+    </div>
+
+    <h2 class="login-title">Área reservada</h2>
+
+    <form (ngSubmit)="onLogin()" #loginForm="ngForm" class="login-form">
+      <div class="form-group">
+        <label for="username" class="sr-only">Usuário</label>
+        <div class="input-container">
+          <input id="username"
+                 type="text"
+                 placeholder="Usuário"
+                 [(ngModel)]="username"
+                 name="username"
+                 required
+                 class="form-input"
+                 [class.error]="usernameError"
+                 autocomplete="username">
+          <span class="input-icon user-icon">👤</span>
+        </div>
+        <div class="error-message" *ngIf="usernameError">{{ usernameError }}</div>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="sr-only">Senha</label>
+        <div class="input-container">
+          <input id="password"
+                 type="password"
+                 placeholder="Senha"
+                 [(ngModel)]="password"
+                 name="password"
+                 required
+                 class="form-input"
+                 [class.error]="passwordError"
+                 autocomplete="current-password">
+          <span class="input-icon lock-icon">🔒</span>
+        </div>
+        <div class="error-message" *ngIf="passwordError">{{ passwordError }}</div>
+      </div>
+
+      <button type="submit"
+              class="login-button"
+              [disabled]="isLoading"
+              [class.loading]="isLoading">
+        <span *ngIf="!isLoading">ENTRAR</span>
+        <span *ngIf="isLoading" class="loading-spinner">⟳</span>
+      </button>
+    </form>
+
+    <a href="#" (click)="onForgotPassword($event)" class="forgot-password-link">
+      Esqueci Minha Senha
+    </a>
+  </div>
+</div>
+
+<app-forgot-password *ngIf="showForgotPassword"
+                     (close)="closeForgotPassword()">
+</app-forgot-password>

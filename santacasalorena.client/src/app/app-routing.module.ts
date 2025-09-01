@@ -4,8 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 // Importar todos os componentes de página
 import { HomeComponent } from './pages/home/home.component';
 import { SobreComponent } from './pages/sobre/sobre.component';
-import { InstalacoesComponent } from './pages/instalacoes/instalacoes.component';
-import { ServicosComponent } from './pages/servicos/servicos.component';
 import { NoticiasComponent } from './pages/noticias/noticias.component';
 import { FaleConoscoComponent } from './pages/fale-conosco/fale-conosco.component';
 import { PublicLayoutComponent } from './layout/public-layout/public-layout.component';
@@ -25,8 +23,8 @@ import { CapacidadeInstalacaoEProducaoComponent } from './pages/capacidade-insta
 import { ManualDoPacienteEVisitantesComponent } from './pages/manual-do-paciente-e-visitante/manual-do-paciente-e-visitante.component';
 import { EmendasComponent } from './pages/emendas/emendas.component';
 import { NewsDetailComponent } from './pages/news-detail/news-detail.component';
-//import { AuthGuard } from './guards/auth.guard';
-//import { RoleGuard } from './guards/role.guard';
+import { LoginComponent } from './pages/login/login.component';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -35,8 +33,6 @@ const routes: Routes = [
     children: [
       { path: '', component: HomeComponent },
       { path: 'sobre', component: SobreComponent },
-      { path: 'instalacoes', component: InstalacoesComponent },
-      { path: 'servicos', component: ServicosComponent },
       { path: 'noticias', component: NoticiasComponent },
       { path: 'noticia/:id', component: NewsDetailComponent },
       { path: 'fale-conosco', component: FaleConoscoComponent },
@@ -57,10 +53,14 @@ const routes: Routes = [
     ]
   },
   {
+    path: 'login',
+    children: [{ path: '', component: LoginComponent }]
+  },
+  {
     path: 'admin',
     component: AdminLayoutComponent,
-    //canActivate: [AuthGuard, RoleGuard],
-    //data: { expectedRole: 'admin' },
+    canActivate: [AuthGuard],
+    data: { expectedRole: 'admin' },
     children: [
       {
         path: '',

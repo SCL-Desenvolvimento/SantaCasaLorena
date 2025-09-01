@@ -4,7 +4,7 @@
 :root {
   --primary-color: #22BCEE;
   --primary-light: rgba(34, 188, 238, 0.1);
-  --primary-gradient: linear-gradient(135deg, #22BCEE 0%, #1E90FF 100%);
+  --primary-gradient: linear-gradient(135deg, #22BCEE, #22BCEE);
   --success-color: #28a745;
   --warning-color: #ffc107;
   --danger-color: #dc3545;
@@ -21,7 +21,7 @@
    Hero Section Melhorado
    ============================= */
 .hero-gradient {
-  background: linear-gradient(135deg, #22BCEE 0%, #1E90FF 50%, #4169E1 100%);
+  background: linear-gradient(135deg, #22BCEE, #22BCEE);
   background-size: 200% 200%;
   animation: gradientShift 8s ease infinite;
   position: relative;

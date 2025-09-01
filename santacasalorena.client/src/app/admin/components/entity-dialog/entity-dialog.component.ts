@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-entity-dialog',
@@ -28,7 +29,7 @@ export class EntityDialogComponent implements OnChanges {
 
   form!: FormGroup;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private toastrService: ToastrService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['formData'] || changes['activeTab']) {
@@ -44,7 +45,7 @@ export class EntityDialogComponent implements OnChanges {
           description: [this.formData?.description || '', Validators.required],
           content: [this.formData?.content || '', Validators.required],
           category: [this.formData?.category || '', Validators.required],
-          file: [null],
+          file: [null, this.editingItem ? [] : [Validators.required]],
           isPublished: [this.formData?.isPublished ?? false]
         });
         break;
@@ -52,7 +53,7 @@ export class EntityDialogComponent implements OnChanges {
       case 'convenios':
         this.form = this.fb.group({
           name: [this.formData?.name || '', Validators.required],
-          file: [null],
+          file: [null, this.editingItem ? [] : [Validators.required]]
         });
         break;
 
@@ -71,7 +72,7 @@ export class EntityDialogComponent implements OnChanges {
         this.form = this.fb.group({
           title: [this.formData?.title || '', Validators.required],
           content: [this.formData?.content || '', Validators.required],
-          file: [null]
+          file: [null, this.editingItem ? [] : [Validators.required]]
         });
         break;
 
@@ -88,7 +89,7 @@ export class EntityDialogComponent implements OnChanges {
         this.form = this.fb.group({
           name: [this.formData?.name || '', Validators.required],
           type: [this.formData?.type || '', Validators.required],
-          file: [null]
+          file: [null, this.editingItem ? [] : [Validators.required]]
         });
         break;
 
@@ -109,8 +110,7 @@ export class EntityDialogComponent implements OnChanges {
         this.form = this.fb.group({
           username: [this.formData?.username || '', Validators.required],
           email: [this.formData?.email || '', [Validators.required, Validators.email]],
-          userType: [this.formData?.userType || '', Validators.required],
-          department: [this.formData?.department || ''],
+          password: ['', this.editingItem ? [] : [Validators.required]],
           file: [null]
         });
         break;
@@ -139,9 +139,11 @@ export class EntityDialogComponent implements OnChanges {
         }
       }
 
+      this.toastrService.success('Registro salvo com sucesso!', this.tabLabels[this.activeTab]);
       this.save.emit(formData);
     } else {
       this.form.markAllAsTouched();
+      this.toastrService.error('Preencha todos os campos obrigatórios!', 'Erro de Validação');
     }
   }
 }
