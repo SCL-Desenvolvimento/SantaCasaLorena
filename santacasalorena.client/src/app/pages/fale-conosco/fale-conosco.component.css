@@ -1,48 +1,52 @@
 /* Hero moderno */
 .hero-section {
-  background: linear-gradient(135deg, #22BCEE, #22BCEE);
+  background: linear-gradient(135deg, #22BCEE, #0b5ed7);
   color: #fff;
-  padding: 4rem 0;
+  min-height: 35vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
 }
 
   .hero-section h1 {
     font-weight: 700;
+    margin-bottom: 0.5rem;
   }
 
   .hero-section p {
+    font-size: 1.2rem;
     opacity: 0.85;
+  }
+
+  .hero-section i {
+    margin-top: 1rem;
+    font-size: 3rem;
   }
 
 /* Cartões */
 .card {
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
   .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   }
 
 /* Ícones circulares */
 .icon-wrapper {
   width: 60px;
   height: 60px;
+  font-size: 1.5rem;
 }
-
-/* Hover nos contatos */
-.hover-scale {
-  transition: transform 0.3s ease;
-}
-
-  .hover-scale:hover {
-    transform: translateY(-4px);
-  }
 
 /* Botões */
 .btn {
   border-radius: 0.5rem;
   font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .btn-primary {
@@ -55,7 +59,7 @@
   }
 
 .btn-outline-primary:hover {
-  background-color: #0d6efd;
+  background-color: #22BCEE;
   color: #fff;
 }
 
@@ -67,14 +71,14 @@ form label {
 
 form .form-control {
   border-radius: 0.5rem;
-  padding: 0.6rem 0.75rem;
+  padding: 0.65rem 0.75rem;
   border: 1px solid #dee2e6;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 
   form .form-control:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+    border-color: #22BCEE;
+    box-shadow: 0 0 0 0.15rem rgba(34, 188, 238, 0.25);
   }
 
 /* Textarea */
@@ -105,7 +109,15 @@ textarea {
     font-size: 1.8rem;
   }
 
+  .hero-section i {
+    font-size: 2.5rem;
+  }
+
   .card {
     margin-bottom: 1rem;
+  }
+
+  form button {
+    font-size: 0.9rem;
   }
 }

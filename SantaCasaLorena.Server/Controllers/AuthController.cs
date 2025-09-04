@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using SantaCasaLorena.Server.Context;
 using SantaCasaLorena.Server.DTOs;
 using SantaCasaLorena.Server.Entities;
+using SantaCasaLorena.Server.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -18,12 +19,14 @@ namespace SantaCasaLorena.Server.Controllers
         private readonly SantaCasaDbContext _context;
         private readonly IConfiguration _config;
         private readonly IPasswordHasher<object> _passwordHasher;
+        private readonly IEmailService _emailService;
 
-        public AuthController(SantaCasaDbContext context, IConfiguration config, IPasswordHasher<object> passwordHasher)
+        public AuthController(SantaCasaDbContext context, IConfiguration config, IPasswordHasher<object> passwordHasher, IEmailService emailService)
         {
             _context = context;
             _config = config;
             _passwordHasher = passwordHasher;
+            _emailService = emailService;
         }
 
         [HttpPost("register")]
@@ -68,7 +71,48 @@ namespace SantaCasaLorena.Server.Controllers
 
             return Ok(new { userId = user.Id, token });
         }
-         
+
+        [HttpPost("recuperar-senha")]
+        public async Task<IActionResult> RecuperarSenha([FromBody] string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null)
+                return NotFound("Usuário não encontrado com este e-mail.");
+
+            // Gera nova senha temporária
+            var novaSenha = Guid.NewGuid().ToString("N")[..8]; // 8 caracteres
+
+            // Atualiza hash da senha
+            user.PasswordHash = _passwordHasher.HashPassword(null!, novaSenha);
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            // Corpo do e-mail
+            var corpo = $@"
+                        <h3>Recuperação de Senha</h3>
+                        <p>Olá <b>{user.Username}</b>,</p>
+                        <p>Sua nova senha temporária é:</p>
+                        <p style='font-size:18px; font-weight:bold; color:#2c3e50'>{novaSenha}</p>
+                        <p>Recomendamos alterá-la após o login.</p>";
+
+            var emailDto = new EmailDto()
+            {
+                Destinatario = user.Email!,
+                Assunto = "Recuperação de Senha - Santa Casa",
+                CorpoHtml = corpo
+            };
+
+            // Envia o e-mail
+            var enviado = await _emailService.EnviarEmailAsync(emailDto);
+
+            if (!enviado)
+                return StatusCode(500, "Erro ao enviar o e-mail de recuperação.");
+
+            return Ok("Uma nova senha foi enviada para o seu e-mail.");
+        }
+
         private string GenerateJwtToken(User user)
         {
             if (string.IsNullOrWhiteSpace(_config["Jwt:Key"]) ||

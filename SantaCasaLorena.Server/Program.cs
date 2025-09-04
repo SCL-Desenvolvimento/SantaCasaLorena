@@ -11,6 +11,13 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Carrega appsettings.json + appsettings.{Environment}.json
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
 // Add services to the container.
 builder.Services.AddDbContext<SantaCasaDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("SantaCasaLorenaConnectionString"),
@@ -59,6 +66,9 @@ builder.Services.AddScoped<IHomeBannerService, HomeBannerService>();
 builder.Services.AddScoped<IAgreementService, AgreementService>();
 builder.Services.AddScoped<IProviderService, ProviderService>();
 builder.Services.AddScoped<ITransparencyPortalService, TransparencyPortalService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+builder.Services.AddHttpClient<RecaptchaService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

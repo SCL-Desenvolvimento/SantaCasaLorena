@@ -7,6 +7,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import localePt from '@angular/common/locales/pt';
 registerLocaleData(localePt);
+import { RecaptchaModule } from "ng-recaptcha-2";
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -77,8 +78,8 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
       timeOut: 3000,
       positionClass: 'toast-bottom-right',
       preventDuplicates: true,
-    })
-
+    }),
+    RecaptchaModule
   ],
   providers: [
     {

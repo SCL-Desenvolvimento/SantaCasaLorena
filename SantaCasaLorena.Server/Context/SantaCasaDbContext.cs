@@ -13,6 +13,9 @@ namespace SantaCasaLorena.Server.Context
         public DbSet<News> News { get; set; }
         public DbSet<Provider> Providers { get; set; }
         public DbSet<TransparencyPortal> TransparencyPortals { get; set; }
+        public DbSet<Feedback> Ouvidorias { get; set; }
+        public DbSet<JobApplication> TrabalheConosco { get; set; }
+        public DbSet<ServiceSurvey> Pesquisas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
