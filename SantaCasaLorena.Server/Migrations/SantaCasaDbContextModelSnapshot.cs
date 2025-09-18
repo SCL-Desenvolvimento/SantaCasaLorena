@@ -45,6 +45,46 @@ namespace SantaCasaLorena.Server.Migrations
                     b.ToTable("Agreements");
                 });
 
+            modelBuilder.Entity("SantaCasaLorena.Server.Entities.Feedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ouvidorias");
+                });
+
             modelBuilder.Entity("SantaCasaLorena.Server.Entities.HomeBanner", b =>
                 {
                     b.Property<Guid>("Id")
@@ -80,6 +120,37 @@ namespace SantaCasaLorena.Server.Migrations
                     b.HasIndex("NewsId");
 
                     b.ToTable("HomeBanners");
+                });
+
+            modelBuilder.Entity("SantaCasaLorena.Server.Entities.JobApplication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ResumeUrl")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TrabalheConosco");
                 });
 
             modelBuilder.Entity("SantaCasaLorena.Server.Entities.News", b =>
@@ -152,6 +223,53 @@ namespace SantaCasaLorena.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Providers");
+                });
+
+            modelBuilder.Entity("SantaCasaLorena.Server.Entities.ServiceSurvey", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comments")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Experience")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("InformationClarity")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ProblemResolution")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("QuestionsAnswered")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("ServiceRating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StaffPreparedness")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("WaitingTime")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pesquisas");
                 });
 
             modelBuilder.Entity("SantaCasaLorena.Server.Entities.TransparencyPortal", b =>

@@ -89,27 +89,29 @@
 
   <!-- Provedores - Linha do Tempo -->
   <section class="py-5 bg-light">
-    <div class="container">
+    <div class="container-fluid px-3 px-md-4 px-lg-5">
       <h2 class="h1 fw-bold text-center mb-5">Provedores ao Longo da História</h2>
-      <div class="timeline mx-auto">
-        <div class="timeline-line"></div>
-        <div class="timeline-item" *ngFor="let item of providers; let i = index"
-             [ngClass]="{'flex-row-reverse': i % 2}">
-          <div class="timeline-dot">
-            <img *ngIf="item.imageUrl" [src]="item.imageUrl" alt="{{ item.name }}" class="timeline-avatar">
-          </div>
-          <div class="timeline-content card shadow-sm border-0">
-            <div class="card-body p-4">
-              <span class="badge bg-primary fw-bold mb-2">
+
+      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3 g-md-4">
+        <div class="col" *ngFor="let item of providers">
+          <div class="card h-100 border-0 shadow-sm provider-card mx-1">
+            <div class="card-body text-center p-3 p-md-4">
+              <div class="provider-image mb-3 mx-auto" style="width: 80px; height: 80px;">
+                <img *ngIf="item.imageUrl" [src]="item.imageUrl" alt="{{ item.name }}" class="rounded-circle w-100 h-100">
+                <div *ngIf="!item.imageUrl" class="placeholder-image rounded-circle d-flex align-items-center justify-content-center w-100 h-100">
+                  <i class="bi bi-person-fill"></i>
+                </div>
+              </div>
+              <span class="badge bg-primary fw-bold mb-2 d-inline-block">
                 {{ item.startYear }} - {{ item.endYear || 'Atualmente' }}
               </span>
-              <h3 class="h5 fw-bold mb-2">{{ item.name }}</h3>
-              <!--<p class="text-secondary mb-0" *ngIf="item.descricao">{{ item.descricao }}</p>-->
+              <h3 class="h6 fw-bold mb-0">{{ item.name }}</h3>
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
+
 </div>
 
