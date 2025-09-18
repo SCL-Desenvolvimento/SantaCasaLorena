@@ -37,9 +37,7 @@ import { ManualDoPacienteEVisitantesComponent } from './pages/manual-do-paciente
 import { EmendasComponent } from './pages/emendas/emendas.component';
 import { LoginComponent } from './pages/login/login.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
-import { DonationFormComponent } from './components/donation-form/donation-form.component';
-import { DonationInfoComponent } from './components/donation-info/donation-info.component';
-import { PaymentComponent } from './components/payment/payment.component';
+import { PaymentComponent } from './pages/payment/payment.component';
 import { DoacoesComponent } from './pages/doacoes/doacoes.component';
 
 @NgModule({
@@ -69,8 +67,6 @@ import { DoacoesComponent } from './pages/doacoes/doacoes.component';
     EmendasComponent,
     LoginComponent,
     ForgotPasswordComponent,
-    DonationFormComponent,
-    DonationInfoComponent,
     DoacoesComponent,
     PaymentComponent
   ],

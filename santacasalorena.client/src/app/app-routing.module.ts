@@ -26,7 +26,7 @@ import { NewsDetailComponent } from './pages/news-detail/news-detail.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthGuard } from './guards/auth.guard';
 import { DoacoesComponent } from './pages/doacoes/doacoes.component';
-import { PaymentComponent } from './components/payment/payment.component';
+import { PaymentComponent } from './pages/payment/payment.component';
 
 const routes: Routes = [
   {
