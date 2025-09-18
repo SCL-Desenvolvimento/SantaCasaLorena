@@ -37,6 +37,8 @@ import { ManualDoPacienteEVisitantesComponent } from './pages/manual-do-paciente
 import { EmendasComponent } from './pages/emendas/emendas.component';
 import { LoginComponent } from './pages/login/login.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { PaymentComponent } from './pages/payment/payment.component';
+import { DoacoesComponent } from './pages/doacoes/doacoes.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +66,9 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
     ManualDoPacienteEVisitantesComponent,
     EmendasComponent,
     LoginComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    DoacoesComponent,
+    PaymentComponent
   ],
   imports: [
     BrowserModule,

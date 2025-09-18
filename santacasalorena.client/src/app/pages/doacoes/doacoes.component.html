@@ -1,0 +1,328 @@
+<div class="donation-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-background">
+      <div class="hero-overlay"></div>
+    </div>
+    
+    <div class="hero-content">
+      <div class="logo-container">
+        <img src="assets/img/logo/logo.png" alt="Santa Casa de Lorena" class="logo">
+      </div>
+      
+      <h1 class="hero-title">
+        Você doa, a gente <span class="highlight">continua</span>.
+      </h1>
+      
+      <p class="hero-subtitle">
+        Seja um agente de transformação e ajude a Santa Casa de Lorena a continuar oferecendo 
+        atendimento médico humanizado e de qualidade para todos que precisam
+      </p>
+      
+      <!-- Video Section -->
+      <div class="video-container" *ngIf="showVideo">
+        <video controls poster="assets/images/video-poster.jpg">
+          <source src="assets/videos/institucional.mp4" type="video/mp4">
+          Seu navegador não suporta vídeos HTML5.
+        </video>
+        <button class="close-video" (click)="closeVideo()">×</button>
+      </div>
+      
+      <button class="play-video-btn" (click)="playVideo()" *ngIf="!showVideo">
+        <i class="play-icon">▶</i>
+        Assista nosso vídeo institucional
+      </button>
+    </div>
+  </section>
+
+  <!-- Mission and Statistics Section -->
+  <section class="mission-stats-section">
+    <div class="container">
+      <div class="mission-content">
+        <h2 class="section-title">Santa Casa de Lorena</h2>
+        <p class="mission-description">
+          Nossa missão é sempre oferecer atendimento médico humanizado e de excelência para pacientes do Sistema Único de Saúde
+        </p>
+      </div>
+
+      <div class="statistics-grid">
+        <div class="stat-card">
+          <div class="stat-number">15.000+</div>
+          <div class="stat-label">atendimentos médicos</div>
+          <div class="stat-description">realizados de forma 100% gratuita</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-number">500</div>
+          <div class="stat-label">refeições diárias</div>
+          <div class="stat-description">distribuídas gratuitamente para nossos pacientes</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-number">50+</div>
+          <div class="stat-label">municípios atendidos</div>
+          <div class="stat-description">na região do Vale do Paraíba</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-number">120.000</div>
+          <div class="stat-label">atendimentos totais</div>
+          <div class="stat-description">entre consultas, procedimentos e exames</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Donation Options Section -->
+  <section class="donation-section">
+    <div class="container">
+      <h2 class="section-title">Escolha o valor da sua doação</h2>
+      
+      <div class="donation-options">
+        <div class="donation-card" 
+             [class.selected]="selectedAmount === 50" 
+             (click)="selectAmount(50)">
+          <div class="card-header">
+            <h3>R$ 50</h3>
+            <div class="card-icon heart-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+            </div>
+          </div>
+          <p class="card-description">
+            Fomente a saúde gratuita e de qualidade para todos que precisam de atendimento médico
+          </p>
+          <button class="donate-btn" 
+                  [class.active]="selectedAmount === 50"
+                  (click)="proceedToDonation(50)">
+            <span>doar agora</span>
+            <i class="arrow-icon">→</i>
+          </button>
+        </div>
+        
+        <div class="donation-card" 
+             [class.selected]="selectedAmount === 100" 
+             (click)="selectAmount(100)">
+          <div class="card-header">
+            <h3>R$ 100</h3>
+            <div class="card-icon hands-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.5 4.5c-.83 0-1.5.67-1.5 1.5v5h-2V6c0-.83-.67-1.5-1.5-1.5S12 5.17 12 6v5h-2V4c0-.83-.67-1.5-1.5-1.5S7 3.17 7 4v8.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5v5c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-9c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5V6c0-.83-.67-1.5-1.5-1.5z"/>
+              </svg>
+            </div>
+          </div>
+          <p class="card-description">
+            Fortaleça nossa instituição e ajude milhares de pacientes a receberem cuidados especializados
+          </p>
+          <button class="donate-btn" 
+                  [class.active]="selectedAmount === 100"
+                  (click)="proceedToDonation(100)">
+            <span>doar agora</span>
+            <i class="arrow-icon">→</i>
+          </button>
+        </div>
+        
+        <div class="donation-card" 
+             [class.selected]="selectedAmount === 200" 
+             (click)="selectAmount(200)">
+          <div class="card-header">
+            <h3>R$ 200</h3>
+            <div class="card-icon medical-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 8h-2v3h-3v2h3v3h2v-3h3v-2h-3V8zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/>
+              </svg>
+            </div>
+          </div>
+          <p class="card-description">
+            Incentive o desenvolvimento de novos tratamentos e tecnologias médicas avançadas
+          </p>
+          <button class="donate-btn" 
+                  [class.active]="selectedAmount === 200"
+                  (click)="proceedToDonation(200)">
+            <span>doar agora</span>
+            <i class="arrow-icon">→</i>
+          </button>
+        </div>
+        
+        <div class="donation-card custom-amount" 
+             [class.selected]="selectedAmount === customValue" 
+             (click)="selectCustomAmount()">
+          <div class="card-header">
+            <h3>Outro valor</h3>
+            <div class="card-icon star-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            </div>
+          </div>
+          <p class="card-description">
+            Seja um agente de transformação com o valor que desejar
+          </p>
+          
+          <div class="custom-input-container" [class.show]="showCustomInput">
+            <div class="input-wrapper">
+              <span class="currency">R$</span>
+              <input type="number" 
+                     [(ngModel)]="customValue" 
+                     placeholder="0,00"
+                     (input)="onCustomValueChange()"
+                     class="custom-input">
+            </div>
+          </div>
+          
+          <button class="donate-btn" 
+                  [class.active]="selectedAmount === customValue"
+                  (click)="proceedToDonation(customValue)"
+                  [disabled]="!customValue || customValue <= 0">
+            <span>doar agora</span>
+            <i class="arrow-icon">→</i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pillars Section -->
+  <section class="pillars-section">
+    <div class="container">
+      <h2 class="section-title">Pilares que fundamentam nossos serviços</h2>
+      
+      <div class="pillars-grid">
+        <div class="pillar-card">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </div>
+          <h3>Humanização</h3>
+          <p>Todo o aparato necessário para instruir e orientar familiares e pacientes atendidos</p>
+        </div>
+        
+        <div class="pillar-card">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+          </div>
+          <h3>Prevenção</h3>
+          <p>Projetos voltados à realização de exames preventivos gratuitos à população</p>
+        </div>
+        
+        <div class="pillar-card">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/>
+            </svg>
+          </div>
+          <h3>Ensino e pesquisa</h3>
+          <p>O fundamental estímulo à produção científica e formação de profissionais</p>
+        </div>
+        
+        <div class="pillar-card">
+          <div class="pillar-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </div>
+          <h3>Excelência na assistência</h3>
+          <p>Atendimento médico de qualidade e tecnologia de ponta para todos</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials-section">
+    <div class="container">
+      <h2 class="section-title">Depoimentos</h2>
+      
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="quote-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/>
+            </svg>
+          </div>
+          <div class="testimonial-content">
+            <p>"A Santa Casa é um patrimônio de todos nós. Aqui encontramos não apenas tratamento médico, mas também carinho e dedicação."</p>
+          </div>
+          <div class="testimonial-author">
+            <div class="author-avatar">
+              <span>M</span>
+            </div>
+            <div class="author-info">
+              <h4>Maria Silva</h4>
+              <span>Paciente da Santa Casa</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card">
+          <div class="quote-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/>
+            </svg>
+          </div>
+          <div class="testimonial-content">
+            <p>"Nosso compromisso é tratar todas as pessoas com amor, dedicação e excelência médica."</p>
+          </div>
+          <div class="testimonial-author">
+            <div class="author-avatar">
+              <span>E</span>
+            </div>
+            <div class="author-info">
+              <h4>Equipe Médica</h4>
+              <span>Santa Casa de Lorena</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Impact Section -->
+  <section class="impact-section">
+    <div class="container">
+      <h2 class="section-title">A Santa Casa vai até onde a população mais precisa</h2>
+      <p class="impact-description">
+        A Santa Casa de Lorena leva cuidados de excelência a toda a região com suas unidades e serviços especializados. 
+        Hospitais, centros de atendimento e equipes qualificadas garantem atendimento humanizado e diagnóstico precoce.
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer Info -->
+  <section class="footer-info">
+    <div class="container">
+      <div class="info-content">
+        <div class="info-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+          </svg>
+        </div>
+        <p class="disclaimer">
+          As doações realizadas nesta plataforma da Santa Casa de Lorena podem ser dedutíveis do imposto de renda. 
+          Para saber mais sobre doações dedutíveis, entre em contato conosco pelo telefone 
+          <a href="tel:+551231593344" class="phone-link">(12) 3159-3344</a>.
+        </p>
+      </div>
+      
+      <div class="security-badges">
+        <div class="badge">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"/>
+          </svg>
+          <span>SSL Seguro</span>
+        </div>
+        <div class="badge">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17,9H7V7A5,5 0 0,1 12,2A5,5 0 0,1 17,7V9M6,20V10H18V20H6Z"/>
+          </svg>
+          <span>PCI Compliant</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
