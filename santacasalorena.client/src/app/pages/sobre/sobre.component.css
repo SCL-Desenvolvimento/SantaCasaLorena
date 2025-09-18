@@ -52,12 +52,12 @@
 /* Cards */
 .card {
   border: none;
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   transition: all 0.3s ease;
 }
 
 .card-body {
-  padding: 2rem;
+  padding: 1.5rem;
 }
 
 .card-header {
@@ -72,7 +72,7 @@
 }
 
   .card-hover:hover {
-    transform: translateY(-8px);
+    transform: translateY(-5px);
     box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
   }
 
@@ -85,30 +85,32 @@ section {
   background-color: #f8f9fa !important;
 }
 
-/* Layout de Provedores - Grid lado a lado */
+/* Layout de Provedores - Grid compacto */
 .providers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-  padding: 2rem 0;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1rem 0;
+  width: 100%;
 }
 
 .provider-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   height: 100%;
+  margin: 0 0.25rem;
 }
 
   .provider-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-3px);
+    box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.1) !important;
   }
 
 .provider-image {
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 70px;
   overflow: hidden;
-  margin: 0 auto 1.5rem;
+  margin: 0 auto 1rem;
 }
 
   .provider-image img {
@@ -123,7 +125,7 @@ section {
   height: 100%;
   background-color: #f8f9fa;
   color: #6c757d;
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -142,8 +144,8 @@ section {
 
 /* Badges */
 .badge {
-  font-size: 0.875rem;
-  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 2rem;
 }
 
@@ -168,46 +170,90 @@ section {
   font-size: 1.25rem;
 }
 
-/* Responsivo */
-@media (max-width: 991px) {
-  .providers-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-  }
-}
-
-@media (max-width: 767px) {
-  .hero-gradient {
-    padding: 3rem 0;
-  }
-
-  .display-5 {
-    font-size: 2rem;
+/* Ajustes de responsividade */
+@media (max-width: 575px) {
+  .container-fluid {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
   }
 
   .providers-grid {
-    grid-template-columns: 1fr;
-    max-width: 400px;
-    margin: 0 auto;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
   }
 
   .card-body {
-    padding: 1.5rem;
-  }
-
-  .icon-circle {
-    width: 60px;
-    height: 60px;
+    padding: 1rem !important;
   }
 
   .provider-image {
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 0.75rem;
   }
 
   .placeholder-image {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
+
+  .badge {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  h3.h6 {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .providers-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .providers-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .providers-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .providers-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+  }
+
+  .container-fluid {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Ajuste para garantir que ocupe toda a largura */
+.container-fluid {
+  max-width: 100%;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.row {
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
+}
+
+.col {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }
 
 /* Animações */
@@ -239,16 +285,37 @@ section {
 
 /* Espaçamentos */
 .py-5 {
-  padding-top: 4rem !important;
-  padding-bottom: 4rem !important;
+  padding-top: 3rem !important;
+  padding-bottom: 3rem !important;
 }
 
 /* Sombras customizadas */
 .shadow-sm {
-  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.075) !important;
+  box-shadow: 0 0.125rem 0.4rem rgba(0, 0, 0, 0.08) !important;
 }
 
 /* Quote styling */
 .bi-quote {
   opacity: 0.3;
+}
+
+/* Ajustes para o layout Bootstrap */
+.row-cols-2 > * {
+  flex: 0 0 auto;
+  width: 50%;
+}
+
+.row-cols-md-3 > * {
+  flex: 0 0 auto;
+  width: 33.333333%;
+}
+
+.row-cols-lg-4 > * {
+  flex: 0 0 auto;
+  width: 25%;
+}
+
+.row-cols-xl-5 > * {
+  flex: 0 0 auto;
+  width: 20%;
 }
