@@ -10,7 +10,7 @@
   line-height: 1.6;
   color: #1a202c;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%); /* Tons de azul claro */
 }
 
 /* Container */
@@ -23,7 +23,7 @@
 /* Header */
 .payment-header {
   background: white;
-  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  border-bottom: 1px solid rgba(34, 188, 238, 0.1);
   padding: 1.5rem 0;
   position: sticky;
   top: 0;
@@ -42,9 +42,9 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: rgba(102, 126, 234, 0.1);
+  background: rgba(34, 188, 238, 0.1);
   border: none;
-  color: #667eea;
+  color: #22BCEE;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -62,7 +62,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(34, 188, 238, 0.1), transparent);
   transition: left 0.5s ease;
 }
 
@@ -71,9 +71,9 @@
 }
 
 .back-btn:hover {
-  background: rgba(102, 126, 234, 0.15);
+  background: rgba(34, 188, 238, 0.15);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 5px 15px rgba(34, 188, 238, 0.2);
 }
 
 .back-btn svg {
@@ -113,7 +113,7 @@
 .progress-section {
   background: white;
   padding: 2rem 0;
-  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  border-bottom: 1px solid rgba(34, 188, 238, 0.1);
 }
 
 .progress-steps {
@@ -152,9 +152,9 @@
 }
 
 .step.active .step-circle {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #22BCEE, #FF0000);
   color: white;
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 5px 15px rgba(34, 188, 238, 0.3);
   animation: pulse 2s infinite;
 }
 
@@ -195,7 +195,7 @@
 }
 
 .step.completed + .step-line {
-  background: linear-gradient(90deg, #48bb78, #667eea);
+  background: linear-gradient(90deg, #FF0000, #22BCEE);
 }
 
 /* Main Content */
@@ -221,7 +221,7 @@
   border-radius: 24px;
   padding: 2.5rem;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(34, 188, 238, 0.1);
   position: relative;
   overflow: hidden;
 }
@@ -233,7 +233,7 @@
   left: 0;
   width: 100%;
   height: 4px;
-  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+  background: linear-gradient(90deg, #22BCEE, #FF0000);
 }
 
 .card-header {
@@ -254,7 +254,7 @@
 .heart-icon {
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #FF0000, #22BCEE);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -274,7 +274,7 @@
 }
 
 .amount-display {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #22BCEE, #FF0000);
   color: white;
   padding: 2rem;
   border-radius: 16px;
@@ -379,7 +379,7 @@
 .impact-circle {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #FF0000, #22BCEE);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -436,7 +436,7 @@
   border-radius: 24px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  border: 1px solid rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(34, 188, 238, 0.1);
 }
 
 .payment-card {
@@ -513,7 +513,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+  background: linear-gradient(135deg, rgba(34, 188, 238, 0.05), rgba(255, 0, 0, 0.05));
   opacity: 0;
   transition: opacity 0.4s ease;
   border-radius: 14px;
@@ -524,16 +524,16 @@
 }
 
 .method-option:hover {
-  border-color: #667eea;
+  border-color: #22BCEE;
   transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.15);
+  box-shadow: 0 10px 25px rgba(34, 188, 238, 0.15);
 }
 
 .method-option.selected {
-  border-color: #667eea;
-  background: rgba(102, 126, 234, 0.05);
+  border-color: #22BCEE;
+  background: rgba(34, 188, 238, 0.05);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 8px 20px rgba(34, 188, 238, 0.2);
 }
 
 .method-content {
@@ -545,7 +545,7 @@
 .method-icon {
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #22BCEE, #FF0000);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -556,7 +556,7 @@
 
 .method-option:hover .method-icon {
   transform: scale(1.1) rotate(5deg);
-  background: linear-gradient(135deg, #764ba2, #f093fb);
+  background: linear-gradient(135deg, #FF0000, #22BCEE);
 }
 
 .method-icon svg {
@@ -626,7 +626,7 @@
 .section-header svg {
   width: 24px;
   height: 24px;
-  color: #667eea;
+  color: #22BCEE;
 }
 
 .section-header h3 {
@@ -674,8 +674,8 @@
 
 .input-wrapper input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #22BCEE;
+  box-shadow: 0 0 0 3px rgba(34, 188, 238, 0.1);
   transform: translateY(-1px);
 }
 
@@ -698,20 +698,20 @@
 /* PIX and Boleto Info */
 .pix-info,
 .boleto-info {
-  background: linear-gradient(135deg, #f7fafc, #e2e8f0);
+  background: linear-gradient(135deg, #e0f7fa, #b2ebf2); /* Tons de azul claro */
   padding: 2rem;
   border-radius: 16px;
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #22BCEE;
 }
 
 .pix-icon,
 .boleto-icon {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #22BCEE, #FF0000);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -774,8 +774,8 @@
 }
 
 .checkbox-label input[type="checkbox"]:checked + .checkmark {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border-color: #667eea;
+  background: linear-gradient(135deg, #22BCEE, #FF0000);
+  border-color: #22BCEE;
   transform: scale(1.1);
 }
 
@@ -791,14 +791,14 @@
 }
 
 .checkbox-text a {
-  color: #667eea;
+  color: #22BCEE;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.3s ease;
 }
 
 .checkbox-text a:hover {
-  color: #764ba2;
+  color: #FF0000;
   text-decoration: underline;
 }
 
@@ -892,8 +892,8 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
+  background: rgba(34, 188, 238, 0.1);
+  color: #22BCEE;
   padding: 0.5rem 1rem;
   border-radius: 12px;
   font-size: 0.8rem;
@@ -902,7 +902,7 @@
 }
 
 .badge:hover {
-  background: rgba(102, 126, 234, 0.15);
+  background: rgba(34, 188, 238, 0.15);
   transform: translateY(-2px);
 }
 
