@@ -1,4 +1,5 @@
 /* Carrossel */
+
 .hero-carousel {
   position: relative;
   width: 100%;
@@ -23,10 +24,8 @@
   background-position: center;
   background-repeat: no-repeat;
 }
+/* Remove old opacity/absolute/active rules */ /* Setas laterais (unchanged) */
 
-/* Remove old opacity/absolute/active rules */
-
-/* Setas laterais (unchanged) */
 .carousel-arrow {
   position: absolute;
   top: 50%;
@@ -63,8 +62,8 @@
 .carousel-arrow.right {
   right: 15px;
 }
-
 /* Indicadores (unchanged) */
+
 .carousel-indicators {
   position: absolute;
   bottom: 15px;
@@ -96,16 +95,20 @@
     background: #22BCEE;
     border: 2px solid #22BCEE;
   }
-
-
 /* Restante do layout */
+
 .text-accent {
   color: var(--bs-danger);
 }
 
+/* MODIFICAÇÃO: Seção de serviços com fundo azul */
+.services-section {
+  background-color: #22BCEE !important;
+}
+
 .service-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background: #fff;
+  background: #fff; /* Mantém o card branco */
 }
 
   .service-card:hover {
@@ -143,4 +146,18 @@
 
 .news-card:hover {
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* ESTILOS PARA TEXTO BRANCO NA SEÇÃO DE SERVIÇOS */
+.services-section .text-center.mb-5 h2 {
+  color: white !important;
+}
+
+.services-section .text-center.mb-5 p.text-muted {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Mantém a seção de convênios com fundo claro (como estava) */
+.convenios-section {
+  background-color: #f8f9fa !important;
 }

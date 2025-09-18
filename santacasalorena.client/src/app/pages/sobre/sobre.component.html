@@ -91,25 +91,27 @@
   <section class="py-5 bg-light">
     <div class="container">
       <h2 class="h1 fw-bold text-center mb-5">Provedores ao Longo da História</h2>
-      <div class="timeline mx-auto">
-        <div class="timeline-line"></div>
-        <div class="timeline-item" *ngFor="let item of providers; let i = index"
-             [ngClass]="{'flex-row-reverse': i % 2}">
-          <div class="timeline-dot">
-            <img *ngIf="item.imageUrl" [src]="item.imageUrl" alt="{{ item.name }}" class="timeline-avatar">
-          </div>
-          <div class="timeline-content card shadow-sm border-0">
-            <div class="card-body p-4">
+
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="col" *ngFor="let item of providers">
+          <div class="card h-100 border-0 shadow-sm provider-card">
+            <div class="card-body text-center p-4">
+              <div class="provider-image mb-3 mx-auto">
+                <img *ngIf="item.imageUrl" [src]="item.imageUrl" alt="{{ item.name }}" class="rounded-circle">
+                <div *ngIf="!item.imageUrl" class="placeholder-image rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-person-fill"></i>
+                </div>
+              </div>
               <span class="badge bg-primary fw-bold mb-2">
                 {{ item.startYear }} - {{ item.endYear || 'Atualmente' }}
               </span>
               <h3 class="h5 fw-bold mb-2">{{ item.name }}</h3>
-              <!--<p class="text-secondary mb-0" *ngIf="item.descricao">{{ item.descricao }}</p>-->
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
+
 </div>
 
