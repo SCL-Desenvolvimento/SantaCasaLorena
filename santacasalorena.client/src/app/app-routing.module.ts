@@ -25,6 +25,7 @@ import { EmendasComponent } from './pages/emendas/emendas.component';
 import { NewsDetailComponent } from './pages/news-detail/news-detail.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthGuard } from './guards/auth.guard';
+import { WhatsappComponent } from './pages/whatsapp/whatsapp.component';
 
 const routes: Routes = [
   {
@@ -50,6 +51,7 @@ const routes: Routes = [
       { path: 'capacidade-instalacao-producao', component: CapacidadeInstalacaoEProducaoComponent },
       { path: 'manual-do-paciente-visitante', component: ManualDoPacienteEVisitantesComponent },
       { path: 'emendas', component: EmendasComponent },
+      { path: 'whatsapp', component: WhatsappComponent },
     ]
   },
   {

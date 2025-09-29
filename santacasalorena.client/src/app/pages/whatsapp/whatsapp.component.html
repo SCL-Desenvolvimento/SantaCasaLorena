@@ -1,0 +1,169 @@
+<div class="whatsapp-container">
+  <div class="container">
+    <!-- Header -->
+    <div class="header-section text-center mb-5">
+      <div class="whatsapp-icon">
+        <i class="bi bi-whatsapp"></i>
+      </div>
+      <h1 class="title">Fale Conosco pelo WhatsApp</h1>
+      <p class="subtitle">Escolha o setor desejado para ser atendido com mais agilidade</p>
+    </div>
+
+    <!-- Cards de Opções -->
+    <div class="row justify-content-center g-4">
+      <!-- Atendimento Geral -->
+      <div class="col-md-6 col-lg-4">
+        <div class="whatsapp-card" (click)="openWhatsApp('5512999999999', 'Atendimento Geral')">
+          <div class="card-header">
+            <div class="icon-wrapper bg-primary">
+              <i class="bi bi-headset"></i>
+            </div>
+            <h3 class="card-title">Atendimento Geral</h3>
+          </div>
+          <p class="card-description">
+            Tire dúvidas sobre horários, localização e informações gerais do hospital
+          </p>
+          <div class="card-footer">
+            <span class="whatsapp-btn">
+              <i class="bi bi-whatsapp"></i>
+              Iniciar Conversa
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agendamentos -->
+      <div class="col-md-6 col-lg-4">
+        <div class="whatsapp-card" (click)="openWhatsApp('5512988888888', 'Agendamentos')">
+          <div class="card-header">
+            <div class="icon-wrapper bg-success">
+              <i class="bi bi-calendar-check"></i>
+            </div>
+            <h3 class="card-title">Agendamentos</h3>
+          </div>
+          <p class="card-description">
+            Agende consultas, exames e procedimentos com nossa equipe
+          </p>
+          <div class="card-footer">
+            <span class="whatsapp-btn">
+              <i class="bi bi-whatsapp"></i>
+              Agendar
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resultado de Exames -->
+      <div class="col-md-6 col-lg-4">
+        <div class="whatsapp-card" (click)="openWhatsApp('5512977777777', 'Resultado de Exames')">
+          <div class="card-header">
+            <div class="icon-wrapper bg-info">
+              <i class="bi bi-file-medical"></i>
+            </div>
+            <h3 class="card-title">Resultado de Exames</h3>
+          </div>
+          <p class="card-description">
+            Tire dúvidas sobre resultados, laudos e exames realizados
+          </p>
+          <div class="card-footer">
+            <span class="whatsapp-btn">
+              <i class="bi bi-whatsapp"></i>
+              Consultar
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pronto Atendimento -->
+      <div class="col-md-6 col-lg-4">
+        <div class="whatsapp-card emergency" (click)="openWhatsApp('5512966666666', 'Pronto Atendimento')">
+          <div class="card-header">
+            <div class="icon-wrapper bg-danger">
+              <i class="bi bi-ambulance"></i>
+            </div>
+            <h3 class="card-title">Pronto Atendimento</h3>
+          </div>
+          <p class="card-description">
+            Atendimento de urgência e emergência 24 horas
+          </p>
+          <div class="card-footer">
+            <span class="whatsapp-btn emergency-btn">
+              <i class="bi bi-whatsapp"></i>
+              Emergência
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financeiro -->
+      <div class="col-md-6 col-lg-4">
+        <div class="whatsapp-card" (click)="openWhatsApp('5512955555555', 'Financeiro')">
+          <div class="card-header">
+            <div class="icon-wrapper bg-warning">
+              <i class="bi bi-credit-card"></i>
+            </div>
+            <h3 class="card-title">Financeiro</h3>
+          </div>
+          <p class="card-description">
+            Dúvidas sobre faturas, convênios e questões financeiras
+          </p>
+          <div class="card-footer">
+            <span class="whatsapp-btn">
+              <i class="bi bi-whatsapp"></i>
+              Financeiro
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ouvidoria -->
+      <div class="col-md-6 col-lg-4">
+        <div class="whatsapp-card" (click)="openWhatsApp('5512944444444', 'Ouvidoria')">
+          <div class="card-header">
+            <div class="icon-wrapper bg-secondary">
+              <i class="bi bi-megaphone"></i>
+            </div>
+            <h3 class="card-title">Ouvidoria</h3>
+          </div>
+          <p class="card-description">
+            Sugestões, elogios, reclamações e feedbacks
+          </p>
+          <div class="card-footer">
+            <span class="whatsapp-btn">
+              <i class="bi bi-whatsapp"></i>
+              Ouvidoria
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informações Importantes -->
+    <div class="info-section mt-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="info-card">
+            <h4 class="info-title">
+              <i class="bi bi-info-circle me-2"></i>
+              Informações Importantes
+            </h4>
+            <div class="info-content">
+              <div class="info-item">
+                <i class="bi bi-clock"></i>
+                <span><strong>Horário de Atendimento:</strong> Segunda a Sexta, 7h às 19h</span>
+              </div>
+              <div class="info-item">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span><strong>Emergências:</strong> Pronto Atendimento 24h todos os dias</span>
+              </div>
+              <div class="info-item">
+                <i class="bi bi-telephone"></i>
+                <span><strong>Telefone Fixo:</strong> (12) 3159-3344</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
