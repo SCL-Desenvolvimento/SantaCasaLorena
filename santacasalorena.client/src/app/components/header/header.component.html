@@ -43,6 +43,43 @@
             </a>
           </ng-template>
         </ng-container>
+
+        <!-- Fale Conosco Dropdown -->
+        <div class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle fw-medium"
+             href="#"
+             id="faleConoscoDropdown"
+             role="button"
+             aria-expanded="false">
+            Fale Conosco
+          </a>
+          <ul class="dropdown-menu shadow-lg animate__animated animate__fadeIn"
+              aria-labelledby="faleConoscoDropdown">
+            <li>
+              <a class="dropdown-item d-flex align-items-center"
+                 routerLink="/whatsapp">
+                <i class="bi bi-whatsapp text-success me-2"></i>
+                WhatsApp
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center"
+                 href="tel:1231593344">
+                <i class="bi bi-telephone text-primary me-2"></i>
+                (12) 3159-3344
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center"
+                 href="https://maps.google.com/?q=Rua Dom Bosco - 562 Centro, Lorena/SP"
+                 target="_blank">
+                <i class="bi bi-geo-alt text-primary me-2"></i>
+                Localização
+              </a>
+            </li>
+          </ul>
+        </div>
       </nav>
 
       <!-- CTA Desktop -->
@@ -92,6 +129,35 @@
             </a>
           </ng-template>
         </ng-container>
+
+        <!-- Fale Conosco Mobile -->
+        <div class="mobile-submenu">
+          <button class="submenu-toggle d-flex justify-content-between align-items-center w-100 fw-bold text-dark"
+                  (click)="faleConoscoOpen = !faleConoscoOpen">
+            Fale Conosco
+            <i class="bi transition"
+               [class]="faleConoscoOpen ? 'bi-chevron-up rotate' : 'bi-chevron-down'"></i>
+          </button>
+
+          <div [ngClass]="{'submenu-collapsed': !faleConoscoOpen, 'submenu-expanded': faleConoscoOpen}">
+            <a class="nav-link text-dark ps-3 py-1 d-block d-flex align-items-center"
+               routerLink="/whatsapp">
+              <i class="bi bi-whatsapp text-success me-2"></i>
+              WhatsApp
+            </a>
+            <a class="nav-link text-dark ps-3 py-1 d-block d-flex align-items-center"
+               href="tel:1231593344">
+              <i class="bi bi-telephone text-primary me-2"></i>
+              (12) 3159-3344
+            </a>
+            <a class="nav-link text-dark ps-3 py-1 d-block d-flex align-items-center"
+               href="https://maps.google.com/?q=Rua Dom Bosco - 562 Centro, Lorena/SP"
+               target="_blank">
+              <i class="bi bi-geo-alt text-primary me-2"></i>
+              Localização
+            </a>
+          </div>
+        </div>
 
         <!-- CTA Mobile -->
         <!--<a class="btn btn-donation mt-3" (click)="navigateTo('/')">

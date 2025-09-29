@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent {
   isMenuOpen = false;
+  faleConoscoOpen = false; // Adicionei esta linha
 
   menuItems = [
     { name: 'Home', path: '/' },
@@ -32,7 +33,7 @@ export class HeaderComponent {
         { name: 'Clínica Emília', path: '/clinica-emilia' },
         { name: 'Centro de Diagnóstico por Imagem', path: '/diagnostico-imagem' },
         { name: 'Unidade de Internação', path: '/unidade-internacao' },
-      //  { name: 'Particular / Convênio', path: '/particular-convenio' }
+        //  { name: 'Particular / Convênio', path: '/particular-convenio' }
       ]
     },
     {
@@ -46,8 +47,8 @@ export class HeaderComponent {
       ]
     },
     { name: 'Notícias', path: '/noticias' },
-    { name: 'Fale Conosco', path: '/fale-conosco' },
     { name: 'Emendômetro', path: '/emendas' }
+    // Removi o "Fale Conosco" daqui pois agora é um dropdown separado
   ];
 
   constructor(private router: Router) { }

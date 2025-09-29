@@ -66,8 +66,28 @@
   box-shadow: 0 6px 16px rgba(0,0,0,0.15);
 }
 
-.dropdown-item:hover {
-  background-color: #f1f5f9;
+.dropdown-item {
+  padding: 0.75rem 1rem;
+  transition: all 0.2s ease;
+  color: #495057;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+  .dropdown-item:hover {
+    background-color: #22BCEE;
+    color: white;
+    transform: translateX(4px);
+  }
+
+  .dropdown-item i {
+    font-size: 1rem;
+    width: 20px;
+  }
+
+.dropdown-divider {
+  margin: 0.25rem 0;
 }
 
 /* Mobile menu */
@@ -103,7 +123,7 @@
 }
 
 .submenu-expanded {
-  max-height: 500px; /* grande suficiente para vários itens */
+  max-height: 500px;
   opacity: 1;
   transition: all 0.3s ease;
 }
