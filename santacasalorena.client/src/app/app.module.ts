@@ -68,7 +68,7 @@ import { DoacoesComponent } from './pages/doacoes/doacoes.component';
     EmendasComponent,
     LoginComponent,
     ForgotPasswordComponent,
-    WhatsappComponent
+    WhatsappComponent,
     DoacoesComponent,
     PaymentComponent
   ],
