@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: '/api',
-  imageServerUrl: '/'
+  apiUrl: 'http://192.168.20.233:88/api',
+  imageServerUrl: 'http://192.168.20.233:88/'
 };

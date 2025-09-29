@@ -38,6 +38,8 @@ import { EmendasComponent } from './pages/emendas/emendas.component';
 import { LoginComponent } from './pages/login/login.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { WhatsappComponent } from './pages/whatsapp/whatsapp.component';
+import { PaymentComponent } from './pages/payment/payment.component';
+import { DoacoesComponent } from './pages/doacoes/doacoes.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +69,8 @@ import { WhatsappComponent } from './pages/whatsapp/whatsapp.component';
     LoginComponent,
     ForgotPasswordComponent,
     WhatsappComponent
+    DoacoesComponent,
+    PaymentComponent
   ],
   imports: [
     BrowserModule,

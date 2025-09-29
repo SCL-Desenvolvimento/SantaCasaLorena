@@ -26,6 +26,8 @@ import { NewsDetailComponent } from './pages/news-detail/news-detail.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthGuard } from './guards/auth.guard';
 import { WhatsappComponent } from './pages/whatsapp/whatsapp.component';
+import { DoacoesComponent } from './pages/doacoes/doacoes.component';
+import { PaymentComponent } from './pages/payment/payment.component';
 
 const routes: Routes = [
   {
@@ -52,6 +54,8 @@ const routes: Routes = [
       { path: 'manual-do-paciente-visitante', component: ManualDoPacienteEVisitantesComponent },
       { path: 'emendas', component: EmendasComponent },
       { path: 'whatsapp', component: WhatsappComponent },
+      { path: 'doacoes', component: DoacoesComponent },
+      { path: 'payment', component: PaymentComponent },
     ]
   },
   {
