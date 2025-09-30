@@ -35,7 +35,7 @@ namespace SantaCasaLorena.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<NewsResponseDto>> Create(NewsRequestDto dto)
         {
-            dto.UserId = Guid.Parse("e943fe1f-e90e-4f86-8bdd-efd6985c6b72");
+            dto.UserId = Guid.Parse("b18d15a3-c3e3-4c44-aa4c-55036ce69873");
             var created = await _service.AddAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
@@ -44,7 +44,7 @@ namespace SantaCasaLorena.Server.Controllers
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<NewsResponseDto>> Update(Guid id, NewsRequestDto dto)
         {
-            dto.UserId = Guid.Parse("e943fe1f-e90e-4f86-8bdd-efd6985c6b72");
+            dto.UserId = Guid.Parse("b18d15a3-c3e3-4c44-aa4c-55036ce69873");
             var updated = await _service.UpdateAsync(id, dto);
             return Ok(updated);
         }
