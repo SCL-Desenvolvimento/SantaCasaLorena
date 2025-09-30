@@ -40,6 +40,9 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { WhatsappComponent } from './pages/whatsapp/whatsapp.component';
 import { PaymentComponent } from './pages/payment/payment.component';
 import { DoacoesComponent } from './pages/doacoes/doacoes.component';
+import { FloatingContainerComponent } from './components/floating-buttons/floating-container/floating-container.component';
+import { WhatsappButtonComponent } from './components/floating-buttons/whatsapp-button/whatsapp-button.component';
+import { AccessibilityButtonComponent } from './components/floating-buttons/accessibility-button/accessibility-button.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +73,10 @@ import { DoacoesComponent } from './pages/doacoes/doacoes.component';
     ForgotPasswordComponent,
     WhatsappComponent,
     DoacoesComponent,
-    PaymentComponent
+    PaymentComponent,
+    FloatingContainerComponent,
+    WhatsappButtonComponent,
+    AccessibilityButtonComponent
   ],
   imports: [
     BrowserModule,

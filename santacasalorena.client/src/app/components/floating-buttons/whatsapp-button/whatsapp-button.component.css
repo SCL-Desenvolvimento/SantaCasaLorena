@@ -1,0 +1,74 @@
+.whatsapp-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: #25D366;
+  border-radius: 12px 0 0 12px;
+  box-shadow: -2px 4px 15px rgba(37, 211, 102, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  position: relative;
+  animation: pulse-whatsapp 2s infinite;
+  border: none;
+}
+
+  .whatsapp-link:hover {
+    transform: translateX(-5px);
+    box-shadow: -4px 6px 20px rgba(37, 211, 102, 0.6);
+    background: #20bd5c;
+    width: 65px;
+  }
+
+  .whatsapp-link i {
+    font-size: 28px;
+    color: white;
+  }
+
+@keyframes pulse-whatsapp {
+  0% {
+    box-shadow: -2px 4px 15px rgba(37, 211, 102, 0.4);
+  }
+
+  50% {
+    box-shadow: -2px 4px 20px rgba(37, 211, 102, 0.7);
+  }
+
+  100% {
+    box-shadow: -2px 4px 15px rgba(37, 211, 102, 0.4);
+  }
+}
+
+/* Responsividade para o link do WhatsApp */
+@media (max-width: 768px) {
+  .whatsapp-link {
+    width: 55px;
+    height: 55px;
+    border-radius: 12px 0 0 12px;
+  }
+
+    .whatsapp-link:hover {
+      width: 58px;
+    }
+
+    .whatsapp-link i {
+      font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+  .whatsapp-link {
+    width: 60px;
+    height: 60px;
+  }
+
+    .whatsapp-link:hover {
+      width: 63px;
+    }
+
+    .whatsapp-link i {
+      font-size: 22px;
+    }
+}
+

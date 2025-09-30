@@ -104,3 +104,23 @@ body {
 .radius-xl {
   border-radius: calc(var(--radius) + 4px);
 }
+
+
+body.high-contrast {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+  /* Garante que links e botões também sejam afetados */
+  body.high-contrast a,
+  body.high-contrast button {
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+  }
+
+  /* Adicione outras regras específicas conforme necessário */
+  body.high-contrast .seu-componente-especifico {
+    background-color: #111 !important;
+    border-color: #fff !important;
+  }
