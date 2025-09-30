@@ -40,6 +40,7 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { WhatsappComponent } from './pages/whatsapp/whatsapp.component';
 import { PaymentComponent } from './pages/payment/payment.component';
 import { DoacoesComponent } from './pages/doacoes/doacoes.component';
+import { LocalizacaoComponent } from './pages/localizacao/localizacao.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { DoacoesComponent } from './pages/doacoes/doacoes.component';
     ForgotPasswordComponent,
     WhatsappComponent,
     DoacoesComponent,
-    PaymentComponent
+    PaymentComponent,
+    LocalizacaoComponent
   ],
   imports: [
     BrowserModule,

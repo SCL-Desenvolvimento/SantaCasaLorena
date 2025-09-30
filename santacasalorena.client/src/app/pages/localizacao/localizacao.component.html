@@ -1,0 +1,61 @@
+<div class="modal-header border-0 pb-0">
+  <h4 class="modal-title fw-bold text-primary">Nossa Localização</h4>
+  <button type="button" class="btn-close" (click)="close()" aria-label="Close"></button>
+</div>
+
+<div class="modal-body pt-0">
+  <!-- Informações de Contato -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex align-items-start mb-3">
+        <i class="bi bi-geo-alt-fill text-primary fs-5 me-3 mt-1"></i>
+        <div>
+          <h6 class="fw-bold mb-1">Endereço</h6>
+          <p class="mb-0 text-muted">Rua Dom Bosco, 562 - Centro<br>Lorena/SP - CEP: 12600-000</p>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-start mb-3">
+        <i class="bi bi-telephone-fill text-primary fs-5 me-3 mt-1"></i>
+        <div>
+          <h6 class="fw-bold mb-1">Telefone</h6>
+          <p class="mb-0 text-muted">(12) 3159-3344</p>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-start">
+        <i class="bi bi-clock-fill text-primary fs-5 me-3 mt-1"></i>
+        <div>
+          <h6 class="fw-bold mb-1">Horário de Funcionamento</h6>
+          <p class="mb-0 text-muted">Segunda a Sexta: 24 horas<br>Sábados, Domingos e Feriados: 24 horas</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mapa -->
+  <div class="row">
+    <div class="col-12">
+      <h6 class="fw-bold mb-3">Como chegar</h6>
+      <div class="map-container rounded-3 overflow-hidden shadow-sm">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3672.231324982646!2d-45.12822392436603!3d-22.997050039387968!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ccc95f5c2b7e77%3A0x6f6ae3c5b6b5e5a1!2sRua%20Dom%20Bosco%2C%20562%20-%20Centro%2C%20Lorena%20-%20SP%2C%2012600-000!5e0!3m2!1spt-BR!2sbr!4v1690000000000!5m2!1spt-BR!2sbr"
+                width="100%"
+                height="300"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer border-0">
+  <button type="button" class="btn btn-secondary" (click)="close()">Fechar</button>
+  <a href="https://maps.google.com/?q=Rua Dom Bosco - 562 Centro, Lorena/SP"
+     target="_blank"
+     class="btn btn-primary">
+    <i class="bi bi-geo-alt me-2"></i>Abrir no Google Maps
+  </a>
+</div>

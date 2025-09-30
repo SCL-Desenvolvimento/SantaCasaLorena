@@ -100,6 +100,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     clearInterval(this.intervalId);
   }
 
+  // ADICIONE ESTA FUNÇÃO PARA NAVEGAÇÃO EXTERNA
+  navigateToExternal(url: string): void {
+    window.open(url, '_blank');
+  }
+
+  // Função para navegação interna (se necessário)
+  navigateTo(path: string): void {
+    this.router.navigate([path]);
+  }
+
   loadNews(): void {
     this.newsService.getAll().subscribe({
       next: (data) => {

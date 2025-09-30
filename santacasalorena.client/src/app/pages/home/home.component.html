@@ -78,11 +78,95 @@
     </div>
   </section>
 
-  <!-- Convênios - COM FUNDO CLARO COMO ORIGINALMENTE -->
-  <section class="py-5 convenios-section text-center">
+  <!-- Seção Como Podemos Te Ajudar - NOVA SEÇÃO -->
+  <section class="py-5 help-section">
     <div class="container">
-      <h2 class="fw-bold mb-3">{{ convenios.title }}</h2>
-      <p class="text-muted mb-4 mx-auto" style="max-width:700px;">{{ convenios.description }}</p>
+      <!-- Título alinhado à esquerda -->
+      <div class="mb-5">
+        <h2 class="fw-bold mb-0">Como podemos te ajudar?</h2>
+        <p class="text-muted mt-2">Encontre os serviços que você precisa de forma rápida e prática</p>
+      </div>
+
+      <div class="row g-4">
+        <!-- Agendamentos Online -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <a routerLink="/agendamentos" class="text-decoration-none">
+            <div class="card h-100 shadow-lg border-0 rounded-4 service-card">
+              <div class="card-body text-center p-4">
+                <div class="service-icon-wrapper mx-auto mb-3">
+                  <div class="help-icon bg-primary text-white rounded-3 d-flex align-items-center justify-content-center">
+                    <i class="bi bi-calendar-check fs-2"></i>
+                  </div>
+                </div>
+                <h5 class="card-title fw-semibold mb-2">Agendamentos Online</h5>
+                <p class="card-text text-muted small">Agende sua consulta, procedimento ou exame de forma rápida e prática</p>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Resultados de Exames -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <a (click)="navigateToExternal('https://1741prd-vivace-portal.cloudmv.com.br:432/login')" class="text-decoration-none">
+            <div class="card h-100 shadow-lg border-0 rounded-4 service-card">
+              <div class="card-body text-center p-4">
+                <div class="service-icon-wrapper mx-auto mb-3">
+                  <div class="help-icon bg-success text-white rounded-3 d-flex align-items-center justify-content-center">
+                    <i class="bi bi-file-medical fs-2"></i>
+                  </div>
+                </div>
+                <h5 class="card-title fw-semibold mb-2">Resultados de Exames</h5>
+                <p class="card-text text-muted small">Acesse seus resultados de exames de forma segura</p>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Procure seu médico -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <a routerLink="/corpo-clinico" class="text-decoration-none">
+            <div class="card h-100 shadow-lg border-0 rounded-4 service-card">
+              <div class="card-body text-center p-4">
+                <div class="service-icon-wrapper mx-auto mb-3">
+                  <div class="help-icon bg-info text-white rounded-3 d-flex align-items-center justify-content-center">
+                    <i class="bi bi-search-heart fs-2"></i>
+                  </div>
+                </div>
+                <h5 class="card-title fw-semibold mb-2">Procure seu médico</h5>
+                <p class="card-text text-muted small">Busque e conheça nosso corpo clínico especializado</p>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Saúde Digital -->
+        <div class="col-12 col-sm-6 col-lg-3">
+          <a routerLink="/telemedicina" class="text-decoration-none">
+            <div class="card h-100 shadow-lg border-0 rounded-4 service-card">
+              <div class="card-body text-center p-4">
+                <div class="service-icon-wrapper mx-auto mb-3">
+                  <div class="help-icon bg-warning text-white rounded-3 d-flex align-items-center justify-content-center">
+                    <i class="bi bi-laptop fs-2"></i>
+                  </div>
+                </div>
+                <h5 class="card-title fw-semibold mb-2">Saúde Digital</h5>
+                <p class="card-text text-muted small">Acesso aos médicos do hospital sem sair de casa</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Convênios - COM TÍTULO À ESQUERDA -->
+  <section class="py-5 convenios-section">
+    <div class="container">
+      <!-- Título alinhado à esquerda -->
+      <div class="mb-5">
+        <h2 class="fw-bold mb-0">{{ convenios.title }}</h2>
+        <p class="text-muted mt-2" style="max-width:700px;">{{ convenios.description }}</p>
+      </div>
 
       <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
         <div *ngFor="let conv of convenios.items" class="col">

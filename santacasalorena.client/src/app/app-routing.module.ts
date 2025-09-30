@@ -28,6 +28,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { WhatsappComponent } from './pages/whatsapp/whatsapp.component';
 import { DoacoesComponent } from './pages/doacoes/doacoes.component';
 import { PaymentComponent } from './pages/payment/payment.component';
+import { LocalizacaoComponent } from './pages/localizacao/localizacao.component';
 
 const routes: Routes = [
   {
@@ -56,6 +57,7 @@ const routes: Routes = [
       { path: 'whatsapp', component: WhatsappComponent },
       { path: 'doacoes', component: DoacoesComponent },
       { path: 'payment', component: PaymentComponent },
+      { path: 'localizacao', component: LocalizacaoComponent },
     ]
   },
   {
