@@ -77,7 +77,7 @@ import { LocalizacaoComponent } from './pages/localizacao/localizacao.component'
     PaymentComponent,
     FloatingContainerComponent,
     WhatsappButtonComponent,
-    AccessibilityButtonComponent
+    AccessibilityButtonComponent,
     PaymentComponent,
     LocalizacaoComponent
   ],
