@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AccessibilityService } from '../../../services/accessibility.service';
 
 @Component({
   selector: 'app-accessibility-button',
@@ -9,25 +10,26 @@ import { Component } from '@angular/core';
 export class AccessibilityButtonComponent {
   menuOpen = false;
 
-  toggleMenu() {
+  // Injeta o serviço no construtor
+  constructor(private accessibilityService: AccessibilityService) { }
+
+  toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
   }
 
-  increaseFont() {
-    document.body.style.fontSize = 'larger';
+  increaseFont(): void {
+    this.accessibilityService.increaseFont();
   }
 
-  decreaseFont() {
-    document.body.style.fontSize = 'smaller';
+  decreaseFont(): void {
+    this.accessibilityService.decreaseFont();
   }
 
-  toggleContrast() {
-    document.body.classList.toggle('high-contrast');
+  toggleContrast(): void {
+    this.accessibilityService.toggleContrast();
   }
 
-  reset() {
-    document.body.style.fontSize = '';
-    document.body.classList.remove('high-contrast');
+  reset(): void {
+    this.accessibilityService.reset();
   }
-
 }
