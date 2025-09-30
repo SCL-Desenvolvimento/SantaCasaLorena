@@ -47,7 +47,7 @@
     </div>
   </section>
 
-  <!-- Services Section - COM FUNDO AZUL E TEXTO BRANCO -->
+  <!-- Services Section  -->
   <section class="py-5 services-section">
     <div class="container">
       <!-- Título e descrição centralizados -->
@@ -159,7 +159,7 @@
     </div>
   </section>
 
-  <!-- Convênios - COM TÍTULO À ESQUERDA -->
+  <!-- Convênios  -->
   <section class="py-5 convenios-section">
     <div class="container">
       <!-- Título alinhado à esquerda -->
@@ -188,35 +188,96 @@
     </div>
   </section>
 
-  <!-- News -->
-  <section class="py-5 bg-white">
+  <!-- News - NOVO LAYOUT INSPIRADO -->
+  <section class="py-5 bg-light news-section">
     <div class="container">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold mb-0">{{ newsSection.title }}</h2>
-        <a routerLink="/noticias" class="text-primary fw-semibold text-decoration-none">
-          Ver todas as notícias <i class="bi bi-arrow-right"></i>
-        </a>
+      <!-- Título e Filtros -->
+      <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <h2 class="fw-bold mb-0">Em Destaque</h2>
+            <!-- Filtros de Categorias -->
+            <div class="categories-filter mt-3">
+              <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-outline-secondary btn-sm fw-medium"
+                        [class.active]="selectedCategory === ''"
+                        (click)="filterByCategory('')">
+                  Todas
+                </button>
+                <button *ngFor="let category of categories"
+                        class="btn btn-outline-secondary btn-sm fw-medium"
+                        [class.active]="selectedCategory === category"
+                        (click)="filterByCategory(category)">
+                  {{ category }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botão Ver Todas as Notícias -->
+          <a routerLink="/noticias" class="btn btn-outline-primary fw-semibold text-decoration-none d-flex align-items-center gap-2 mt-4">
+            Ver todas as notícias <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
       </div>
 
       <div class="row g-4">
-        <div class="col-12 col-md-6 col-lg-4" *ngFor="let item of news">
-          <div class="card h-100 shadow-sm border-0 news-card">
-            <img *ngIf="item.imageUrl" [src]="item.imageUrl" [alt]="item.title" class="card-img-top">
-            <div class="card-body">
-              <h5 class="card-title">{{ item.title }}</h5>
-              <small *ngIf="item.category" class="text-primary fw-bold">{{ item.category }}</small>
-              <p class="card-text mt-2">
-                {{ item.description || (item.content.substring(0, 150) + '...') }}
+        <!-- Destaque Principal -->
+        <div class="col-12 col-lg-7">
+          <div class="news-featured-card position-relative rounded-4 overflow-hidden shadow-lg">
+            <img *ngIf="filteredNews[0]?.imageUrl"
+                 [src]="filteredNews[0]?.imageUrl"
+                 [alt]="filteredNews[0]?.title"
+                 class="img-fluid w-100 news-featured-image">
+
+            <!-- Overlay -->
+            <div class="news-overlay position-absolute bottom-0 start-0 w-100 p-4">
+              <span *ngIf="filteredNews[0]?.category" class="badge bg-primary mb-2">{{ filteredNews[0]?.category }}</span>
+              <h3 class="fw-bold text-white mb-2">{{ filteredNews[0]?.title }}</h3>
+              <p class="text-white-50 small mb-3">
+                {{ filteredNews[0]?.description || (filteredNews[0]?.content?.substring(0, 120) + '...') }}
               </p>
-              <a [routerLink]="['/noticia', item.id]" class="fw-semibold text-decoration-none">
-                Continue lendo <i class="bi bi-arrow-right"></i>
+              <a [routerLink]="['/noticia', filteredNews[0]?.id]" class="btn btn-light btn-sm fw-semibold">
+                Leia mais <i class="bi bi-arrow-right"></i>
               </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Outras Notícias -->
+        <div class="col-12 col-lg-5">
+          <div class="row g-3">
+            <div *ngFor="let item of filteredNews | slice:1:4" class="col-12">
+              <div class="d-flex news-list-item rounded-3 overflow-hidden shadow-sm bg-white">
+                <!-- Imagem -->
+                <div class="flex-shrink-0" style="width: 120px;">
+                  <img *ngIf="item.imageUrl"
+                       [src]="item.imageUrl"
+                       [alt]="item.title"
+                       class="img-fluid h-100 w-100 object-fit-cover">
+                </div>
+                <!-- Texto -->
+                <div class="p-3 flex-grow-1">
+                  <small *ngIf="item.category" class="text-primary fw-bold d-block mb-1">
+                    {{ item.category }}
+                  </small>
+                  <h6 class="fw-bold mb-2">{{ item.title }}</h6>
+                  <p class="small text-muted mb-2">
+                    {{ item.description || (item.content?.substring(0, 80) + '...') }}
+                  </p>
+                  <a [routerLink]="['/noticia', item.id]"
+                     class="small fw-semibold text-decoration-none text-primary">
+                    Ler mais <i class="bi bi-arrow-right small"></i>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
+
 
   <!-- CTA -->
   <section class="py-5 text-white text-center" [style.background]="cta.bgGradient">
