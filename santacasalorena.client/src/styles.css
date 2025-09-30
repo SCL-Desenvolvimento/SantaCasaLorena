@@ -104,3 +104,12 @@ body {
 .radius-xl {
   border-radius: calc(var(--radius) + 4px);
 }
+
+.high-contrast {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+  .high-contrast a {
+    color: yellow !important;
+  }

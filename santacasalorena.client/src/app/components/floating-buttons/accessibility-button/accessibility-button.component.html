@@ -1,0 +1,12 @@
+<div class="accessibility-btn">
+  <button (click)="toggleMenu()" class="accessibility-link">
+    <i class="bi bi-universal-access"></i>
+  </button>
+
+  <div class="accessibility-menu" *ngIf="menuOpen">
+    <button (click)="increaseFont()">Aumentar fonte</button>
+    <button (click)="decreaseFont()">Diminuir fonte</button>
+    <button (click)="toggleContrast()">Alto contraste</button>
+    <button (click)="reset()">Resetar</button>
+  </div>
+</div>
