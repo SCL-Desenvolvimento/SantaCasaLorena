@@ -1,0 +1,87 @@
+:host {
+  display: block;
+}
+
+.modal-content {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  padding: 1.5rem 1.5rem 0;
+}
+
+.modal-body {
+  padding: 1rem 1.5rem;
+}
+
+.modal-footer {
+  padding: 0 1.5rem 1.5rem;
+}
+
+/* Cards de localização */
+.location-card {
+  border: 1px solid #e9ecef;
+  background: #fff;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+  .location-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+    border-color: #0d6efd;
+  }
+
+.location-icon {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+}
+
+.location-info {
+  border-top: 1px solid #f8f9fa;
+  padding-top: 1rem;
+}
+
+/* Mapa */
+.map-container {
+  iframe
+
+{
+  border-radius: 8px;
+}
+
+}
+
+.btn {
+  border-radius: 8px;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  &.btn-primary
+
+{
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+  border: none;
+  &:hover
+
+{
+  background: linear-gradient(135deg, #0a58ca 0%, #084298 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+}
+
+&.btn-secondary {
+  border: 1px solid #dee2e6;
+  &:hover
+
+{
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+}
+
+}
+}

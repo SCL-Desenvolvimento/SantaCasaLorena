@@ -81,8 +81,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     buttonLabel: 'Clique aqui para acessar'
   };
 
-  // Apenas placeholders para simular notícias locais
+  // Variáveis para notícias e filtros
   news: News[] = [];
+  filteredNews: News[] = [];
+  selectedCategory: string = '';
+  categories: string[] = ['Notícias', 'Eventos', 'Blog', 'Campanhas'];
   newsSection = { title: 'Últimas Notícias' };
 
   constructor(private agreementService: AgreementService,
@@ -100,6 +103,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     clearInterval(this.intervalId);
   }
 
+  // ADICIONE ESTA FUNÇÃO PARA NAVEGAÇÃO EXTERNA
+  navigateToExternal(url: string): void {
+    window.open(url, '_blank');
+  }
+
+  // Função para navegação interna (se necessário)
+  navigateTo(path: string): void {
+    this.router.navigate([path]);
+  }
+
   loadNews(): void {
     this.newsService.getAll().subscribe({
       next: (data) => {
@@ -110,16 +123,45 @@ export class HomeComponent implements OnInit, OnDestroy {
             if (!b.createdAt) return -1;
             return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
           })
-          .slice(0, 3)
+          .slice(0, 5) // Aumentei para 5 para ter mais notícias para filtrar
           .map(n => ({
             ...n,
             imageUrl: `${environment.imageServerUrl}${n.imageUrl}`
           }));
+
+        // Inicializa as notícias filtradas
+        this.filteredNews = [...this.news];
+
+        // Extrai categorias únicas das notícias
+        this.extractCategories();
       },
       error: (err) => {
         console.error('Erro ao carregar notícias:', err);
       }
     });
+  }
+
+  // Extrai categorias únicas das notícias
+  private extractCategories(): void {
+    const uniqueCategories = [...new Set(this.news.map(item => item.category))].filter(cat => cat && cat.trim() !== '');
+    if (uniqueCategories.length > 0) {
+      this.categories = uniqueCategories;
+    }
+  }
+
+  // Filtra notícias por categoria
+  filterByCategory(category: string): void {
+    this.selectedCategory = category;
+
+    if (category === '') {
+      // Mostra todas as notícias
+      this.filteredNews = [...this.news];
+    } else {
+      // Filtra por categoria
+      this.filteredNews = this.news.filter(item =>
+        item.category?.toLowerCase() === category.toLowerCase()
+      );
+    }
   }
 
   loadBanner(): void {

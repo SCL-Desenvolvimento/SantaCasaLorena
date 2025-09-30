@@ -43,6 +43,7 @@ import { DoacoesComponent } from './pages/doacoes/doacoes.component';
 import { FloatingContainerComponent } from './components/floating-buttons/floating-container/floating-container.component';
 import { WhatsappButtonComponent } from './components/floating-buttons/whatsapp-button/whatsapp-button.component';
 import { AccessibilityButtonComponent } from './components/floating-buttons/accessibility-button/accessibility-button.component';
+import { LocalizacaoComponent } from './pages/localizacao/localizacao.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,9 @@ import { AccessibilityButtonComponent } from './components/floating-buttons/acce
     PaymentComponent,
     FloatingContainerComponent,
     WhatsappButtonComponent,
-    AccessibilityButtonComponent
+    AccessibilityButtonComponent,
+    PaymentComponent,
+    LocalizacaoComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,6 @@
-/* Carrossel */
-
+/* ===================== */
+/*       CARROSSEL       */
+/* ===================== */
 .hero-carousel {
   position: relative;
   width: 100%;
@@ -13,7 +14,7 @@
   flex-wrap: nowrap;
   width: 100%;
   height: 100%;
-  transition: transform 0.5s ease-in-out; /* Moved from TS for simplicity */
+  transition: transform 0.5s ease-in-out;
 }
 
 .carousel-slide {
@@ -24,8 +25,8 @@
   background-position: center;
   background-repeat: no-repeat;
 }
-/* Remove old opacity/absolute/active rules */ /* Setas laterais (unchanged) */
 
+/* Setas laterais */
 .carousel-arrow {
   position: absolute;
   top: 50%;
@@ -62,8 +63,8 @@
 .carousel-arrow.right {
   right: 15px;
 }
-/* Indicadores (unchanged) */
 
+/* Indicadores */
 .carousel-indicators {
   position: absolute;
   bottom: 15px;
@@ -92,23 +93,33 @@
   }
 
   .indicator.active {
-    background: #22BCEE;
-    border: 2px solid #22BCEE;
+    background: #22bcee;
+    border: 2px solid #22bcee;
   }
-/* Restante do layout */
 
+/* ===================== */
+/*       SEÇÕES          */
+/* ===================== */
 .text-accent {
   color: var(--bs-danger);
 }
 
-/* MODIFICAÇÃO: Seção de serviços com fundo azul */
+/* Seção de serviços */
 .services-section {
-  background-color: #22BCEE !important;
+  background-color: #22bcee !important;
 }
+
+  .services-section .text-center.mb-5 h2 {
+    color: white !important;
+  }
+
+  .services-section .text-center.mb-5 p.text-muted {
+    color: rgba(255, 255, 255, 0.9) !important;
+  }
 
 .service-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background: #fff; /* Mantém o card branco */
+  background: #fff;
 }
 
   .service-card:hover {
@@ -127,25 +138,337 @@
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
+/* Seção Como Podemos Te Ajudar */
+.help-section {
+  background-color: #f8f9fa;
+}
+
+.help-icon {
+  width: 130px;
+  height: 130px;
+  transition: all 0.3s ease;
+}
+
+.service-card:hover .help-icon {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Cores dos ícones */
+.help-icon.bg-primary {
+  background: linear-gradient(135deg, #22bcee 0%, #1a8fb4 100%) !important;
+}
+
+.help-icon.bg-success {
+  background: linear-gradient(135deg, #198754 0%, #0f5132 100%) !important;
+}
+
+.help-icon.bg-info {
+  background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%) !important;
+}
+
+.help-icon.bg-warning {
+  background: linear-gradient(135deg, #ffc107 0%, #d39e00 100%) !important;
+}
+
+/* Seção Convênios */
+.convenios-section {
+  background-color: #f8f9fa !important;
+}
+
+/*     SEÇÃO NOTÍCIAS    */
+/* ===================== */
+/* ===================== */
+
+.news-section {
+  background: #f8f9fa;
+  padding: 5rem 0;
+}
+
+.news-featured-card {
+  position: relative;
+  height: 100%;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.news-featured-image {
+  height: 400px;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.news-featured-card:hover .news-featured-image {
+  transform: scale(1.05);
+}
+
+.news-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 2rem;
+  background: linear-gradient( 180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.75) 100% );
+}
+
+  .news-overlay h3 {
+    color: #fff;
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+
+  .news-overlay p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+  }
+
+  .news-overlay .btn {
+    border-radius: 50px;
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+  }
+
+/* Cards de notícias menores */
+.news-list-item {
+  display: flex;
+  background: #fff;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+  .news-list-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .news-list-item img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .news-list-item h6 {
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+
+  .news-list-item p {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: #6c757d;
+  }
+
 .news-card img {
   object-fit: cover;
   height: 200px;
 }
 
 .news-card:hover {
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* ESTILOS PARA TEXTO BRANCO NA SEÇÃO DE SERVIÇOS */
-.services-section .text-center.mb-5 h2 {
+.categories-filter .btn-outline-secondary.active {
+  background-color: #22BCEE;
+  border-color: #22BCEE;
+  color: white;
+}
+
+.categories-filter .btn-outline-secondary {
+  border-radius: 20px;
+  padding: 0.4rem 1rem;
+  transition: all 0.3s ease;
+  border: 2px solid #dee2e6;
+  margin-bottom: 0.5rem; /* Adiciona margem na parte inferior */
+}
+
+  .categories-filter .btn-outline-secondary:hover {
+    background-color: #22BCEE; /* Azul ao invés de branco */
+    border-color: #22BCEE;
+    color: white; /* Texto branco */
+    transform: translateY(-1px);
+  }
+
+/* Alinha o botão "Ver todas as notícias" com os filtros */
+.d-flex.justify-content-between.align-items-start {
+  align-items: flex-end !important;
+}
+
+.categories-filter {
+  margin-top: 0.5rem;
+}
+
+/* ===================== */
+/*       BOTÕES          */
+/* ===================== */
+.btn-donation {
+  background: #ff0000 !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 50px;
+  padding: 0.5rem 1.2rem;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+  .btn-donation:hover {
+    background: #b02a37 !important;
+    color: #fff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+  }
+
+.btn-exam {
+  background: #22bcee !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 50px;
+  padding: 0.5rem 1.2rem;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+  .btn-exam:hover {
+    background: #0a58ca !important;
+    color: #fff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(34, 188, 238, 0.3);
+  }
+
+.btn-outline-primary {
+  border: 2px solid #22BCEE;
+  color: #22BCEE;
+  font-weight: 600;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+  .btn-outline-primary:hover {
+    background-color: #22BCEE;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(34, 188, 238, 0.3);
+  }
+
+/* ===================== */
+/*     TOPO DO SITE      */
+/* ===================== */
+.top-bar {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+  z-index: 1060;
   color: white !important;
 }
 
-.services-section .text-center.mb-5 p.text-muted {
-  color: rgba(255, 255, 255, 0.9) !important;
+  .top-bar a {
+    color: white !important;
+  }
+
+  .top-bar .link-hover {
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+    .top-bar .link-hover:hover {
+      color: #22bcee !important;
+      transform: translateY(-1px);
+    }
+
+    .top-bar .link-hover::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -5px;
+      left: 0;
+      background-color: #22bcee;
+      transition: width 0.3s ease;
+    }
+
+    .top-bar .link-hover:hover::after {
+      width: 100%;
+    }
+
+/* ===================== */
+/*   RESPONSIVIDADE      */
+/* ===================== */
+@media (max-width: 992px) {
+  .news-featured-image {
+    height: 300px;
+  }
+
+  .news-overlay {
+    padding: 1.5rem;
+  }
+
+    .news-overlay h3 {
+      font-size: 1.25rem;
+    }
 }
 
-/* Mantém a seção de convênios com fundo claro (como estava) */
-.convenios-section {
-  background-color: #f8f9fa !important;
+@media (max-width: 768px) {
+  .help-icon {
+    width: 100px;
+    height: 100px;
+  }
+
+    .help-icon i {
+      font-size: 1.5rem !important;
+    }
+
+  .hero-carousel {
+    height: 50vh;
+  }
+
+  .top-bar {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .service-icon-wrapper,
+  .help-icon {
+    width: 100px;
+    height: 100px;
+  }
+
+    .help-icon i {
+      font-size: 1.5rem !important;
+    }
+
+  .top-bar .container .row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .top-bar .col-md-8,
+  .top-bar .col-md-4 {
+    width: 100%;
+    text-align: center;
+  }
+
+  .news-featured-image {
+    height: 220px;
+  }
+
+  .news-overlay {
+    padding: 1rem;
+  }
+
+    .news-overlay h3 {
+      font-size: 1.1rem;
+    }
+
+  .news-list-item {
+    flex-direction: column;
+  }
+
+    .news-list-item img {
+      height: 160px;
+    }
 }

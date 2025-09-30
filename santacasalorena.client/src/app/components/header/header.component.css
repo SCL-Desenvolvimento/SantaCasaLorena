@@ -78,7 +78,7 @@
   .dropdown-item:hover {
     background-color: #22BCEE;
     color: white;
-    transform: translateX(4px);
+    transform: translateX(0px);
   }
 
   .dropdown-item i {
@@ -136,3 +136,23 @@
 .rotate {
   transform: rotate(180deg);
 }
+
+/* Top Bar - Estilo cinza mais escuro */
+.top-bar {
+  background-color: #9fa2a8 !important;
+  color: white;
+  border-bottom: 1px solid #5a6268;
+  margin-left: -12.5rem !important; /* Força para a esquerda */
+  margin-right: -2rem !important;
+}
+
+  /* Links do top bar */
+  .top-bar .link-hover {
+    transition: color 0.2s ease-in-out;
+    color: white;
+  }
+
+    .top-bar .link-hover:hover {
+      color: #22BCEE !important; /* Cor azul para hover */
+    }
+

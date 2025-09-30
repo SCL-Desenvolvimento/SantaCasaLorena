@@ -1,0 +1,134 @@
+<div class="modal-header border-0 pb-0">
+  <h4 class="modal-title fw-bold text-primary">Nossa Localização</h4>
+  <button type="button" class="btn-close" (click)="close()" aria-label="Close"></button>
+</div>
+
+<div class="modal-body pt-0">
+  <!-- Cards de Localizações -->
+  <div class="row g-3 mb-4">
+    <!-- Card 1 -->
+    <div class="col-md-6">
+      <div class="location-card rounded-3 p-4 h-100">
+        <div class="d-flex align-items-start mb-3">
+          <div class="location-icon bg-primary rounded-circle d-flex align-items-center justify-content-center me-3">
+            <i class="bi bi-geo-alt-fill text-white fs-6"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-1">Hospital Principal</h6>
+            <p class="text-muted mb-2">Atendimento geral 24 horas</p>
+          </div>
+        </div>
+        <div class="location-info">
+          <p class="small text-muted mb-2">
+            <i class="bi bi-geo-alt me-2"></i>
+            Rua Dom Bosco, 562 - Centro, Lorena/SP
+          </p>
+          <p class="small text-muted mb-0">
+            <i class="bi bi-telephone me-2"></i>
+            (12) 3159-3344
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="col-md-6">
+      <div class="location-card rounded-3 p-4 h-100">
+        <div class="d-flex align-items-start mb-3">
+          <div class="location-icon bg-success rounded-circle d-flex align-items-center justify-content-center me-3">
+            <i class="bi bi-heart-pulse text-white fs-6"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-1">Pronto Atendimento</h6>
+            <p class="text-muted mb-2">Urgência e emergência 24h</p>
+          </div>
+        </div>
+        <div class="location-info">
+          <p class="small text-muted mb-2">
+            <i class="bi bi-geo-alt me-2"></i>
+            Rua Dom Bosco, 562 - Centro, Lorena/SP
+          </p>
+          <p class="small text-muted mb-0">
+            <i class="bi bi-telephone me-2"></i>
+            (12) 3159-3344
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="col-md-6">
+      <div class="location-card rounded-3 p-4 h-100">
+        <div class="d-flex align-items-start mb-3">
+          <div class="location-icon bg-warning rounded-circle d-flex align-items-center justify-content-center me-3">
+            <i class="bi bi-calendar-check text-white fs-6"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-1">Centro de Especialidades</h6>
+            <p class="text-muted mb-2">Consultas e exames especializados</p>
+          </div>
+        </div>
+        <div class="location-info">
+          <p class="small text-muted mb-2">
+            <i class="bi bi-geo-alt me-2"></i>
+            Av. Dr. Peixoto de Castro, 255 - Centro
+          </p>
+          <p class="small text-muted mb-0">
+            <i class="bi bi-telephone me-2"></i>
+            (12) 3159-3355
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="col-md-6">
+      <div class="location-card rounded-3 p-4 h-100">
+        <div class="d-flex align-items-start mb-3">
+          <div class="location-icon bg-info rounded-circle d-flex align-items-center justify-content-center me-3">
+            <i class="bi bi-file-medical text-white fs-6"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-1">Laboratório</h6>
+            <p class="text-muted mb-2">Exames e resultados</p>
+          </div>
+        </div>
+        <div class="location-info">
+          <p class="small text-muted mb-2">
+            <i class="bi bi-geo-alt me-2"></i>
+            Rua São José, 123 - Centro, Lorena/SP
+          </p>
+          <p class="small text-muted mb-0">
+            <i class="bi bi-telephone me-2"></i>
+            (12) 3159-3366
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mapa -->
+  <div class="row">
+    <div class="col-12">
+      <h6 class="fw-bold mb-3">Como chegar</h6>
+      <div class="map-container rounded-3 overflow-hidden shadow-sm">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3672.231324982646!2d-45.12822392436603!3d-22.997050039387968!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ccc95f5c2b7e77%3A0x6f6ae3c5b6b5e5a1!2sRua%20Dom%20Bosco%2C%20562%20-%20Centro%2C%20Lorena%20-%20SP%2C%2012600-000!5e0!3m2!1spt-BR!2sbr!4v1690000000000!5m2!1spt-BR!2sbr"
+                width="100%"
+                height="300"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer border-0">
+  <a href="https://maps.google.com/?q=Rua Dom Bosco - 562 Centro, Lorena/SP"
+     target="_blank"
+     class="btn btn-primary">
+    <i class="bi bi-geo-alt me-2"></i>Abrir no Google Maps
+  </a>
+</div>
