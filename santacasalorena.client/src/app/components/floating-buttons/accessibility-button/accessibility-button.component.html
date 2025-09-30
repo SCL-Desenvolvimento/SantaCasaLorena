@@ -1,0 +1,23 @@
+<!-- accessibility-button.component.html -->
+
+<div class="accessibility-container">
+  <button (click)="toggleMenu()"
+          class="accessibility-link"
+          aria-controls="accessibility-menu"
+          [attr.aria-expanded]="menuOpen"
+          aria-label="Abrir menu de acessibilidade">
+    <i class="bi bi-universal-access"></i>
+  </button>
+
+  <div id="accessibility-menu"
+       class="accessibility-menu"
+       *ngIf="menuOpen"
+       role="menu"
+       [attr.aria-hidden]="!menuOpen">
+
+    <button role="menuitem" (click)="increaseFont()">Aumentar fonte</button>
+    <button role="menuitem" (click)="decreaseFont()">Diminuir fonte</button>
+    <button role="menuitem" (click)="toggleContrast()">Alto contraste</button>
+    <button role="menuitem" (click)="reset()">Resetar</button>
+  </div>
+</div>

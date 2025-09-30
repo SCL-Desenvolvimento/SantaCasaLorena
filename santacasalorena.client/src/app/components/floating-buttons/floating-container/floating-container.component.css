@@ -1,0 +1,33 @@
+.floating-container {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px; /* Espaçamento entre os botões no desktop */
+}
+
+/* Responsividade para tablets (ex: iPad Mini) */
+@media (max-width: 768px) {
+  .floating-container {
+    top: auto;
+    bottom: 20px;
+    right: 20px;
+    transform: none;
+    flex-direction: column; /* Mantém os botões em coluna */
+    gap: 15px; /* Ajusta o espaçamento para tablets */
+  }
+}
+
+/* Responsividade para smartphones */
+@media (max-width: 480px) {
+  .floating-container {
+    bottom: 15px;
+    right: 15px;
+    gap: 10px; /* Ajusta o espaçamento para smartphones */
+  }
+}
+
