@@ -225,19 +225,19 @@
         <!-- Destaque Principal -->
         <div class="col-12 col-lg-7">
           <div class="news-featured-card position-relative rounded-4 overflow-hidden shadow-lg">
-            <img *ngIf="filteredNews[0]?.imageUrl"
-                 [src]="filteredNews[0]?.imageUrl"
-                 [alt]="filteredNews[0]?.title"
+            <img *ngIf="filteredNews[0].imageUrl"
+                 [src]="filteredNews[0].imageUrl"
+                 [alt]="filteredNews[0].title"
                  class="img-fluid w-100 news-featured-image">
 
             <!-- Overlay -->
             <div class="news-overlay position-absolute bottom-0 start-0 w-100 p-4">
-              <span *ngIf="filteredNews[0]?.category" class="badge bg-primary mb-2">{{ filteredNews[0]?.category }}</span>
-              <h3 class="fw-bold text-white mb-2">{{ filteredNews[0]?.title }}</h3>
+              <span *ngIf="filteredNews[0].category" class="badge bg-primary mb-2">{{ filteredNews[0].category }}</span>
+              <h3 class="fw-bold text-white mb-2">{{ filteredNews[0].title }}</h3>
               <p class="text-white-50 small mb-3">
-                {{ filteredNews[0]?.description || (filteredNews[0]?.content?.substring(0, 120) + '...') }}
+                {{ filteredNews[0].description || (filteredNews[0].content.substring(0, 120) + '...') }}
               </p>
-              <a [routerLink]="['/noticia', filteredNews[0]?.id]" class="btn btn-light btn-sm fw-semibold">
+              <a [routerLink]="['/noticia', filteredNews[0].id]" class="btn btn-light btn-sm fw-semibold">
                 Leia mais <i class="bi bi-arrow-right"></i>
               </a>
             </div>
@@ -263,7 +263,7 @@
                   </small>
                   <h6 class="fw-bold mb-2">{{ item.title }}</h6>
                   <p class="small text-muted mb-2">
-                    {{ item.description || (item.content?.substring(0, 80) + '...') }}
+                    {{ item.description || (item.content.substring(0, 80) + '...') }}
                   </p>
                   <a [routerLink]="['/noticia', item.id]"
                      class="small fw-semibold text-decoration-none text-primary">
