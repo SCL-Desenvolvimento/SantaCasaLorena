@@ -1,0 +1,21 @@
+
+<div class="card news-card">
+  <img [src]="news.imageUrl || 'https://via.placeholder.com/400x200?text=No+Image'" class="card-img-top" alt="News Image">
+  <div class="card-body">
+    <h5 class="card-title">{{ news.title }}</h5>
+    <p class="card-text">{{ news.description | slice:0:100 }}...</p>
+    <p class="card-text">
+      <span class="badge bg-secondary">{{ news.category }}</span>
+      <span 
+        class="badge ms-2"
+        [class.bg-success]="news.isPublished"
+        [class.bg-warning]="!news.isPublished">
+        <i class="bi me-1" 
+           [ngClass]="news.isPublished ? 'bi-eye' : 'bi-pencil'"></i>
+        {{ news.isPublished ? 'Publicado' : 'Rascunho' }}
+      </span>
+    </p>
+    <p class="card-text"><small class="text-muted">Criado em: {{ formatDate(news.createdAt) }}</small></p>
+  </div>
+</div>
+

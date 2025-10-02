@@ -1,67 +1,155 @@
-<!-- Stats Cards -->
-<div class="row g-4 mb-4">
-  <div class="col-md-3" *ngFor="let card of statCards">
-    <div class="card shadow-sm border-0 rounded-3">
-      <div class="card-body d-flex justify-content-between align-items-center">
-        <div>
-          <h6 class="text-muted small mb-1">{{ card.label }}</h6>
-          <h3 class="fw-bold mb-0" [ngClass]="card.textClass">{{ card.value }}</h3>
-        </div>
-        <div class="icon-circle" [ngClass]="card.bgClass">
-          <i class="{{ card.icon }}"></i>
+<div class="dashboard-container">
+  <!-- Loading State -->
+  <div class="loading-overlay" *ngIf="loading">
+    <app-loading-spinner></app-loading-spinner>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div class="dashboard-content" *ngIf="!loading">
+    <!-- Stats Cards Row -->
+    <div class="row g-4 mb-4">
+      <div class="col-xl-3 col-md-6" *ngFor="let card of statCards">
+        <app-stats-card 
+          [label]="card.label"
+          [value]="card.value"
+          [icon]="card.icon"
+          [bgClass]="card.bgClass"
+          [textClass]="card.textClass"
+          [trend]="card.trend">
+        </app-stats-card>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row g-4 mb-4">
+      <div class="col-12">
+        <div class="card shadow-sm border-0 rounded-3">
+          <div class="card-header bg-light border-0">
+            <h5 class="mb-0">
+              <i class="bi bi-lightning text-warning me-2"></i>
+              Ações Rápidas
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-xl-3 col-md-6" *ngFor="let action of quickActions">
+                <a [routerLink]="action.route" class="quick-action-card text-decoration-none">
+                  <div class="quick-action-content">
+                    <div class="quick-action-icon" [ngClass]="'text-' + action.color">
+                      <i class="bi" [ngClass]="action.icon"></i>
+                    </div>
+                    <div class="quick-action-info">
+                      <h6 class="quick-action-title">{{ action.title }}</h6>
+                      <p class="quick-action-description">{{ action.description }}</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Recent Items -->
-<div class="row g-4">
-  <!-- Últimas Notícias -->
-  <div class="col-lg-6">
-    <div class="card shadow-sm border-0 rounded-3">
-      <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">📰 Últimas Notícias</h5>
-        <a href="/admin/news" class="text-primary small">Ver todas</a>
-      </div>
-      <div class="card-body">
-        <div *ngFor="let item of news.slice(0, 5)"
-             class="d-flex justify-content-between align-items-center py-2 border-bottom">
-          <div>
-            <p class="mb-1 fw-semibold">{{ item.title }}</p>
-            <small class="text-muted">{{ formatDate(item.createdAt) }}</small>
+    <!-- Recent Items Row -->
+    <div class="row g-4">
+      <!-- Recent News -->
+      <div class="col-lg-6">
+        <div class="card shadow-sm border-0 rounded-3 h-100">
+          <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <i class="bi bi-newspaper text-primary me-2"></i>
+              Últimas Notícias
+            </h5>
+            <a routerLink="/admin/news" class="btn btn-sm btn-outline-primary">
+              Ver todas
+            </a>
           </div>
-          <span class="badge d-flex align-items-center gap-1"
-                [class.bg-success]="item.isPublished"
-                [class.bg-secondary]="!item.isPublished">
-            <i class="bi" [ngClass]="item.isPublished ? 'bi-check-circle' : 'bi-pencil'"></i>
-            {{ item.isPublished ? 'Publicado' : 'Rascunho' }}
-          </span>
+          <div class="card-body p-0">
+            <app-recent-items 
+              [items]="recentNews"
+              [showDate]="true"
+              [dateFormat]="'date'"
+              emptyMessage="Nenhuma notícia encontrada">
+            </app-recent-items>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Contacts -->
+      <div class="col-lg-6">
+        <div class="card shadow-sm border-0 rounded-3 h-100">
+          <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <i class="bi bi-chat-dots text-danger me-2"></i>
+              Contatos Recentes
+            </h5>
+            <a routerLink="/admin/contacts" class="btn btn-sm btn-outline-danger">
+              Ver todos
+            </a>
+          </div>
+          <div class="card-body p-0">
+            <app-recent-items 
+              [items]="recentContacts"
+              [showDate]="true"
+              [dateFormat]="'datetime'"
+              emptyMessage="Nenhum contato encontrado">
+            </app-recent-items>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Contatos Recentes -->
-  <div class="col-lg-6">
-    <div class="card shadow-sm border-0 rounded-3">
-      <div class="card-header bg-light border-0 d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">💬 Contatos Recentes</h5>
-        <a href="/admin/contacts" class="text-primary small">Ver todos</a>
-      </div>
-      <div class="card-body">
-        <div *ngFor="let contact of contacts.slice(0, 5)"
-             class="d-flex justify-content-between align-items-center py-2 border-bottom">
-          <div>
-            <p class="mb-1 fw-semibold">{{ contact.name }}</p>
-            <small class="text-muted">{{ contact.subject }}</small>
+    <!-- System Status Row -->
+    <div class="row g-4 mt-2">
+      <div class="col-12">
+        <div class="card shadow-sm border-0 rounded-3">
+          <div class="card-header bg-light border-0">
+            <h5 class="mb-0">
+              <i class="bi bi-activity text-success me-2"></i>
+              Status do Sistema
+            </h5>
           </div>
-          <span class="badge d-flex align-items-center gap-1"
-                [class.bg-success]="contact.is_read"
-                [class.bg-danger]="!contact.is_read">
-            <i class="bi" [ngClass]="contact.is_read ? 'bi-check' : 'bi-envelope-fill'"></i>
-            {{ contact.is_read ? 'Lido' : 'Novo' }}
-          </span>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <div class="status-item">
+                  <div class="status-indicator bg-success"></div>
+                  <div class="status-info">
+                    <span class="status-label">Servidor Web</span>
+                    <span class="status-value text-success">Online</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="status-item">
+                  <div class="status-indicator bg-success"></div>
+                  <div class="status-info">
+                    <span class="status-label">Banco de Dados</span>
+                    <span class="status-value text-success">Conectado</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="status-item">
+                  <div class="status-indicator bg-warning"></div>
+                  <div class="status-info">
+                    <span class="status-label">Backup</span>
+                    <span class="status-value text-warning">Pendente</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="status-item">
+                  <div class="status-indicator bg-info"></div>
+                  <div class="status-info">
+                    <span class="status-label">Última Atualização</span>
+                    <span class="status-value text-muted">{{ formatDateTime('2024-01-15T10:30:00') }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

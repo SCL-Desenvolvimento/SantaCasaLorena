@@ -1,0 +1,13 @@
+
+.banner-card {
+  transition: transform 0.2s ease-in-out;
+}
+
+.banner-card:hover {
+  transform: translateY(-5px);
+}
+.banner-card .card-img-top {
+  height: 150px;
+  object-fit: cover;
+}
+

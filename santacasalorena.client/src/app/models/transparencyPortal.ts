@@ -8,4 +8,6 @@ export interface TransparencyPortal {
   startYear?: number;     // Intervalo inicial (quando houver)
   endYear?: number | null;// Intervalo final (quando houver)
   fileUrl: string;        // Caminho/URL do arquivo
+  status: string;
+  publishDate: string;
 }

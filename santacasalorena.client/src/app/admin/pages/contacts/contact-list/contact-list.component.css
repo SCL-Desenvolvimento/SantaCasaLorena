@@ -1,0 +1,109 @@
+/* Estilos específicos para contact-list.component.css */
+
+.contact-list-container {
+  padding: 20px;
+}
+
+.page-header {
+  margin-bottom: 20px;
+}
+
+.page-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.page-subtitle {
+  font-size: 0.9rem;
+}
+
+.card {
+  border-radius: 0.5rem;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+.input-group .form-control {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.input-group .btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.bulk-actions .alert {
+  border-radius: 0.5rem;
+}
+
+.table th.sortable {
+  cursor: pointer;
+}
+
+.table th.sortable:hover {
+  color: var(--bs-primary);
+}
+
+.table tbody tr:hover {
+  background-color: var(--bs-table-hover-bg);
+}
+
+.table-active {
+  background-color: var(--bs-table-active-bg) !important;
+}
+
+.contact-sender h6,
+.contact-subject h6 {
+  font-size: 1rem;
+}
+
+.contact-sender small,
+.contact-subject small {
+  font-size: 0.85rem;
+}
+
+.badge {
+  font-size: 0.75em;
+  padding: 0.4em 0.6em;
+  border-radius: 0.25rem;
+}
+
+.empty-state {
+  padding: 50px 0;
+  color: #6c757d;
+}
+
+.empty-state i {
+  font-size: 4rem;
+}
+
+.pagination-info {
+  font-size: 0.85rem;
+}
+
+.pagination-sm .page-link {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.pagination-sm .page-item:first-child .page-link {
+  border-top-left-radius: 0.2rem;
+  border-bottom-left-radius: 0.2rem;
+}
+
+.pagination-sm .page-item:last-child .page-link {
+  border-top-right-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
+}
+
+.fw-bold {
+  font-weight: bold !important;
+}
+

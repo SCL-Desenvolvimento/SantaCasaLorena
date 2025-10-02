@@ -26,14 +26,18 @@ export class NewsService {
     );
   }
 
-  create(dto: any): Observable<News> {
-    return this.http.post<News>(this.apiUrl, dto).pipe(
+  create(news: News): Observable<News> {
+    // O backend deve lidar com o upload da imagem e a geração do ID, createdAt, updatedAt, views
+    // Aqui estamos enviando o objeto News diretamente
+    return this.http.post<News>(this.apiUrl, news).pipe(
       catchError(this.handleError)
     );
   }
 
-  update(id: string, dto: any): Observable<News> {
-    return this.http.put<News>(`${this.apiUrl}/${id}`, dto).pipe(
+  update(id: string, news: News): Observable<News> {
+    // O backend deve lidar com o upload da imagem e a atualização do updatedAt
+    // Aqui estamos enviando o objeto News diretamente
+    return this.http.put<News>(`${this.apiUrl}/${id}`, news).pipe(
       catchError(this.handleError)
     );
   }
@@ -44,14 +48,21 @@ export class NewsService {
     );
   }
 
+  updateNewsPublishStatus(id: string, isPublished: boolean): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${id}/publish`, { isPublished }).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Ocorreu um erro. Tente novamente mais tarde.';
     if (error.error instanceof ErrorEvent) {
       errorMessage = `Erro: ${error.error.message}`;
     } else {
-      errorMessage = error.error?.error || errorMessage;
+      // O backend pode retornar um objeto de erro com uma mensagem específica
+      errorMessage = error.error?.message || error.statusText || errorMessage;
     }
     return throwError(() => new Error(errorMessage));
   }
 }
+

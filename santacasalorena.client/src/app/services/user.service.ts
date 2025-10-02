@@ -8,50 +8,56 @@ import { User } from '../models/user';
   providedIn: 'root',
 })
 export class UserService {
-  private apiUrl = `${environment.apiUrl}/users`
+  private apiUrl = `${environment.apiUrl}/users`;
 
   constructor(private http: HttpClient) { }
 
-  getUser(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}`).pipe(
+  getAll(): Observable<User[]> {
+    return this.http.get<User[]>(this.apiUrl).pipe(
       map(response => response),
       catchError(this.handleError)
     );
   }
 
-  getUserById(id: string): Observable<User> {
+  getById(id: string): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${id}`).pipe(
       map(response => response),
       catchError(this.handleError)
     );
   }
 
-  createUser(user: FormData): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, user).pipe(
+  create(user: User): Observable<User> {
+    return this.http.post<User>(this.apiUrl, user).pipe(
       catchError(this.handleError)
     );
   }
 
-  updateUser(id: string, user: FormData): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, user).pipe(
+  update(id: string, user: User): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/${id}`, user).pipe(
       catchError(this.handleError)
     );
   }
 
-  deleteUser(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
-  resetPassword(userId: string) {
-    return this.http.post(`${this.apiUrl}/reset-password/${userId}`, {}).pipe(
+  updateUserStatus(id: string, status: 'active' | 'inactive'): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${id}/status`, { status }).pipe(
       catchError(this.handleError)
     );
   }
 
-  changePassword(userId: string, newPassword: string) {
-    return this.http.post<any>(`${this.apiUrl}/${userId}/change-password`, { newPassword }).pipe(
+  resetPassword(userId: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/reset-password/${userId}`, {}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  changePassword(userId: number, newPassword: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/${userId}/change-password`, { newPassword }).pipe(
       catchError(this.handleError)
     );
   }

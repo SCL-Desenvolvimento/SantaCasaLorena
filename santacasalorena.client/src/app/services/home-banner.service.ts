@@ -19,31 +19,42 @@ export class HomeBannerService {
     );
   }
 
-  getById(id: string): Observable<HomeBanner> {
+  getById(id: number): Observable<HomeBanner> {
     return this.http.get<HomeBanner>(`${this.apiUrl}/${id}`).pipe(
       map(r => r),
       catchError(this.handleError)
     );
   }
 
-  create(dto: any): Observable<HomeBanner> {
+  create(dto: HomeBanner): Observable<HomeBanner> {
     return this.http.post<HomeBanner>(this.apiUrl, dto).pipe(
       catchError(this.handleError)
     );
   }
 
-  update(id: string, dto: any): Observable<HomeBanner> {
+  update(id: number, dto: HomeBanner): Observable<HomeBanner> {
     return this.http.put<HomeBanner>(`${this.apiUrl}/${id}`, dto).pipe(
       catchError(this.handleError)
     );
   }
 
-  delete(id: string): Observable<void> {
+  delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
+  updateBannerStatus(id: number, isActive: boolean): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${id}/status`, { isActive }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateBannerOrder(id: number, order: number): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${id}/order`, { order }).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Ocorreu um erro. Tente novamente mais tarde.';
@@ -55,3 +66,4 @@ export class HomeBannerService {
     return throwError(() => new Error(errorMessage));
   }
 }
+

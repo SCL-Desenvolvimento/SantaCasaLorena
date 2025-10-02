@@ -5,6 +5,11 @@ export interface Contact {
   phone?: string;
   subject: string;
   message: string;
-  is_read: boolean;
-  createdAt?: string;
+  isRead: boolean;
+  isReplied?: boolean;
+  createdAt: string;
+  readAt?: string;
+  priority: 'low' | 'medium' | 'high';
+  category: string;
+  receivedAt: string;
 }

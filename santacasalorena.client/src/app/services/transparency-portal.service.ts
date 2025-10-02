@@ -30,13 +30,13 @@ export class TransparencyPortalService {
     );
   }
 
-  create(dto: any): Observable<TransparencyPortal> {
+  create(dto: FormData): Observable<TransparencyPortal> {
     return this.http.post<TransparencyPortal>(this.apiUrl, dto).pipe(
       catchError(this.handleError)
     );
   }
 
-  update(id: string, dto: any): Observable<TransparencyPortal> {
+  update(id: string, dto: FormData): Observable<TransparencyPortal> {
     return this.http.put<TransparencyPortal>(`${this.apiUrl}/${id}`, dto).pipe(
       catchError(this.handleError)
     );
@@ -44,6 +44,12 @@ export class TransparencyPortalService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateTransparencyItemStatus(id: string, status: 'published' | 'draft'): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${id}/status`, { status }).pipe(
       catchError(this.handleError)
     );
   }
@@ -58,3 +64,4 @@ export class TransparencyPortalService {
     return throwError(() => new Error(errorMessage));
   }
 }
+

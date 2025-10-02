@@ -1,0 +1,106 @@
+
+<div class="data-table-container">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0">
+      <thead>
+        <tr>
+          <th *ngIf="hasSelectableColumns" width="50">
+            <div class="form-check">
+              <input 
+                class="form-check-input" 
+                type="checkbox"
+                [checked]="isAllSelected()"
+                (change)="toggleSelectAll($event)">
+            </div>
+          </th>
+          <th 
+            *ngFor="let col of columns"
+            [class.sortable]="col.sortable"
+            (click)="col.sortable && onSort(col.field)">
+            {{ col.header }}
+            <i class="bi ms-1" 
+               *ngIf="col.sortable"
+               [ngClass]="{
+                 'bi-arrow-up': sortBy === col.field && sortOrder === 'asc',
+                 'bi-arrow-down': sortBy === col.field && sortOrder === 'desc',
+                 'bi-arrow-down-up': sortBy !== col.field
+               }"></i>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="loading">
+          <td [attr.colspan]="columns.length + (hasSelectableColumns ? 1 : 0)" class="text-center py-4">
+            <app-loading-spinner message="Carregando dados..."></app-loading-spinner>
+          </td>
+        </tr>
+        <tr *ngIf="!loading && data.length === 0">
+          <td [attr.colspan]="columns.length + (hasSelectableColumns ? 1 : 0)" class="text-center py-4 text-muted">
+            Nenhum dado encontrado.
+          </td>
+        </tr>
+        <tr *ngFor="let item of data" [class.table-active]="isSelected(item.id)">
+          <td *ngIf="hasSelectableColumns">
+            <div class="form-check">
+              <input 
+                class="form-check-input" 
+                type="checkbox"
+                [checked]="isSelected(item.id)"
+                (change)="toggleItemSelection(item, $event)">
+            </div>
+          </td>
+          <td *ngFor="let col of columns">
+            {{ item[col.field] }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="card-footer bg-light" *ngIf="totalPages > 1">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="pagination-info">
+        <small class="text-muted">
+          Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} a 
+          {{ getMin(currentPage * itemsPerPage, totalItems) }} de 
+          {{ totalItems }} resultados
+        </small>
+      </div>
+      
+      <nav>
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button 
+              class="page-link"
+              (click)="onPageChange(currentPage - 1)"
+              [disabled]="currentPage === 1">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+          </li>
+          
+          <li 
+            class="page-item"
+            *ngFor="let page of [].constructor(totalPages); let i = index"
+            [class.active]="currentPage === i + 1">
+            <button 
+              class="page-link"
+              (click)="onPageChange(i + 1)">
+              {{ i + 1 }}
+            </button>
+          </li>
+          
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button 
+              class="page-link"
+              (click)="onPageChange(currentPage + 1)"
+              [disabled]="currentPage === totalPages">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+

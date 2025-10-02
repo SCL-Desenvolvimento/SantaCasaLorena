@@ -1,10 +1,18 @@
 export interface News {
-  id: string;
+  id?: string; 
   title: string;
   description: string;
   content: string;
   category: string;
-  imageUrl: string;
+  tags?: string[];
+  imageUrl?: string;
   isPublished: boolean;
+  publishedAt?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string;
   createdAt?: string;
+  updatedAt?: string;
+  views?: number;
 }
+

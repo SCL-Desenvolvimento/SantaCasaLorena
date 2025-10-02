@@ -1,0 +1,64 @@
+<aside class="sidebar" [class.collapsed]="collapsed">
+  <!-- Logo -->
+  <div class="sidebar-header">
+    <div class="logo">
+      <i class="bi bi-shield-check text-primary"></i>
+      <span class="logo-text" *ngIf="!collapsed">Admin Panel</span>
+    </div>
+  </div>
+
+  <!-- Navigation Menu -->
+  <nav class="sidebar-nav">
+    <ul class="nav-list">
+      <li class="nav-item" *ngFor="let item of menuItems">
+        <!-- Parent Item -->
+        <a 
+          class="nav-link" 
+          [routerLink]="item.route"
+          [class.active]="isParentActive(item)"
+          [class.has-children]="item.children"
+          (click)="item.children && toggleExpanded(item.label)"
+          [title]="collapsed ? item.label : ''">
+          
+          <i class="nav-icon bi" [ngClass]="item.icon"></i>
+          <span class="nav-text" *ngIf="!collapsed">{{ item.label }}</span>
+          
+          <!-- Badge -->
+          <span class="nav-badge" *ngIf="item.badge && !collapsed">{{ item.badge }}</span>
+          
+          <!-- Expand Arrow -->
+          <i class="expand-arrow bi bi-chevron-down" 
+             *ngIf="item.children && !collapsed"
+             [class.expanded]="isExpanded(item.label)"></i>
+        </a>
+
+        <!-- Children Items -->
+        <ul class="nav-children" 
+            *ngIf="item.children && !collapsed && isExpanded(item.label)">
+          <li class="nav-child-item" *ngFor="let child of item.children">
+            <a 
+              class="nav-child-link" 
+              [routerLink]="child.route"
+              [class.active]="isActive(child.route)">
+              <i class="nav-child-icon bi" [ngClass]="child.icon"></i>
+              <span class="nav-child-text">{{ child.label }}</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Collapse Toggle -->
+  <div class="sidebar-footer" *ngIf="!collapsed">
+    <div class="user-info">
+      <div class="user-avatar">
+        <i class="bi bi-person-circle"></i>
+      </div>
+      <div class="user-details">
+        <span class="user-name">Administrador</span>
+        <span class="user-role">Admin</span>
+      </div>
+    </div>
+  </div>
+</aside>
