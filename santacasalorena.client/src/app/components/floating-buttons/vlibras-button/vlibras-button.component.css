@@ -1,8 +1,24 @@
-[vw] {
-  position: static !important; /* remove o fixo do plugin */
+app-vlibras-button {
+  display: block;
+  width: 60px; /* Largura padrão para o botão VLibras */
+  height: 60px; /* Altura padrão para o botão VLibras */
+  /* Garante que o conteúdo do VLibras se ajuste */
+  overflow: hidden;
 }
 
-.floating-container [vw] {
-  position: relative !important;
-  order: 2; /* define posição relativa aos outros botões */
+/* Ajustes para o widget VLibras dentro do componente */
+.vw-access-button {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box;
 }
+
+  .vw-access-button .active {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
