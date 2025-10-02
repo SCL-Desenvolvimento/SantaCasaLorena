@@ -44,6 +44,7 @@ import { FloatingContainerComponent } from './components/floating-buttons/floati
 import { WhatsappButtonComponent } from './components/floating-buttons/whatsapp-button/whatsapp-button.component';
 import { AccessibilityButtonComponent } from './components/floating-buttons/accessibility-button/accessibility-button.component';
 import { LocalizacaoComponent } from './pages/localizacao/localizacao.component';
+import { VlibrasButtonComponent } from './components/floating-buttons/vlibras-button/vlibras-button.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { LocalizacaoComponent } from './pages/localizacao/localizacao.component'
     WhatsappButtonComponent,
     AccessibilityButtonComponent,
     PaymentComponent,
-    LocalizacaoComponent
+    LocalizacaoComponent,
+    VlibrasButtonComponent
   ],
   imports: [
     BrowserModule,
