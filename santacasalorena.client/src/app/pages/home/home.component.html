@@ -189,14 +189,13 @@
   </section>
 
   <!-- News - NOVO LAYOUT INSPIRADO -->
-  <section class="py-5 bg-light news-section">
+  <section class="py-5 bg-light news-section" *ngIf="filteredNews.length > 0">
     <div class="container">
       <!-- Título e Filtros -->
       <div class="mb-4">
         <div class="d-flex justify-content-between align-items-start mb-3">
           <div>
             <h2 class="fw-bold mb-0">Em Destaque</h2>
-            <!-- Filtros de Categorias -->
             <div class="categories-filter mt-3">
               <div class="d-flex flex-wrap gap-2">
                 <button class="btn btn-outline-secondary btn-sm fw-medium"
@@ -213,8 +212,6 @@
               </div>
             </div>
           </div>
-
-          <!-- Botão Ver Todas as Notícias -->
           <a routerLink="/noticias" class="btn btn-outline-primary fw-semibold text-decoration-none d-flex align-items-center gap-2 mt-4">
             Ver todas as notícias <i class="bi bi-arrow-right"></i>
           </a>
@@ -230,7 +227,6 @@
                  [alt]="filteredNews[0].title"
                  class="img-fluid w-100 news-featured-image">
 
-            <!-- Overlay -->
             <div class="news-overlay position-absolute bottom-0 start-0 w-100 p-4">
               <span *ngIf="filteredNews[0].category" class="badge bg-primary mb-2">{{ filteredNews[0].category }}</span>
               <h3 class="fw-bold text-white mb-2">{{ filteredNews[0].title }}</h3>
@@ -247,37 +243,33 @@
         <!-- Outras Notícias -->
         <div class="col-12 col-lg-5">
           <div class="row g-3">
-            <div *ngFor="let item of filteredNews | slice:1:4" class="col-12">
-              <div class="d-flex news-list-item rounded-3 overflow-hidden shadow-sm bg-white">
-                <!-- Imagem -->
-                <div class="flex-shrink-0" style="width: 120px;">
-                  <img *ngIf="item.imageUrl"
-                       [src]="item.imageUrl"
-                       [alt]="item.title"
-                       class="img-fluid h-100 w-100 object-fit-cover">
-                </div>
-                <!-- Texto -->
-                <div class="p-3 flex-grow-1">
-                  <small *ngIf="item.category" class="text-primary fw-bold d-block mb-1">
-                    {{ item.category }}
-                  </small>
-                  <h6 class="fw-bold mb-2">{{ item.title }}</h6>
-                  <p class="small text-muted mb-2">
-                    {{ item.description || (item.content.substring(0, 80) + '...') }}
-                  </p>
-                  <a [routerLink]="['/noticia', item.id]"
-                     class="small fw-semibold text-decoration-none text-primary">
-                    Ler mais <i class="bi bi-arrow-right small"></i>
-                  </a>
+            <ng-container *ngFor="let item of filteredNews | slice:1:4">
+              <div class="col-12" *ngIf="item">
+                <div class="d-flex news-list-item rounded-3 overflow-hidden shadow-sm bg-white">
+                  <div class="flex-shrink-0" style="width: 120px;">
+                    <img *ngIf="item.imageUrl"
+                         [src]="item.imageUrl"
+                         [alt]="item.title"
+                         class="img-fluid h-100 w-100 object-fit-cover">
+                  </div>
+                  <div class="p-3 flex-grow-1">
+                    <small *ngIf="item.category" class="text-primary fw-bold d-block mb-1">{{ item.category }}</small>
+                    <h6 class="fw-bold mb-2">{{ item.title }}</h6>
+                    <p class="small text-muted mb-2">
+                      {{ item.description || (item.content.substring(0, 80) + '...') }}
+                    </p>
+                    <a [routerLink]="['/noticia', item.id]" class="small fw-semibold text-decoration-none text-primary">
+                      Ler mais <i class="bi bi-arrow-right small"></i>
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
+            </ng-container>
           </div>
         </div>
       </div>
     </div>
   </section>
-
 
   <!-- CTA -->
   <section class="py-5 text-white text-center" [style.background]="cta.bgGradient">
