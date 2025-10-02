@@ -1,0 +1,8 @@
+[vw] {
+  position: static !important; /* remove o fixo do plugin */
+}
+
+.floating-container [vw] {
+  position: relative !important;
+  order: 2; /* define posição relativa aos outros botões */
+}
