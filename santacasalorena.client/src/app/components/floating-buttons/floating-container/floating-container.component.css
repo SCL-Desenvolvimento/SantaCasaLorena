@@ -1,7 +1,7 @@
 .floating-container {
   position: fixed;
   top: 50%;
-  right: 0;
+  right: -10px; /* botao vai para direita, se alinhando na pagina */
   transform: translateY(-50%);
   z-index: 1000;
   display: flex;
