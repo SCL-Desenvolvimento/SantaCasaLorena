@@ -142,8 +142,8 @@
   background-color: #9fa2a8 !important;
   color: white;
   border-bottom: 1px solid #5a6268;
-  margin-left: -12.5rem !important; /* Força para a esquerda */
-  margin-right: -2rem !important;
+  width: 100%;
+  margin: 0;
 }
 
   /* Links do top bar */
@@ -153,6 +153,6 @@
   }
 
     .top-bar .link-hover:hover {
-      color: #22BCEE !important; /* Cor azul para hover */
+      color: #22BCEE !important;
     }
 
