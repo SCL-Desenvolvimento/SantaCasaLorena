@@ -1,9 +1,0 @@
-
-.convenios-card {
-  transition: transform 0.2s ease-in-out;
-}
-
-.convenios-card:hover {
-  transform: translateY(-5px);
-}
-
