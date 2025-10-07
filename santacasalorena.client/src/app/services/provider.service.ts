@@ -14,14 +14,20 @@ export class ProviderService {
 
   getAll(): Observable<Providers[]> {
     return this.http.get<Providers[]>(this.apiUrl).pipe(
-      map(r => r),
+      map(response => response.map(item => ({
+        ...item,
+        imageUrl: `${environment.imageServerUrl}${item.imageUrl}`
+      }))),
       catchError(this.handleError)
     );
   }
 
   getById(id: string): Observable<Providers> { // ID é string no modelo original
     return this.http.get<Providers>(`${this.apiUrl}/${id}`).pipe(
-      map(r => r),
+      map(response => ({
+        ...response,
+        imageUrl: `${environment.imageServerUrl}${response.imageUrl}`
+      })),
       catchError(this.handleError)
     );
   }

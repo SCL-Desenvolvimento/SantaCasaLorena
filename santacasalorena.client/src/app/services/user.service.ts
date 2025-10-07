@@ -14,14 +14,20 @@ export class UserService {
 
   getAll(): Observable<User[]> {
     return this.http.get<User[]>(this.apiUrl).pipe(
-      map(response => response),
+      map(response => response.map(item => ({
+        ...item,
+        photoUrl: `${environment.imageServerUrl}${item.photoUrl}`
+      }))),
       catchError(this.handleError)
     );
   }
 
   getById(id: string): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${id}`).pipe(
-      map(response => response),
+      map(response => ({
+        ...response,
+        photoUrl: `${environment.imageServerUrl}${response.photoUrl}`
+      })),
       catchError(this.handleError)
     );
   }

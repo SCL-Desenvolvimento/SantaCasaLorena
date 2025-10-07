@@ -25,7 +25,10 @@ export class TransparencyPortalService {
 
   getById(id: string): Observable<TransparencyPortal> {
     return this.http.get<TransparencyPortal>(`${this.apiUrl}/${id}`).pipe(
-      map(response => response),
+      map(response => ({
+        ...response,
+        fileUrl: `${environment.imageServerUrl}${response.fileUrl}`
+      })),
       catchError(this.handleError)
     );
   }

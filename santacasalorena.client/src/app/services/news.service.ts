@@ -14,14 +14,20 @@ export class NewsService {
 
   getAll(): Observable<News[]> {
     return this.http.get<News[]>(this.apiUrl).pipe(
-      map(r => r),
+      map(response => response.map(item => ({
+        ...item,
+        imageUrl: `${environment.imageServerUrl}${item.imageUrl}`
+      }))),
       catchError(this.handleError)
     );
   }
 
   getById(id: string): Observable<News> {
     return this.http.get<News>(`${this.apiUrl}/${id}`).pipe(
-      map(r => r),
+      map(response => ({
+        ...response,
+        imageUrl: `${environment.imageServerUrl}${response.imageUrl}`
+      })),
       catchError(this.handleError)
     );
   }

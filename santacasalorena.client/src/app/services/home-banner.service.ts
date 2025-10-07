@@ -14,14 +14,24 @@ export class HomeBannerService {
 
   getAll(): Observable<HomeBanner[]> {
     return this.http.get<HomeBanner[]>(this.apiUrl).pipe(
-      map(r => r),
+      map(response => response.map(item => ({
+        ...item,
+        desktopImageUrl: `${environment.imageServerUrl}${item.desktopImageUrl}`,
+        mobileImageUrl: `${environment.imageServerUrl}${item.mobileImageUrl}`,
+        tabletImageUrl: `${environment.imageServerUrl}${item.tabletImageUrl}`
+      }))),
       catchError(this.handleError)
     );
   }
 
   getById(id: number): Observable<HomeBanner> {
     return this.http.get<HomeBanner>(`${this.apiUrl}/${id}`).pipe(
-      map(r => r),
+      map(response => ({
+        ...response,
+        desktopImageUrl: `${environment.imageServerUrl}${response.desktopImageUrl}`,
+        mobileImageUrl: `${environment.imageServerUrl}${response.mobileImageUrl}`,
+        tabletImageUrl: `${environment.imageServerUrl}${response.tabletImageUrl}`
+      })),
       catchError(this.handleError)
     );
   }

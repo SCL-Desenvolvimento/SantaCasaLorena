@@ -23,10 +23,7 @@ export class ConveniosComponent implements OnInit {
   private loadConvenios(): void {
     this.agreementService.getAll().subscribe({
       next: (data) => {
-        this.convenios = data.map(con => ({
-          ...con,
-          imageUrl: `${environment.imageServerUrl}${con.imageUrl}`
-        }));
+        this.convenios = data;
       },
       error: (err) => console.error('Erro ao carregar convênios', err)
     });

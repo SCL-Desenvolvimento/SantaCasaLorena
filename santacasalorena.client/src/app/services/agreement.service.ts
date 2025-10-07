@@ -14,14 +14,20 @@ export class AgreementService {
 
   getAll(): Observable<Agreement[]> {
     return this.http.get<Agreement[]>(this.apiUrl).pipe(
-      map(r => r),
+      map(response => response.map(item => ({
+        ...item,
+        imageUrl: `${environment.imageServerUrl}${item.imageUrl}`
+      }))),
       catchError(this.handleError)
     );
   }
 
   getById(id: number): Observable<Agreement> {
     return this.http.get<Agreement>(`${this.apiUrl}/${id}`).pipe(
-      map(r => r),
+      map(response => ({
+        ...response,
+        imageUrl: `${environment.imageServerUrl}${response.imageUrl}`
+      })),
       catchError(this.handleError)
     );
   }

@@ -32,77 +32,7 @@
     </div>
 
     <!-- Right Section -->
-    <div class="header-right">
-      <!-- Search -->
-      <div class="search-box">
-        <div class="input-group">
-          <input 
-            type="text" 
-            class="form-control" 
-            placeholder="Buscar..."
-            aria-label="Buscar">
-          <button class="btn btn-outline-secondary" type="button">
-            <i class="bi bi-search"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Notifications -->
-      <div class="dropdown notification-dropdown">
-        <button 
-          class="btn btn-link notification-btn" 
-          (click)="toggleNotifications()"
-          [class.active]="showNotifications">
-          <i class="bi bi-bell"></i>
-          <span class="notification-badge" *ngIf="unreadNotifications > 0">
-            {{ unreadNotifications }}
-          </span>
-        </button>
-
-        <div class="dropdown-menu notification-menu" [class.show]="showNotifications">
-          <div class="dropdown-header d-flex justify-content-between align-items-center">
-            <span>Notificações</span>
-            <button 
-              class="btn btn-sm btn-link text-primary" 
-              (click)="markAllAsRead()"
-              *ngIf="unreadNotifications > 0">
-              Marcar todas como lidas
-            </button>
-          </div>
-          
-          <div class="notification-list">
-            <div 
-              class="notification-item" 
-              *ngFor="let notification of notifications"
-              [class.unread]="!notification.read"
-              (click)="markAsRead(notification.id)">
-              
-              <div class="notification-icon" [ngClass]="'icon-' + notification.type">
-                <i class="bi" 
-                   [ngClass]="{
-                     'bi-envelope': notification.type === 'message',
-                     'bi-check-circle': notification.type === 'success',
-                     'bi-info-circle': notification.type === 'info'
-                   }"></i>
-              </div>
-              
-              <div class="notification-content">
-                <div class="notification-title">{{ notification.title }}</div>
-                <div class="notification-message">{{ notification.message }}</div>
-                <div class="notification-time">{{ notification.time }}</div>
-              </div>
-              
-              <div class="notification-status" *ngIf="!notification.read">
-                <span class="unread-dot"></span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="dropdown-footer">
-            <a href="#" class="text-center d-block">Ver todas as notificações</a>
-          </div>
-        </div>
-      </div>
+    <div class="header-right">   
 
       <!-- User Menu -->
       <div class="dropdown user-dropdown">

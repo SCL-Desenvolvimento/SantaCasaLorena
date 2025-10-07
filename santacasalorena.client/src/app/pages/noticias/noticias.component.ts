@@ -30,10 +30,7 @@ export class NoticiasComponent implements OnInit {
     this.loading = true;
     this.newsService.getAll().subscribe({
       next: (response) => {
-        this.news = response.map(n => ({
-          ...n,
-          imageUrl: `${environment.imageServerUrl}${n.imageUrl}`
-        }));
+        this.news = response;
         this.applyFilters();
       },
       error: () => {
