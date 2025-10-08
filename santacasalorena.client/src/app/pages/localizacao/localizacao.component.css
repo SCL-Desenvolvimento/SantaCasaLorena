@@ -46,42 +46,32 @@
 }
 
 /* Mapa */
-.map-container {
-  iframe
-
-{
+.map-container iframe {
   border-radius: 8px;
-}
-
 }
 
 .btn {
   border-radius: 8px;
   padding: 0.5rem 1.5rem;
   font-weight: 500;
-  &.btn-primary
+}
 
-{
+.btn-primary {
   background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
   border: none;
-  &:hover
-
-{
-  background: linear-gradient(135deg, #0a58ca 0%, #084298 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
 }
 
-}
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #0a58ca 0%, #084298 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+  }
 
-&.btn-secondary {
+.btn-secondary {
   border: 1px solid #dee2e6;
-  &:hover
-
-{
-  background-color: #f8f9fa;
-  border-color: #adb5bd;
 }
 
-}
-}
+  .btn-secondary:hover {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+  }

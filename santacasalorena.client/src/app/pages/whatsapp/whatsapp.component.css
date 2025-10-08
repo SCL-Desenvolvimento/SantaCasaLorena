@@ -59,16 +59,46 @@
   justify-content: space-between;
 }
 
-  .whatsapp-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-    border-color: #25D366;
-  }
+/* Atendimento Geral - Azul Escuro */
+.card-geral:hover {
+  border-color: #1e40af;
+  box-shadow: 0 12px 40px rgba(30, 64, 175, 0.2);
+}
 
-  .whatsapp-card.emergency:hover {
-    border-color: #dc3545;
-    box-shadow: 0 12px 40px rgba(220, 53, 69, 0.2);
-  }
+/* Agendamentos - Verde */
+.card-agendamentos:hover {
+  border-color: #16a34a;
+  box-shadow: 0 12px 40px rgba(22, 163, 74, 0.2);
+}
+
+/* Resultado de Exames - Azul Claro */
+.card-exames:hover {
+  border-color: #0ea5e9;
+  box-shadow: 0 12px 40px rgba(14, 165, 233, 0.2);
+}
+
+/* Pronto Atendimento - Vermelho */
+.card-emergencia:hover {
+  border-color: #dc2626;
+  box-shadow: 0 12px 40px rgba(220, 38, 38, 0.2);
+}
+
+/* Financeiro - Laranja */
+.card-financeiro:hover {
+  border-color: #ea580c;
+  box-shadow: 0 12px 40px rgba(234, 88, 12, 0.2);
+}
+
+/* Ouvidoria - Preto */
+.card-ouvidoria:hover {
+  border-color: #000000;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Efeito comum a todos os cards */
+.whatsapp-card:hover {
+  transform: translateY(-8px);
+}
 
 .card-header {
   text-align: center;
