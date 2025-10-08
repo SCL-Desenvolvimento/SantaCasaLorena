@@ -28,7 +28,14 @@ namespace SantaCasaLorena.Server.Services
                     Content = n.Content,
                     Category = n.Category,
                     IsPublished = n.IsPublished,
-                    CreatedAt = n.CreatedAt
+                    Tags = n.Tags,
+                    SeoTitle = n.SeoTitle,
+                    SeoDescription = n.SeoDescription,
+                    SeoKeywords = n.SeoKeywords,
+                    CreatedAt = n.CreatedAt,
+                    UpdatedAt = n.UpdatedAt,
+                    PublishedAt = n.PublishedAt,
+                    Views = n.Views
                 })
                 .ToListAsync();
         }
@@ -47,7 +54,14 @@ namespace SantaCasaLorena.Server.Services
                     Content = n.Content,
                     Category = n.Category,
                     IsPublished = n.IsPublished,
-                    CreatedAt = n.CreatedAt
+                    Tags = n.Tags,
+                    SeoTitle = n.SeoTitle,
+                    SeoDescription = n.SeoDescription,
+                    SeoKeywords = n.SeoKeywords,
+                    CreatedAt = n.CreatedAt,
+                    UpdatedAt = n.UpdatedAt,
+                    PublishedAt = n.PublishedAt,
+                    Views = n.Views
                 })
                 .FirstOrDefaultAsync();
         }
@@ -56,13 +70,19 @@ namespace SantaCasaLorena.Server.Services
         {
             var entity = new News
             {
-                ImageUrl = await ProcessarMidiasAsync(dto.File),
+                ImageUrl = dto.File != null ? await ProcessarMidiasAsync(dto.File) : null,
                 Title = dto.Title,
                 Description = dto.Description,
                 Content = dto.Content,
                 Category = dto.Category,
-                UserId = dto.UserId,
-                IsPublished = dto.IsPublished
+                UserId = Guid.Parse(dto.UserId),
+                IsPublished = dto.IsPublished,
+                Tags = dto.Tags,
+                SeoTitle = dto.SeoTitle,
+                SeoDescription = dto.SeoDescription,
+                SeoKeywords = dto.SeoKeywords,
+                PublishedAt = dto.IsPublished ? DateTime.UtcNow : null,
+                Views = 0
             };
 
             _context.News.Add(entity);
@@ -77,7 +97,14 @@ namespace SantaCasaLorena.Server.Services
                 Content = entity.Content,
                 Category = entity.Category,
                 IsPublished = entity.IsPublished,
-                CreatedAt = entity.CreatedAt
+                Tags = entity.Tags,
+                SeoTitle = entity.SeoTitle,
+                SeoDescription = entity.SeoDescription,
+                SeoKeywords = entity.SeoKeywords,
+                CreatedAt = entity.CreatedAt,
+                UpdatedAt = entity.UpdatedAt,
+                PublishedAt = entity.PublishedAt,
+                Views = entity.Views
             };
         }
 
@@ -90,8 +117,21 @@ namespace SantaCasaLorena.Server.Services
             entity.Content = dto.Content;
             entity.Category = dto.Category;
             entity.IsPublished = dto.IsPublished;
-            entity.UserId = dto.UserId;
-            entity.UpdatedAt = DateTime.Now;
+            entity.UserId = Guid.Parse(dto.UserId);
+            entity.Tags = dto.Tags;
+            entity.SeoTitle = dto.SeoTitle;
+            entity.SeoDescription = dto.SeoDescription;
+            entity.SeoKeywords = dto.SeoKeywords;
+            entity.UpdatedAt = DateTime.UtcNow;
+
+            if (dto.IsPublished && !entity.PublishedAt.HasValue)
+            {
+                entity.PublishedAt = DateTime.UtcNow;
+            }
+            else if (!dto.IsPublished)
+            {
+                entity.PublishedAt = null;
+            }
 
             if (!string.IsNullOrEmpty(entity.ImageUrl) && dto.File != null)
             {
@@ -101,7 +141,7 @@ namespace SantaCasaLorena.Server.Services
 
             if (dto.File != null)
                 entity.ImageUrl = await ProcessarMidiasAsync(dto.File);
-            
+
 
             _context.News.Update(entity);
             await _context.SaveChangesAsync();
@@ -115,7 +155,14 @@ namespace SantaCasaLorena.Server.Services
                 Content = entity.Content,
                 Category = entity.Category,
                 IsPublished = entity.IsPublished,
-                CreatedAt = entity.CreatedAt
+                Tags = entity.Tags,
+                SeoTitle = entity.SeoTitle,
+                SeoDescription = entity.SeoDescription,
+                SeoKeywords = entity.SeoKeywords,
+                CreatedAt = entity.CreatedAt,
+                UpdatedAt = entity.UpdatedAt,
+                PublishedAt = entity.PublishedAt,
+                Views = entity.Views
             };
         }
 
@@ -124,7 +171,33 @@ namespace SantaCasaLorena.Server.Services
             var entity = await _context.News.FindAsync(id);
             if (entity == null) return false;
 
+            if (!string.IsNullOrEmpty(entity.ImageUrl) && File.Exists(entity.ImageUrl))
+            {
+                File.Delete(entity.ImageUrl);
+            }
+
             _context.News.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdatePublishStatusAsync(Guid id, bool isPublished)
+        {
+            var entity = await _context.News.FindAsync(id);
+            if (entity == null) return false;
+
+            entity.IsPublished = isPublished;
+            entity.UpdatedAt = DateTime.UtcNow;
+            if (isPublished && !entity.PublishedAt.HasValue)
+            {
+                entity.PublishedAt = DateTime.UtcNow;
+            }
+            else if (!isPublished)
+            {
+                entity.PublishedAt = null;
+            }
+
+            _context.News.Update(entity);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -133,17 +206,18 @@ namespace SantaCasaLorena.Server.Services
         {
             if (midia == null) return null;
 
-            // Define o caminho para a pasta "Usuarios"
-            var baseDirectory = Path.Combine("Uploads", "Noticias").Replace("\\", "/");
+            // Define o caminho para a pasta "Noticias" dentro de "Uploads"
+            var baseDirectory = Path.Combine("Uploads", "Noticias");
 
-            // Verifica se a pasta "Usuarios" existe, e a cria caso não exista
+            // Verifica se a pasta "Noticias" existe, e a cria caso não exista
             if (!Directory.Exists(baseDirectory))
             {
                 Directory.CreateDirectory(baseDirectory);
             }
 
-            // Gera o caminho completo para o arquivo dentro da pasta "Usuarios"
-            var filePath = Path.Combine(baseDirectory, Guid.NewGuid() + Path.GetExtension(midia.FileName)).Replace("\\", "/");
+            // Gera um nome de arquivo único e o caminho completo
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(midia.FileName);
+            var filePath = Path.Combine(baseDirectory, fileName);
 
             // Salva o arquivo no caminho especificado
             await using (var stream = new FileStream(filePath, FileMode.Create))
@@ -151,7 +225,9 @@ namespace SantaCasaLorena.Server.Services
                 await midia.CopyToAsync(stream);
             }
 
+            // Retorna o caminho relativo que será usado para construir a URL no frontend
             return filePath;
         }
     }
 }
+

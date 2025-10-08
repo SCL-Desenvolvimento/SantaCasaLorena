@@ -70,7 +70,8 @@ export class NewsListComponent implements OnInit {
     if (this.searchTerm) {
       filtered = filtered.filter(item =>
         item.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.description.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        (item.description && item.description.toLowerCase().includes(this.searchTerm.toLowerCase())) ||
+        (item.content && item.content.toLowerCase().includes(this.searchTerm.toLowerCase())) ||
         (item.category && item.category.toLowerCase().includes(this.searchTerm.toLowerCase())) ||
         (item.tags && item.tags.some(tag => tag.toLowerCase().includes(this.searchTerm.toLowerCase())))
       );
@@ -192,19 +193,29 @@ export class NewsListComponent implements OnInit {
   duplicateNews(id: string | undefined): void {
     if (id) {
       console.log('Duplicating news:', id);
-      // Implement duplication logic - potentially fetch by ID, remove ID, then call create
       this.newsService.getById(id).subscribe({
         next: (newsToDuplicate: News) => {
-          const { id: _, ...newsWithoutId } = newsToDuplicate; // Remove original ID
+          // Remove original ID and other auto-generated fields
+          const { id: _, createdAt: __, updatedAt: ___, publishedAt: ____, views: _____, ...newsWithoutId } = newsToDuplicate;
           const duplicatedNews: News = {
             ...newsWithoutId,
             title: `Cópia de ${newsToDuplicate.title}`,
             isPublished: false, // Duplicated news should be a draft initially
             publishedAt: undefined,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            views: 0
+            createdAt: new Date().toISOString(), // Backend will override
+            updatedAt: new Date().toISOString(), // Backend will override
+            views: 0 // Backend will override
           };
+
+          // If there was an image, we need to handle it. For duplication, we assume we don't re-upload the file
+          // but rather rely on the backend to copy the image if imageUrl is provided.
+          // However, the current backend `AddAsync` expects `IFormFile`. 
+          // For now, we'll create without image and user can upload later, or modify backend to copy by URL.
+          // For this exercise, we'll assume the image needs to be re-uploaded or handled differently.
+          // A simpler approach for duplication without re-uploading the file would be to have a backend endpoint that takes an existing image URL.
+          // Given the current backend `AddAsync` expects `IFormFile`, we'll omit the image for duplication.
+          // If the user wants to duplicate with image, they would need to edit and re-upload.
+
           this.newsService.create(duplicatedNews).subscribe({
             next: () => {
               alert('Notícia duplicada com sucesso e salva como rascunho!');
@@ -268,11 +279,6 @@ export class NewsListComponent implements OnInit {
     if (this.selectedItems.length === 0) return;
 
     if (confirm(`Tem certeza que deseja excluir ${this.selectedItems.length} notícia(s)?`)) {
-      // Use Promise.all or forkJoin for parallel deletion and better error handling
-      const deleteObservables = this.selectedItems.map(id => this.newsService.delete(id));
-
-      // For simplicity, we'll do sequential for now, or a simple filter after all attempts
-      // A more robust solution would use forkJoin and handle individual errors
       let successfulDeletions = 0;
       let failedDeletions = 0;
 
@@ -399,4 +405,3 @@ export class NewsListComponent implements OnInit {
     return Math.min(a, b);
   }
 }
-

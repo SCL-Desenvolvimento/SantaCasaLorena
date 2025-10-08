@@ -16,7 +16,7 @@ export class NewsService {
     return this.http.get<News[]>(this.apiUrl).pipe(
       map(response => response.map(item => ({
         ...item,
-        imageUrl: `${environment.imageServerUrl}${item.imageUrl}`
+        imageUrl: `${environment.imageServerUrl}${item.imageUrl}` 
       }))),
       catchError(this.handleError)
     );
@@ -26,24 +26,22 @@ export class NewsService {
     return this.http.get<News>(`${this.apiUrl}/${id}`).pipe(
       map(response => ({
         ...response,
-        imageUrl: `${environment.imageServerUrl}${response.imageUrl}`
+        imageUrl: `${environment.imageServerUrl}${response.imageUrl}` 
       })),
       catchError(this.handleError)
     );
   }
 
-  create(news: News): Observable<News> {
-    // O backend deve lidar com o upload da imagem e a geração do ID, createdAt, updatedAt, views
-    // Aqui estamos enviando o objeto News diretamente
-    return this.http.post<News>(this.apiUrl, news).pipe(
+  create(news: News, imageFile?: File): Observable<News> {
+    const formData = this.buildFormData(news, imageFile);
+    return this.http.post<News>(this.apiUrl, formData).pipe(
       catchError(this.handleError)
     );
   }
 
-  update(id: string, news: News): Observable<News> {
-    // O backend deve lidar com o upload da imagem e a atualização do updatedAt
-    // Aqui estamos enviando o objeto News diretamente
-    return this.http.put<News>(`${this.apiUrl}/${id}`, news).pipe(
+  update(id: string, news: News, imageFile?: File): Observable<News> {
+    const formData = this.buildFormData(news, imageFile);
+    return this.http.put<News>(`${this.apiUrl}/${id}`, formData).pipe(
       catchError(this.handleError)
     );
   }
@@ -58,6 +56,30 @@ export class NewsService {
     return this.http.patch<void>(`${this.apiUrl}/${id}/publish`, { isPublished }).pipe(
       catchError(this.handleError)
     );
+  }
+
+  private buildFormData(news: News, imageFile?: File): FormData {
+    const formData = new FormData();
+
+    if (imageFile) {
+      formData.append('File', imageFile, imageFile.name);
+    }
+
+    formData.append('Title', news.title);
+    if (news.description) formData.append('Description', news.description);
+    formData.append('Content', news.content);
+    if (news.category) formData.append('Category', news.category);
+    formData.append('IsPublished', news.isPublished.toString());
+    if (news.userId) formData.append('UserId', news.userId);
+
+    if (news.tags && news.tags.length > 0) {
+      news.tags.forEach(tag => formData.append('Tags', tag));
+    }
+    if (news.seoTitle) formData.append('SeoTitle', news.seoTitle);
+    if (news.seoDescription) formData.append('SeoDescription', news.seoDescription);
+    if (news.seoKeywords) formData.append('SeoKeywords', news.seoKeywords);
+
+    return formData;
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {

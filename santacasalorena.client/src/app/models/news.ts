@@ -1,11 +1,11 @@
 export interface News {
-  id?: string; 
+  id?: string;
   title: string;
   description: string;
   content: string;
-  category: string;
+  category?: string;
   tags?: string[];
-  imageUrl?: string;
+  imageUrl: string;
   isPublished: boolean;
   publishedAt?: string;
   seoTitle?: string;
@@ -14,5 +14,6 @@ export interface News {
   createdAt?: string;
   updatedAt?: string;
   views?: number;
+  userId?: string;
 }
 

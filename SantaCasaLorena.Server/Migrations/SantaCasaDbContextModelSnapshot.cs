@@ -173,11 +173,25 @@ namespace SantaCasaLorena.Server.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("IsPublished")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("PublishedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("SeoDescription")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SeoKeywords")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SeoTitle")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Tags")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -189,6 +203,9 @@ namespace SantaCasaLorena.Server.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("char(36)");
+
+                    b.Property<int>("Views")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

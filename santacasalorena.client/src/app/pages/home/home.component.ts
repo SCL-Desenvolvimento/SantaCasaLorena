@@ -139,11 +139,19 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Extrai categorias únicas das notícias
   private extractCategories(): void {
-    const uniqueCategories = [...new Set(this.news.map(item => item.category))].filter(cat => cat && cat.trim() !== '');
+    const uniqueCategories = [
+      ...new Set(
+        this.news
+          .map(item => item.category)
+          .filter((cat): cat is string => typeof cat === 'string' && cat.trim() !== '')
+      ),
+    ];
+
     if (uniqueCategories.length > 0) {
       this.categories = uniqueCategories;
     }
   }
+
 
   // Filtra notícias por categoria
   filterByCategory(category: string): void {

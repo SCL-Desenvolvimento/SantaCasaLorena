@@ -5,6 +5,7 @@ import { News } from '../../../../models/news';
 import { NewsService } from '../../../../services/news.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-news-form',
@@ -68,7 +69,8 @@ export class NewsFormComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private newsService: NewsService // Injetar NewsService
+    private newsService: NewsService,
+    private authService: AuthService
   ) {
     this.newsForm = this.createForm();
   }
@@ -233,13 +235,14 @@ export class NewsFormComponent implements OnInit {
 
     this.saving = true;
     const newsData = this.getNewsData();
+    console.log(newsData);
 
     let operation: Observable<News>;
 
     if (this.isEditMode && this.newsId) {
-      operation = this.newsService.update(this.newsId, newsData);
+      operation = this.newsService.update(this.newsId, newsData, this.imageFile);
     } else {
-      operation = this.newsService.create(newsData);
+      operation = this.newsService.create(newsData, this.imageFile);
     }
 
     operation.subscribe({
@@ -259,21 +262,20 @@ export class NewsFormComponent implements OnInit {
   getNewsData(): News {
     const formValue = this.newsForm.value;
     return {
-      id: this.newsId, // Será undefined para novas notícias, o backend deve gerar
+      id: this.newsId,
       title: formValue.title,
       description: formValue.description,
       content: formValue.content,
       category: formValue.category,
       tags: this.selectedTags,
-      imageUrl: this.imagePreview, // O serviço deve lidar com o upload da imagem se imageFile estiver presente
+      imageUrl: '',
       isPublished: formValue.isPublished,
-      publishedAt: formValue.isPublished ? formValue.publishedAt : undefined,
+      publishedAt: formValue.isPublished && formValue.publishedAt ? new Date(formValue.publishedAt).toISOString() : undefined,
       seoTitle: formValue.seoTitle,
       seoDescription: formValue.seoDescription,
       seoKeywords: formValue.seoKeywords,
-      createdAt: this.isEditMode ? undefined : new Date().toISOString(), // O backend deve gerenciar isso
-      updatedAt: new Date().toISOString(), // O backend deve gerenciar isso
-      views: this.isEditMode ? undefined : 0 // O backend deve gerenciar isso
+      userId: this.authService.getUserInfo('id') ?? undefined
+      // createdAt, updatedAt, views são gerenciados pelo backend
     };
   }
 
@@ -310,4 +312,3 @@ export class NewsFormComponent implements OnInit {
     }
   }
 }
-
