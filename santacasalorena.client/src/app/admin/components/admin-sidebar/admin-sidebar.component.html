@@ -2,8 +2,8 @@
   <!-- Logo -->
   <div class="sidebar-header">
     <div class="logo">
-      <i class="bi bi-shield-check text-primary"></i>
-      <span class="logo-text" *ngIf="!collapsed">Admin Panel</span>
+      <img src="assets/img/logo/logo.png" alt="Santa Casa de Lorena" class="logo-img">
+      <span class="logo-text" *ngIf="!collapsed">Santa Casa de Lorena</span>
     </div>
   </div>
 
@@ -12,34 +12,31 @@
     <ul class="nav-list">
       <li class="nav-item" *ngFor="let item of menuItems">
         <!-- Parent Item -->
-        <a 
-          class="nav-link" 
-          [routerLink]="item.route"
-          [class.active]="isParentActive(item)"
-          [class.has-children]="item.children"
-          (click)="item.children && toggleExpanded(item.label)"
-          [title]="collapsed ? item.label : ''">
-          
+        <a class="nav-link"
+           [routerLink]="item.route"
+           [class.active]="isParentActive(item)"
+           [class.has-children]="item.children"
+           (click)="item.children && toggleExpanded(item.label)"
+           [title]="collapsed ? item.label : ''">
+
           <i class="nav-icon bi" [ngClass]="item.icon"></i>
           <span class="nav-text" *ngIf="!collapsed">{{ item.label }}</span>
-          
-          <!-- Badge -->
+
           <span class="nav-badge" *ngIf="item.badge && !collapsed">{{ item.badge }}</span>
-          
-          <!-- Expand Arrow -->
-          <i class="expand-arrow bi bi-chevron-down" 
+
+          <i class="expand-arrow bi bi-chevron-down"
              *ngIf="item.children && !collapsed"
              [class.expanded]="isExpanded(item.label)"></i>
         </a>
 
-        <!-- Children Items -->
-        <ul class="nav-children" 
+        <!-- Children -->
+        <ul class="nav-children"
             *ngIf="item.children && !collapsed && isExpanded(item.label)">
           <li class="nav-child-item" *ngFor="let child of item.children">
-            <a 
-              class="nav-child-link" 
-              [routerLink]="child.route"
-              [class.active]="isActive(child.route)">
+            <a class="nav-child-link"
+               [routerLink]="child.route"
+               routerLinkActive="active"
+               [routerLinkActiveOptions]="{ exact: true }">
               <i class="nav-child-icon bi" [ngClass]="child.icon"></i>
               <span class="nav-child-text">{{ child.label }}</span>
             </a>
@@ -49,7 +46,7 @@
     </ul>
   </nav>
 
-  <!-- Collapse Toggle -->
+  <!-- Footer -->
   <div class="sidebar-footer" *ngIf="!collapsed">
     <div class="user-info">
       <div class="user-avatar">
