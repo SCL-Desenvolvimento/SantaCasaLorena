@@ -19,4 +19,5 @@ export class StatsCardComponent {
   @Input() textClass = 'text-primary';
   @Input() trend?: Trend;
   @Input() loading = false;
+  @Input() detailsLink: string | null = null;
 }

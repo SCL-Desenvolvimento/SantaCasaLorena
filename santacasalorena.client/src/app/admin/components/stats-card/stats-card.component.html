@@ -16,13 +16,13 @@
         <h3 class="stats-value fw-bold mb-0" [ngClass]="textClass">
           {{ value | number }}
         </h3>
-        
+
         <!-- Trend Indicator -->
         <div class="stats-trend mt-2" *ngIf="trend">
-          <span class="trend-indicator" 
+          <span class="trend-indicator"
                 [class.trend-positive]="trend.isPositive"
                 [class.trend-negative]="!trend.isPositive">
-            <i class="bi" 
+            <i class="bi"
                [ngClass]="trend.isPositive ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
             {{ trend.value }}%
           </span>
@@ -41,9 +41,9 @@
   </div>
 
   <!-- Card Footer with Action -->
-  <div class="card-footer bg-transparent border-0 pt-0" *ngIf="!loading">
+  <div class="card-footer bg-transparent border-0 pt-0" *ngIf="!loading && detailsLink">
     <div class="stats-action">
-      <a href="#" class="text-decoration-none" [ngClass]="textClass">
+      <a [routerLink]="detailsLink" class="text-decoration-none" [ngClass]="textClass">
         <small>Ver detalhes</small>
         <i class="bi bi-arrow-right ms-1"></i>
       </a>

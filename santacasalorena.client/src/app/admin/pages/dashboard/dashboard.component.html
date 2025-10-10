@@ -6,16 +6,17 @@
 
   <!-- Dashboard Content -->
   <div class="dashboard-content" *ngIf="!loading">
+
     <!-- Stats Cards Row -->
     <div class="row g-4 mb-4">
       <div class="col-xl-3 col-md-6" *ngFor="let card of statCards">
-        <app-stats-card 
-          [label]="card.label"
-          [value]="card.value"
-          [icon]="card.icon"
-          [bgClass]="card.bgClass"
-          [textClass]="card.textClass"
-          [trend]="card.trend">
+        <app-stats-card [label]="card.label"
+                        [value]="card.value"
+                        [icon]="card.icon"
+                        [bgClass]="card.bgClass"
+                        [textClass]="card.textClass"
+                        [trend]="card.trend"
+                        [detailsLink]="card.detailsLink ?? null">
         </app-stats-card>
       </div>
     </div>
@@ -53,6 +54,7 @@
 
     <!-- Recent Items Row -->
     <div class="row g-4">
+
       <!-- Recent News -->
       <div class="col-lg-6">
         <div class="card shadow-sm border-0 rounded-3 h-100">
@@ -65,13 +67,37 @@
               Ver todas
             </a>
           </div>
-          <div class="card-body p-0">
-            <app-recent-items 
-              [items]="recentNews"
-              [showDate]="true"
-              [dateFormat]="'date'"
-              emptyMessage="Nenhuma notícia encontrada">
-            </app-recent-items>
+          <div class="card-body">
+            <ng-container *ngIf="recentNews.length > 0; else noNews">
+              <div class="list-group list-group-flush">
+                <a *ngFor="let news of recentNews"
+                   [routerLink]="['/admin/news/edit', news.id]"
+                   class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3">
+
+                  <img [src]="news.imageUrl"
+                       alt="Imagem da notícia"
+                       class="rounded"
+                       width="64"
+                       height="64"
+                       style="object-fit: cover;">
+
+                  <div class="flex-grow-1">
+                    <h6 class="mb-1 fw-semibold text-dark">{{ news.title }}</h6>
+                    <small class="text-muted d-block">{{ formatDate(news.publishedAt || news.createdAt) }}</small>
+                    <span class="badge mt-1"
+                          [ngClass]="news.isPublished ? 'bg-success' : 'bg-secondary'">
+                      {{ news.isPublished ? 'Publicado' : 'Rascunho' }}
+                    </span>
+                  </div>
+                </a>
+              </div>
+            </ng-container>
+
+            <ng-template #noNews>
+              <div class="text-center py-4 text-muted">
+                Nenhuma notícia encontrada
+              </div>
+            </ng-template>
           </div>
         </div>
       </div>
@@ -89,16 +115,15 @@
             </a>
           </div>
           <div class="card-body p-0">
-            <app-recent-items 
-              [items]="recentContacts"
-              [showDate]="true"
-              [dateFormat]="'datetime'"
-              emptyMessage="Nenhum contato encontrado">
+            <app-recent-items [items]="recentContacts"
+                              [showDate]="true"
+                              [dateFormat]="'datetime'"
+                              emptyMessage="Nenhum contato encontrado">
             </app-recent-items>
           </div>
         </div>
       </div>
-    </div>
 
+    </div>
   </div>
 </div>
