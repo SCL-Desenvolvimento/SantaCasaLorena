@@ -172,6 +172,22 @@
   color: #212529 !important;
 }
 
+/* Estilo para o botão de visualizar */
+.btn-outline-info:hover {
+  transform: translateY(-1px);
+  background-color: #0dcaf0;
+  border-color: #0dcaf0;
+  color: white;
+}
+
+/* Ajuste para mobile */
+@media (max-width: 768px) {
+  .btn-group .btn {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.75rem;
+  }
+}
+
 /* Action Buttons */
 .btn-group .btn {
   padding: 0.375rem 0.5rem;
