@@ -15,30 +15,20 @@ export class ConveniosListComponent implements OnInit {
   convenios: Agreement[] = [];
   filteredConvenios: Agreement[] = [];
 
-  // Filters
+  // Filtros
   searchTerm = '';
-  statusFilter: 'all' | 'active' | 'inactive' | 'pending' = 'all'; // all, active, inactive, pending
-  categoryFilter = 'all';
+  statusFilter: 'all' | 'active' | 'inactive' = 'all';
   sortBy = 'createdAt';
   sortOrder: 'asc' | 'desc' = 'desc';
 
-  // Pagination
+  // Paginação
   currentPage = 1;
   itemsPerPage = 10;
   totalItems = 0;
 
-  // Selection
-  selectedItems: number[] = [];
+  // Seleção
+  selectedItems: string[] = [];
   selectAll = false;
-
-  categories = [
-    'Educação',
-    'Saúde',
-    'Assistência Social',
-    'Cultura',
-    'Esporte',
-    'Meio Ambiente'
-  ];
 
   constructor(private router: Router, private agreementService: AgreementService) { }
 
@@ -65,26 +55,20 @@ export class ConveniosListComponent implements OnInit {
   applyFilters(): void {
     let filtered = [...this.convenios];
 
-    // Search filter
+    // Filtro de busca
     if (this.searchTerm) {
       filtered = filtered.filter(item =>
-        item.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.description.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.partner.toLowerCase().includes(this.searchTerm.toLowerCase())
+        item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
     }
 
-    // Status filter
+    // Filtro de status
     if (this.statusFilter !== 'all') {
-      filtered = filtered.filter(item => item.status === this.statusFilter);
+      const isActive = this.statusFilter === 'active';
+      filtered = filtered.filter(item => item.isActive === isActive);
     }
 
-    // Category filter
-    if (this.categoryFilter !== 'all') {
-      filtered = filtered.filter(item => item.category === this.categoryFilter);
-    }
-
-    // Sort
+    // Ordenação
     filtered.sort((a, b) => {
       let aValue = (a as any)[this.sortBy];
       let bValue = (b as any)[this.sortBy];
@@ -146,7 +130,7 @@ export class ConveniosListComponent implements OnInit {
     }
   }
 
-  toggleItemSelection(id: number): void {
+  toggleItemSelection(id: string): void {
     const index = this.selectedItems.indexOf(id);
     if (index > -1) {
       this.selectedItems.splice(index, 1);
@@ -156,7 +140,7 @@ export class ConveniosListComponent implements OnInit {
     this.selectAll = this.selectedItems.length === this.paginatedConvenios.length;
   }
 
-  isSelected(id: number): boolean {
+  isSelected(id: string): boolean {
     return this.selectedItems.includes(id);
   }
 
@@ -164,11 +148,11 @@ export class ConveniosListComponent implements OnInit {
     this.router.navigate(['/admin/convenios/new']);
   }
 
-  editConvenio(id: number): void {
+  editConvenio(id: string): void {
     this.router.navigate(['/admin/convenios/edit', id]);
   }
 
-  deleteConvenio(id: number): void {
+  deleteConvenio(id: string): void {
     if (confirm('Tem certeza que deseja excluir este convênio?')) {
       this.agreementService.delete(id).subscribe({
         next: () => {
@@ -184,116 +168,19 @@ export class ConveniosListComponent implements OnInit {
     }
   }
 
-  bulkDelete(): void {
-    if (this.selectedItems.length === 0) return;
-
-    if (confirm(`Tem certeza que deseja excluir ${this.selectedItems.length} convênio(s)?`)) {
-      // Using Promise.all to handle multiple deletions and update UI once
-      const deletePromises = this.selectedItems.map(id =>
-        this.agreementService.delete(id).toPromise().catch(error => {
-          console.error(`Erro ao excluir convênio ${id}:`, error);
-          alert(`Erro ao excluir convênio ${id}.`);
-          return Promise.reject(error); // Propagate error to stop Promise.all
-        })
-      );
-
-      Promise.all(deletePromises)
-        .then(() => {
-          this.convenios = this.convenios.filter(item => !this.selectedItems.includes(item.id));
-          this.selectedItems = [];
-          this.selectAll = false;
-          this.applyFilters();
-          alert('Convênios excluídos com sucesso!');
-        })
-        .catch(() => {
-          // Handle overall error if any deletion failed
-          this.loading = false;
-        });
-    }
+  formatDate(dateString?: string): string {
+    return dateString ? new Date(dateString).toLocaleDateString('pt-BR') : '-';
   }
 
-  bulkActivate(): void {
-    if (this.selectedItems.length === 0) return;
-
-    const updatePromises = this.selectedItems.map(id =>
-      this.agreementService.updateAgreementStatus(id, 'active').toPromise().catch(error => {
-        console.error(`Erro ao ativar convênio ${id}:`, error);
-        alert(`Erro ao ativar convênio ${id}.`);
-        return Promise.reject(error);
-      })
-    );
-
-    Promise.all(updatePromises)
-      .then(() => {
-        this.selectedItems.forEach(id => {
-          const convenioItem = this.convenios.find(item => item.id === id);
-          if (convenioItem) {
-            convenioItem.status = 'active';
-          }
-        });
-        this.selectedItems = [];
-        this.selectAll = false;
-        this.applyFilters();
-        alert('Convênios ativados com sucesso!');
-      })
-      .catch(() => {
-        this.loading = false;
-      });
+  getStatusBadgeClass(isActive: boolean): string {
+    return isActive ? 'bg-success' : 'bg-danger';
   }
 
-  bulkDeactivate(): void {
-    if (this.selectedItems.length === 0) return;
-
-    const updatePromises = this.selectedItems.map(id =>
-      this.agreementService.updateAgreementStatus(id, 'inactive').toPromise().catch(error => {
-        console.error(`Erro ao desativar convênio ${id}:`, error);
-        alert(`Erro ao desativar convênio ${id}.`);
-        return Promise.reject(error);
-      })
-    );
-
-    Promise.all(updatePromises)
-      .then(() => {
-        this.selectedItems.forEach(id => {
-          const convenioItem = this.convenios.find(item => item.id === id);
-          if (convenioItem) {
-            convenioItem.status = 'inactive';
-          }
-        });
-        this.selectedItems = [];
-        this.selectAll = false;
-        this.applyFilters();
-        alert('Convênios desativados com sucesso!');
-      })
-      .catch(() => {
-        this.loading = false;
-      });
-  }
-
-  formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('pt-BR');
-  }
-
-  getStatusBadgeClass(status: string): string {
-    switch (status) {
-      case 'active': return 'bg-success';
-      case 'inactive': return 'bg-danger';
-      case 'pending': return 'bg-warning';
-      default: return 'bg-secondary';
-    }
-  }
-
-  getStatusText(status: string): string {
-    switch (status) {
-      case 'active': return 'Ativo';
-      case 'inactive': return 'Inativo';
-      case 'pending': return 'Pendente';
-      default: return 'Desconhecido';
-    }
+  getStatusText(isActive: boolean): string {
+    return isActive ? 'Ativo' : 'Inativo';
   }
 
   getMin(a: number, b: number): number {
     return Math.min(a, b);
   }
 }
-

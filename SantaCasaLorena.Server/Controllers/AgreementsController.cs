@@ -33,7 +33,7 @@ namespace SantaCasaLorena.Server.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<AgreementResponseDto>> Create(AgreementRequestDto dto)
+        public async Task<ActionResult<AgreementResponseDto>> Create([FromForm] AgreementRequestDto dto)
         {
             var created = await _service.AddAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
@@ -41,7 +41,7 @@ namespace SantaCasaLorena.Server.Controllers
 
         [Authorize]
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult<AgreementResponseDto>> Update(Guid id, AgreementRequestDto dto)
+        public async Task<ActionResult<AgreementResponseDto>> Update(Guid id, [FromForm] AgreementRequestDto dto)
         {
             var updated = await _service.UpdateAsync(id, dto);
             return Ok(updated);

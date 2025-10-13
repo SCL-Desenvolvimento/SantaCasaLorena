@@ -133,7 +133,7 @@ export class DashboardComponent implements OnInit {
         const publishedCount = newsList?.filter(n => n.isPublished)?.length || 0;
 
         const totalAgreements = this.agreements.length;
-        const activeAgreements = this.agreements.filter(a => a.status === 'active').length;
+        const activeAgreements = this.agreements.filter(a => a.isActive).length;
 
         const totalBanners = this.banners.length;
         const activeBanners = this.banners.filter(b => b.isActive).length;

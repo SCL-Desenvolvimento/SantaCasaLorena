@@ -16,22 +16,9 @@ export class ConveniosFormComponent implements OnInit {
   loading = false;
   saving = false;
   isEditMode = false;
-  convenioId?: number;
-
-  categories = [
-    'Educação',
-    'Saúde',
-    'Assistência Social',
-    'Cultura',
-    'Esporte',
-    'Meio Ambiente'
-  ];
-
-  statuses = [
-    { value: 'active', label: 'Ativo' },
-    { value: 'inactive', label: 'Inativo' },
-    { value: 'pending', label: 'Pendente' }
-  ];
+  convenioId?: string;
+  selectedFile?: File;
+  previewImage?: string | ArrayBuffer | null;
 
   constructor(
     private fb: FormBuilder,
@@ -46,30 +33,27 @@ export class ConveniosFormComponent implements OnInit {
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.isEditMode = true;
-        this.convenioId = +params['id'];
-        this.loadConvenio(this.convenioId);
+        this.convenioId = params['id'];
+        if (this.convenioId) this.loadConvenio(this.convenioId);
       }
     });
   }
 
   createForm(): void {
     this.convenioForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(150)]],
-      description: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(500)]],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      status: ['pending', Validators.required],
-      category: ['', Validators.required],
-      partner: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-      value: [0, [Validators.required, Validators.min(0)]]
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(150)]],
+      imageUrl: [''], // Mantém para armazenar o URL retornado do backend
+      isActive: [true, Validators.required],
+      createdAt: ['']
     });
   }
 
-  loadConvenio(id: number): void {
+  loadConvenio(id: string): void {
     this.loading = true;
     this.agreementService.getById(id).subscribe({
-      next: (convenio: Agreement) => {
-        this.convenioForm.patchValue(convenio);
+      next: (agreement: Agreement) => {
+        this.convenioForm.patchValue(agreement);
+        this.previewImage = agreement.imageUrl; // Exibe imagem atual
         this.loading = false;
       },
       error: (error: HttpErrorResponse) => {
@@ -81,6 +65,17 @@ export class ConveniosFormComponent implements OnInit {
     });
   }
 
+  onFileSelected(event: Event): void {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput.files && fileInput.files.length > 0) {
+      this.selectedFile = fileInput.files[0];
+
+      const reader = new FileReader();
+      reader.onload = () => (this.previewImage = reader.result);
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
   save(): void {
     if (this.convenioForm.invalid) {
       this.markFormGroupTouched();
@@ -88,7 +83,17 @@ export class ConveniosFormComponent implements OnInit {
     }
 
     this.saving = true;
-    const formData: Agreement = this.convenioForm.value;
+    const formValue = this.convenioForm.value;
+    const formData = new FormData();
+
+    formData.append('name', formValue.name);
+    formData.append('isActive', formValue.isActive ? 'true' : 'false');
+
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
+    } else if (formValue.imageUrl) {
+      formData.append('imageUrl', formValue.imageUrl);
+    }
 
     if (this.isEditMode && this.convenioId) {
       this.agreementService.update(this.convenioId, formData).subscribe({
@@ -135,9 +140,10 @@ export class ConveniosFormComponent implements OnInit {
     const field = this.convenioForm.get(fieldName);
     if (field?.errors) {
       if (field.errors['required']) return 'Este campo é obrigatório';
-      if (field.errors['minlength']) return `Mínimo de ${field.errors['minlength'].requiredLength} caracteres`;
-      if (field.errors['maxlength']) return `Máximo de ${field.errors['maxlength'].requiredLength} caracteres`;
-      if (field.errors['min']) return `O valor mínimo é ${field.errors['min'].min}`;
+      if (field.errors['minlength'])
+        return `Mínimo de ${field.errors['minlength'].requiredLength} caracteres`;
+      if (field.errors['maxlength'])
+        return `Máximo de ${field.errors['maxlength'].requiredLength} caracteres`;
     }
     return '';
   }
@@ -152,4 +158,3 @@ export class ConveniosFormComponent implements OnInit {
     }
   }
 }
-
