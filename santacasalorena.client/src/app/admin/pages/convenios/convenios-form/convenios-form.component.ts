@@ -90,7 +90,7 @@ export class ConveniosFormComponent implements OnInit {
     formData.append('isActive', formValue.isActive ? 'true' : 'false');
 
     if (this.selectedFile) {
-      formData.append('image', this.selectedFile);
+      formData.append('file', this.selectedFile);
     } else if (formValue.imageUrl) {
       formData.append('imageUrl', formValue.imageUrl);
     }
