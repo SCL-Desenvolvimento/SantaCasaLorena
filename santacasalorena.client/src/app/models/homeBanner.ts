@@ -1,19 +1,14 @@
 export interface HomeBanner {
-  id: number;
+  id: string;
   title: string;
-  description: string;
-  image: string;
-  link?: string;
-  isActive: boolean;
-  position: 'home' | 'header' | 'sidebar' | 'footer';
-  order: number;
-  startDate?: string;
-  endDate?: string;
-  createdAt: string;
-  updatedAt: string;
-  newsId: string;
-  timeSeconds: number;
+  description?: string;
   desktopImageUrl: string;
   tabletImageUrl: string;
   mobileImageUrl: string;
+  order: number;
+  timeSeconds: number;
+  createdAt: string;
+  isActive: boolean;
+  newsId: string;
+  newsTitle: string;
 }

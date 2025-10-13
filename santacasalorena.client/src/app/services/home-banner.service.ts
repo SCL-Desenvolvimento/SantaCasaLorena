@@ -24,7 +24,7 @@ export class HomeBannerService {
     );
   }
 
-  getById(id: number): Observable<HomeBanner> {
+  getById(id: string): Observable<HomeBanner> {
     return this.http.get<HomeBanner>(`${this.apiUrl}/${id}`).pipe(
       map(response => ({
         ...response,
@@ -36,32 +36,32 @@ export class HomeBannerService {
     );
   }
 
-  create(dto: HomeBanner): Observable<HomeBanner> {
+  create(dto: FormData): Observable<HomeBanner> {
     return this.http.post<HomeBanner>(this.apiUrl, dto).pipe(
       catchError(this.handleError)
     );
   }
 
-  update(id: number, dto: HomeBanner): Observable<HomeBanner> {
+  update(id: string, dto: FormData): Observable<HomeBanner> {
     return this.http.put<HomeBanner>(`${this.apiUrl}/${id}`, dto).pipe(
       catchError(this.handleError)
     );
   }
 
-  delete(id: number): Observable<void> {
+  delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
-  updateBannerStatus(id: number, isActive: boolean): Observable<void> {
-    return this.http.patch<void>(`${this.apiUrl}/${id}/status`, { isActive }).pipe(
+  updateBannerStatus(id: string, isActive: boolean): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/status?status=${isActive}`, null).pipe(
       catchError(this.handleError)
     );
   }
 
-  updateBannerOrder(id: number, order: number): Observable<void> {
-    return this.http.patch<void>(`${this.apiUrl}/${id}/order`, { order }).pipe(
+  updateBannerOrder(id: string, order: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/order?order=${order}`, null).pipe(
       catchError(this.handleError)
     );
   }

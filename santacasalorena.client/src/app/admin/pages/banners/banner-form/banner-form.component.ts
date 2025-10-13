@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HomeBanner } from '../../../../models/homeBanner';
 import { HomeBannerService } from '../../../../services/home-banner.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NewsService } from '../../../../services/news.service';
+import { News } from '../../../../models/news';
 
 @Component({
   selector: 'app-banner-form',
@@ -13,179 +15,145 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class BannerFormComponent implements OnInit {
   bannerForm: FormGroup;
-  loading = false;
+  previews = { desktop: '', tablet: '', mobile: '' };
   saving = false;
+  loading = false;
+  loadingNews = false;
   isEditMode = false;
-  bannerId?: number;
-
-  positions = [
-    { value: 'home', label: 'Página Inicial' },
-    { value: 'header', label: 'Cabeçalho' },
-    { value: 'sidebar', label: 'Barra Lateral' },
-    { value: 'footer', label: 'Rodapé' }
-  ];
-
-  imagePreview?: string;
+  bannerId?: string;
+  newsList: News[] = [];
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private homeBannerService: HomeBannerService
+    private homeBannerService: HomeBannerService,
+    private newsService: NewsService // ✅ injetado
   ) {
     this.bannerForm = this.createForm();
   }
 
-  ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.isEditMode = true;
-        this.bannerId = +params['id'];
-        this.loadBanner(this.bannerId);
-      }
-    });
-  }
-
   createForm(): FormGroup {
     return this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
-      description: ['', Validators.maxLength(200)], // Changed from subtitle to description
-      image: ['', Validators.required], // Changed from imageUrl to image and made required
-      link: ['', [Validators.required, Validators.pattern(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)]],
-      isActive: [true], // Changed from status to isActive
-      position: ['home', Validators.required], // Added position
-      order: [0, Validators.required], // Added order
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required]
+      id: [''],
+      title: ['', [Validators.required, Validators.maxLength(200)]],
+      description: ['', [Validators.maxLength(500)]],
+      desktopImageUrl: ['', Validators.required],
+      tabletImageUrl: ['', Validators.required],
+      mobileImageUrl: ['', Validators.required],
+      order: [0, Validators.required],
+      timeSeconds: [5, [Validators.required, Validators.min(1)]],
+      newsId: [''],
+      isActive: [true],
+      createdAt: ['']
     });
   }
 
-  loadBanner(id: number): void {
+  ngOnInit(): void {
+    this.bannerId = this.route.snapshot.paramMap.get('id') || undefined;
+    this.isEditMode = !!this.bannerId;
+
+    this.loadNewsList(); // ✅ carrega as notícias
+
+    if (this.isEditMode) {
+      this.loadBanner();
+    }
+  }
+
+  loadNewsList(): void {
+    this.loadingNews = true;
+    this.newsService.getAll().subscribe({
+      next: (news: News[]) => {
+        this.newsList = news;
+        this.loadingNews = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao carregar notícias:', err);
+        this.loadingNews = false;
+      }
+    });
+  }
+
+  loadBanner(): void {
     this.loading = true;
-    this.homeBannerService.getById(id).subscribe({
-      next: (banner) => {
-        this.bannerForm.patchValue({
-          title: banner.title,
-          description: banner.description,
-          image: banner.image,
-          link: banner.link,
-          isActive: banner.isActive,
-          position: banner.position,
-          order: banner.order,
-          startDate: banner.startDate ? new Date(banner.startDate).toISOString().split('T')[0] : '',
-          endDate: banner.endDate ? new Date(banner.endDate).toISOString().split('T')[0] : ''
-        });
-        this.imagePreview = banner.image;
+    this.homeBannerService.getById(this.bannerId!).subscribe({
+      next: (banner: HomeBanner) => {
+        this.bannerForm.patchValue(banner);
+        this.previews.desktop = banner.desktopImageUrl || '';
+        this.previews.tablet = banner.tabletImageUrl || '';
+        this.previews.mobile = banner.mobileImageUrl || '';
         this.loading = false;
       },
-      error: (error: HttpErrorResponse) => {
-        console.error('Erro ao carregar banner:', error);
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao carregar banner:', err);
         this.loading = false;
-        alert('Erro ao carregar banner. Tente novamente mais tarde.');
-        this.router.navigate(['/admin/banners']);
       }
     });
   }
 
-  onImageSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      if (!file.type.startsWith('image/')) {
-        alert('Por favor, selecione apenas arquivos de imagem.');
-        return;
-      }
+  onImageSelected(event: Event, field: 'desktopImageUrl' | 'tabletImageUrl' | 'mobileImageUrl'): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
 
-      if (file.size > 5 * 1024 * 1024) {
-        alert('O arquivo deve ter no máximo 5MB.');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.imagePreview = e.target.result;
-        this.bannerForm.patchValue({ image: e.target.result }); // Set base64 string to image field
-      };
-      reader.readAsDataURL(file);
-    }
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.previews[field.split('ImageUrl')[0] as 'desktop' | 'tablet' | 'mobile'] = reader.result as string;
+      this.bannerForm.patchValue({ [field]: reader.result });
+    };
+    reader.readAsDataURL(file);
   }
 
-  removeImage(): void {
-    this.imagePreview = undefined;
-    const fileInput = document.getElementById('imageInput') as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = '';
-    }
-    this.bannerForm.patchValue({ image: '' });
+  removeImage(field: 'desktopImageUrl' | 'tabletImageUrl' | 'mobileImageUrl'): void {
+    this.previews[field.split('ImageUrl')[0] as 'desktop' | 'tablet' | 'mobile'] = '';
+    this.bannerForm.patchValue({ [field]: '' });
   }
 
   save(): void {
     if (this.bannerForm.invalid) {
-      this.markFormGroupTouched();
+      this.bannerForm.markAllAsTouched();
       return;
     }
 
     this.saving = true;
-    const bannerData: HomeBanner = this.bannerForm.value;
 
-    if (this.isEditMode && this.bannerId) {
-      this.homeBannerService.update(this.bannerId, bannerData).subscribe({
-        next: () => {
-          alert('Banner atualizado com sucesso!');
-          this.saving = false;
-          this.router.navigate(['/admin/banners']);
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error('Erro ao atualizar banner:', error);
-          this.saving = false;
-          alert('Erro ao atualizar banner. Tente novamente mais tarde.');
-        }
-      });
-    } else {
-      this.homeBannerService.create(bannerData).subscribe({
-        next: () => {
-          alert('Banner criado com sucesso!');
-          this.saving = false;
-          this.router.navigate(['/admin/banners']);
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error('Erro ao criar banner:', error);
-          this.saving = false;
-          alert('Erro ao criar banner. Tente novamente mais tarde.');
-        }
-      });
+    const formData = new FormData();
+    const formValue = this.bannerForm.value;
+
+    // Campos de texto
+    formData.append('Title', formValue.title);
+    formData.append('Description', formValue.description || '');
+    formData.append('TimeSeconds', formValue.timeSeconds.toString());
+    formData.append('Order', formValue.order.toString());
+    formData.append('IsActive', formValue.isActive.toString());
+
+    if (formValue.newsId) {
+      formData.append('NewsId', formValue.newsId);
     }
-  }
 
-  markFormGroupTouched(): void {
-    Object.keys(this.bannerForm.controls).forEach(key => {
-      const control = this.bannerForm.get(key);
-      control?.markAsTouched();
+    // Arquivos
+    if (formValue.desktopFile) formData.append('DesktopFile', formValue.desktopFile);
+    if (formValue.tabletFile) formData.append('TabletFile', formValue.tabletFile);
+    if (formValue.mobileFile) formData.append('MobileFile', formValue.mobileFile);
+
+    const request = this.isEditMode
+      ? this.homeBannerService.update(this.bannerId!, formData)
+      : this.homeBannerService.create(formData);
+
+    request.subscribe({
+      next: () => {
+        this.saving = false;
+        this.router.navigate(['/admin/banners']);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao salvar banner:', err);
+        this.saving = false;
+      }
     });
   }
 
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.bannerForm.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
-  }
-
-  getFieldError(fieldName: string): string {
-    const field = this.bannerForm.get(fieldName);
-    if (field?.errors) {
-      if (field.errors['required']) return 'Este campo é obrigatório';
-      if (field.errors['minlength']) return `Mínimo de ${field.errors['minlength'].requiredLength} caracteres`;
-      if (field.errors['maxlength']) return `Máximo de ${field.errors['maxlength'].requiredLength} caracteres`;
-      if (field.errors['pattern']) return 'Formato inválido';
-    }
-    return '';
-  }
 
   cancel(): void {
-    if (this.bannerForm.dirty) {
-      if (confirm('Você tem alterações não salvas. Deseja realmente sair?')) {
-        this.router.navigate(['/admin/banners']);
-      }
-    } else {
-      this.router.navigate(['/admin/banners']);
-    }
+    this.router.navigate(['/admin/banners']);
   }
 }

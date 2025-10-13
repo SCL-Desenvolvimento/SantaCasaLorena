@@ -55,5 +55,24 @@ namespace SantaCasaLorena.Server.Controllers
             if (!success) return NotFound();
             return NoContent();
         }
+
+        [Authorize]
+        [HttpPut("{id:guid}/status")]
+        public async Task<ActionResult> UpdateStatus(Guid id, [FromQuery] bool status)
+        {
+            var success = await _service.UpdateStatusAsync(id, status);
+            if (!success) return NotFound();
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPut("{id:guid}/order")]
+        public async Task<ActionResult> UpdateOrder(Guid id, [FromQuery] int order)
+        {
+            var success = await _service.UpdateOrderAsync(id, order);
+            if (!success) return NotFound();
+            return NoContent();
+        }
+
     }
 }

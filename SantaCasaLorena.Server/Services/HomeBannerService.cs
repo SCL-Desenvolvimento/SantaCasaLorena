@@ -19,6 +19,7 @@ namespace SantaCasaLorena.Server.Services
         public async Task<IEnumerable<HomeBannerResponseDto>> GetAllAsync()
         {
             return await _context.HomeBanners
+                .Include(b => b.News)
                 .Select(b => MapToResponse(b))
                 .ToListAsync();
         }
@@ -43,6 +44,9 @@ namespace SantaCasaLorena.Server.Services
                 TabletImageUrl = await ProcessarMidiasAsync(dto.TabletFile, 1280, 800),
                 MobileImageUrl = await ProcessarMidiasAsync(dto.MobileFile, 600, 600),
                 TimeSeconds = dto.TimeSeconds,
+                Title = dto.Title,
+                Description = dto.Description,
+                IsActive = dto.IsActive,
                 Order = dto.Order,
                 NewsId = dto.NewsId
             };
@@ -61,6 +65,9 @@ namespace SantaCasaLorena.Server.Services
             entity.TimeSeconds = dto.TimeSeconds;
             entity.Order = dto.Order;
             entity.NewsId = dto.NewsId;
+            entity.Title = dto.Title;
+            entity.Description = dto.Description;
+            entity.IsActive = dto.IsActive;
 
             if (dto.DesktopFile != null)
                 entity.DesktopImageUrl = await ProcessarMidiasAsync(dto.DesktopFile, 1920, 540);
@@ -83,6 +90,26 @@ namespace SantaCasaLorena.Server.Services
             if (entity == null) return false;
 
             _context.HomeBanners.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateStatusAsync(Guid id, bool isActive)
+        {
+            var banner = await _context.HomeBanners.FindAsync(id);
+            if (banner == null) return false;
+
+            banner.IsActive = isActive;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateOrderAsync(Guid id, int newOrder)
+        {
+            var banner = await _context.HomeBanners.FindAsync(id);
+            if (banner == null) return false;
+
+            banner.Order = newOrder;
             await _context.SaveChangesAsync();
             return true;
         }
@@ -114,12 +141,16 @@ namespace SantaCasaLorena.Server.Services
             return new HomeBannerResponseDto
             {
                 Id = entity.Id,
+                Title = entity.Title,
+                Description = entity.Description,
+                IsActive = entity.IsActive,
                 DesktopImageUrl = entity.DesktopImageUrl,
                 TabletImageUrl = entity.TabletImageUrl,
                 MobileImageUrl = entity.MobileImageUrl,
                 NewsId = entity.NewsId,
                 Order = entity.Order,
-                TimeSeconds = entity.TimeSeconds
+                TimeSeconds = entity.TimeSeconds,
+                NewsTitle = entity?.News?.Title
             };
         }
     }
