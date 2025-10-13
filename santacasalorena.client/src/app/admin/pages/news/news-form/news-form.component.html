@@ -244,9 +244,7 @@
               <!-- Change Image Button -->
               <button type="button"
                       class="btn btn-outline-secondary w-100"
-                      *ngIf="imagePreview"
-                      onclick="document.getElementById('imageInput')?.click()">
-                <i class="bi bi-arrow-repeat me-2"></i>
+                      *ngIf="imagePreview"                      (click)="triggerFileInput()">                <i class="bi bi-arrow-repeat me-2"></i>
                 Alterar Imagem
               </button>
             </div>

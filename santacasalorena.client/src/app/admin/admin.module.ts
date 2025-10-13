@@ -20,6 +20,7 @@ import { RecentItemsComponent } from './components/recent-items/recent-items.com
 // News Management Components
 import { NewsListComponent } from './pages/news/news-list/news-list.component';
 import { NewsFormComponent } from './pages/news/news-form/news-form.component';
+import { NewsViewComponent } from './pages/news/news-view/news-view.component';
 
 // Banner Management Components
 import { BannerListComponent } from './pages/banners/banner-list/banner-list.component';
@@ -67,6 +68,7 @@ import { AuthInterceptor } from '../guards/auth.interceptor';
     // News
     NewsListComponent,
     NewsFormComponent,
+    NewsViewComponent,
     
     // Banners
     BannerListComponent,

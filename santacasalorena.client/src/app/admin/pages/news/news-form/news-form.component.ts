@@ -150,6 +150,10 @@ export class NewsFormComponent implements OnInit {
     }
   }
 
+  triggerFileInput(): void {
+    document.getElementById('imageInput')?.click();
+  }
+
   removeImage(): void {
     this.imageFile = undefined;
     this.imagePreview = undefined;
@@ -207,9 +211,8 @@ export class NewsFormComponent implements OnInit {
   }
 
   previewNews(): void {
-    if (this.newsForm.valid) {
-      console.log('Preview news:', this.getNewsData());
-      // Implementar lógica de visualização (ex: abrir modal com os dados)
+    if (this.newsId) {
+      this.router.navigate(['/admin/news/view', this.newsId]);
     }
   }
 
