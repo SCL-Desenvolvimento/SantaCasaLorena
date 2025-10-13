@@ -226,15 +226,15 @@
             </td>
             <td>
               <div class="btn-group">
-                <button class="btn btn-sm btn-outline-info"
-                        (click)="viewNews(item)"
-                        title="Visualizar Notícia">
-                  <i class="bi bi-eye"></i>
-                </button>
                 <button class="btn btn-sm btn-outline-primary"
                         (click)="editNews(item.id)"
                         title="Editar">
                   <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary"
+                        (click)="duplicateNews(item.id)"
+                        title="Duplicar">
+                  <i class="bi bi-files"></i>
                 </button>
                 <button class="btn btn-sm"
                         [class.btn-outline-success]="!item.isPublished"

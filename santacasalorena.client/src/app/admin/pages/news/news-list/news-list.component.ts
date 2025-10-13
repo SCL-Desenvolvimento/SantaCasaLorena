@@ -190,18 +190,54 @@ export class NewsListComponent implements OnInit {
       this.router.navigate(['/admin/news/edit', id]);
   }
 
-  // MÉTODO CORRIGIDO: Visualizar notícia
-  viewNews(newsItem: News): void {
-    if (newsItem.id) {
-      // Abre em nova aba usando apenas o ID
-      const url = this.router.createUrlTree(['/news', newsItem.id]);
-      const fullUrl = window.location.origin + url.toString();
-      window.open(fullUrl, '_blank');
+  duplicateNews(id: string | undefined): void {
+    if (id) {
+      console.log('Duplicating news:', id);
+      this.newsService.getById(id).subscribe({
+        next: (newsToDuplicate: News) => {
+          // Remove original ID and other auto-generated fields
+          const { id: _, createdAt: __, updatedAt: ___, publishedAt: ____, views: _____, ...newsWithoutId } = newsToDuplicate;
+          const duplicatedNews: News = {
+            ...newsWithoutId,
+            title: `Cópia de ${newsToDuplicate.title}`,
+            isPublished: false, // Duplicated news should be a draft initially
+            publishedAt: undefined,
+            createdAt: new Date().toISOString(), // Backend will override
+            updatedAt: new Date().toISOString(), // Backend will override
+            views: 0 // Backend will override
+          };
+
+          // If there was an image, we need to handle it. For duplication, we assume we don't re-upload the file
+          // but rather rely on the backend to copy the image if imageUrl is provided.
+          // However, the current backend `AddAsync` expects `IFormFile`. 
+          // For now, we'll create without image and user can upload later, or modify backend to copy by URL.
+          // For this exercise, we'll assume the image needs to be re-uploaded or handled differently.
+          // A simpler approach for duplication without re-uploading the file would be to have a backend endpoint that takes an existing image URL.
+          // Given the current backend `AddAsync` expects `IFormFile`, we'll omit the image for duplication.
+          // If the user wants to duplicate with image, they would need to edit and re-upload.
+
+          this.newsService.create(duplicatedNews).subscribe({
+            next: () => {
+              alert('Notícia duplicada com sucesso e salva como rascunho!');
+              this.loadNews(); // Reload list to show the new draft
+            },
+            error: (error: HttpErrorResponse) => {
+              console.error('Erro ao duplicar notícia:', error);
+              alert(`Erro ao duplicar notícia: ${error.error?.message || error.message}`);
+            }
+          });
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Erro ao buscar notícia para duplicar:', error);
+          alert(`Erro ao buscar notícia para duplicar: ${error.error?.message || error.message}`);
+        }
+      });
     }
   }
 
   togglePublishStatus(id: string | undefined): void {
     if (id) {
+
       const newsItem = this.news.find(item => item.id === id);
       if (newsItem) {
         const newStatus = !newsItem.isPublished;

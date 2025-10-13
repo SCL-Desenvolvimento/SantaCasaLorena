@@ -7,8 +7,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../../../services/auth.service';
 
-declare var bootstrap: any;
-
 @Component({
   selector: 'app-news-form',
   standalone: false,
@@ -44,9 +42,10 @@ export class NewsFormComponent implements OnInit {
   ];
 
   selectedTags: string[] = [];
-  imageFile?: File;
+  imageFile?: File; // Para armazenar o arquivo de imagem
   imagePreview?: string;
 
+  // Editor configuration
   editorConfig = {
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'],
@@ -89,9 +88,9 @@ export class NewsFormComponent implements OnInit {
 
   createForm(): FormGroup {
     return this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
-      description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(300)]],
-      content: ['', [Validators.required, Validators.minLength(50)]],
+      title: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(200)]],
+      description: ['', [Validators.required, Validators.minLength(50), Validators.maxLength(300)]],
+      content: ['', [Validators.required, Validators.minLength(100)]],
       category: ['', Validators.required],
       isPublished: [false],
       publishedAt: [''],
@@ -105,37 +104,20 @@ export class NewsFormComponent implements OnInit {
     this.loading = true;
     this.newsService.getById(id).subscribe({
       next: (news: News) => {
-        // Preenche o formulário com os dados da notícia
         this.newsForm.patchValue({
-          title: news.title || '',
-          description: news.description || '',
-          content: news.content || '',
-          category: news.category || '',
-          isPublished: news.isPublished || false,
+          title: news.title,
+          description: news.description,
+          content: news.content,
+          category: news.category,
+          isPublished: news.isPublished,
           publishedAt: news.publishedAt ? new Date(news.publishedAt).toISOString().slice(0, 16) : '',
-          seoTitle: news.seoTitle || '',
-          seoDescription: news.seoDescription || '',
-          seoKeywords: news.seoKeywords || ''
+          seoTitle: news.seoTitle,
+          seoDescription: news.seoDescription,
+          seoKeywords: news.seoKeywords
         });
-
         this.selectedTags = news.tags || [];
         this.imagePreview = news.imageUrl;
-
-        // Marca o formulário como "pristine" após carregar os dados
-        this.newsForm.markAsPristine();
-        this.newsForm.markAsUntouched();
-
         this.loading = false;
-
-        console.log('Formulário carregado:', this.newsForm.valid);
-        console.log('Erros do formulário:', this.newsForm.errors);
-        console.log('Erros dos campos:');
-        Object.keys(this.newsForm.controls).forEach(key => {
-          const control = this.newsForm.get(key);
-          if (control?.errors) {
-            console.log(`${key}:`, control.errors);
-          }
-        });
       },
       error: (error: HttpErrorResponse) => {
         console.error('Erro ao carregar notícia:', error);
@@ -159,7 +141,7 @@ export class NewsFormComponent implements OnInit {
         return;
       }
 
-      this.imageFile = file;
+      this.imageFile = file; // Armazena o arquivo
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.imagePreview = e.target.result;
@@ -225,76 +207,10 @@ export class NewsFormComponent implements OnInit {
   }
 
   previewNews(): void {
-    console.log('Tentando abrir preview...');
-
-    // Verifica apenas os campos obrigatórios básicos
-    const hasTitle = this.newsForm.get('title')?.value?.trim().length >= 3;
-    const hasCategory = !!this.newsForm.get('category')?.value;
-    const hasDescription = this.newsForm.get('description')?.value?.trim().length >= 5;
-    const hasContent = this.newsForm.get('content')?.value?.trim().length >= 10;
-
-    console.log(hasTitle);
-    console.log(hasDescription);
-    console.log(hasCategory);
-    console.log(hasContent);
-
-    if (hasTitle && hasCategory && hasDescription && hasContent) {
-      console.log("Entrou")
-      this.openPreviewModal();
-    } else {
-      // Mostra mensagem mais específica
-      let errorMessage = 'Por favor, preencha os seguintes campos:\n\n';
-
-      if (!hasTitle) errorMessage += '• Título (mínimo 3 caracteres)\n';
-      if (!hasCategory) errorMessage += '• Categoria\n';
-      if (!hasDescription) errorMessage += '• Resumo (mínimo 5 caracteres)\n';
-      if (!hasContent) errorMessage += '• Conteúdo (mínimo 10 caracteres)\n';
-
-      alert(errorMessage);
+    if (this.newsForm.valid) {
+      console.log('Preview news:', this.getNewsData());
+      // Implementar lógica de visualização (ex: abrir modal com os dados)
     }
-  }
-
-  // Método auxiliar para remover tags HTML e contar apenas texto
-  stripHtmlTags(html: string): string {
-    if (!html) return '';
-
-    // Cria um elemento temporário para extrair o texto
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;
-    return tempDiv.textContent || tempDiv.innerText || '';
-  }
-
-  getFieldName(field: string): string {
-    const fieldNames: { [key: string]: string } = {
-      'title': 'Título',
-      'description': 'Resumo',
-      'content': 'Conteúdo',
-      'category': 'Categoria'
-    };
-    return fieldNames[field] || field;
-  }
-
-  openPreviewModal(): void {
-    const modalElement = document.getElementById('previewModal');
-    console.log(modalElement)
-    if (modalElement) {
-      const modal = new bootstrap.Modal(modalElement);
-      modal.show();
-    } else {
-      console.error('Modal de preview não encontrado!');
-      alert('Erro ao abrir a visualização. Tente novamente.');
-    }
-  }
-
-  saveAndClosePreview(): void {
-    const modalElement = document.getElementById('previewModal');
-    if (modalElement) {
-      const modal = bootstrap.Modal.getInstance(modalElement);
-      if (modal) {
-        modal.hide();
-      }
-    }
-    this.publishNews();
   }
 
   saveDraft(): void {
@@ -313,17 +229,13 @@ export class NewsFormComponent implements OnInit {
   save(): void {
     if (this.newsForm.invalid) {
       this.markFormGroupTouched();
-
-      const invalidFields = Object.keys(this.newsForm.controls)
-        .filter(key => this.newsForm.get(key)?.invalid)
-        .map(key => this.getFieldName(key));
-
-      alert(`Por favor, preencha todos os campos obrigatórios:\n\n• ${invalidFields.join('\n• ')}`);
+      alert('Por favor, preencha todos os campos obrigatórios e corrija os erros.');
       return;
     }
 
     this.saving = true;
     const newsData = this.getNewsData();
+    console.log(newsData);
 
     let operation: Observable<News>;
 
@@ -363,6 +275,7 @@ export class NewsFormComponent implements OnInit {
       seoDescription: formValue.seoDescription,
       seoKeywords: formValue.seoKeywords,
       userId: this.authService.getUserInfo('id') ?? undefined
+      // createdAt, updatedAt, views são gerenciados pelo backend
     };
   }
 
@@ -397,26 +310,5 @@ export class NewsFormComponent implements OnInit {
     } else {
       this.router.navigate(['/admin/news']);
     }
-  }
-
-  // Método para debug - verificar status do formulário
-  checkFormStatus(): void {
-    console.log('=== STATUS DO FORMULÁRIO ===');
-    console.log('Válido:', this.newsForm.valid);
-    console.log('Inválido:', this.newsForm.invalid);
-    console.log('Pristine:', this.newsForm.pristine);
-    console.log('Dirty:', this.newsForm.dirty);
-
-    Object.keys(this.newsForm.controls).forEach(key => {
-      const control = this.newsForm.get(key);
-      console.log(`Campo ${key}:`, {
-        valor: control?.value,
-        válido: control?.valid,
-        inválido: control?.invalid,
-        erros: control?.errors,
-        touched: control?.touched,
-        dirty: control?.dirty
-      });
-    });
   }
 }
