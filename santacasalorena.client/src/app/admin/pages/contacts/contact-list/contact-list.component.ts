@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Contact } from '../../../../models/contact';
 import { ContactService } from '../../../../services/contact.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'app-contact-list',
@@ -15,42 +15,49 @@ export class ContactListComponent implements OnInit {
   loading = true;
   contacts: Contact[] = [];
   filteredContacts: Contact[] = [];
-  
+
   // Filters
   searchTerm = '';
-  statusFilter = 'all'; // all, unread, read, replied
-  priorityFilter = 'all';
+  statusFilter = 'all'; // all, active, inactive
+  locationFilter = 'all';
   categoryFilter = 'all';
-  sortBy = 'createdAt';
-  sortOrder: 'asc' | 'desc' = 'desc';
-  
+  sortBy = 'order';
+  sortOrder: 'asc' | 'desc' = 'asc';
+
   // Pagination
   currentPage = 1;
   itemsPerPage = 15;
   totalItems = 0;
-  
+
   // Selection
-  selectedItems: string[] = []; // Changed to string[] for contact IDs
+  selectedItems: string[] = [];
   selectAll = false;
-  
+
+  locations = [
+    'header',
+    'footer',
+    'contato',
+    'sobre',
+    'home',
+    'servicos'
+  ];
+
   categories = [
-    'Dúvida',
-    'Reclamação',
-    'Sugestão',
-    'Elogio',
-    'Solicitação',
-    'Informação',
-    'Suporte Técnico',
-    'Outros'
+    'comercial',
+    'suporte',
+    'emergencia',
+    'whatsapp',
+    'vendas',
+    'financeiro',
+    'outros'
   ];
 
-  priorities = [
-    { value: 'low', label: 'Baixa', class: 'success' },
-    { value: 'medium', label: 'Média', class: 'warning' },
-    { value: 'high', label: 'Alta', class: 'danger' }
+  statuses = [
+    { value: 'active', label: 'Ativo', class: 'success' },
+    { value: 'inactive', label: 'Inativo', class: 'secondary' }
   ];
 
-  constructor(private router: Router, private contactService: ContactService) {}
+  constructor(private router: Router, private contactService: ContactService) { }
 
   ngOnInit(): void {
     this.loadContacts();
@@ -66,7 +73,6 @@ export class ContactListComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error('Erro ao carregar contatos:', error);
-        // Tratar erro, talvez exibir uma mensagem para o usuário
         this.loading = false;
       }
     });
@@ -78,28 +84,26 @@ export class ContactListComponent implements OnInit {
     // Search filter
     if (this.searchTerm) {
       filtered = filtered.filter(item =>
-        item.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.subject.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.message.toLowerCase().includes(this.searchTerm.toLowerCase())
+        item.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        item.phoneNumber.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        item.description.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
     }
 
-    // Status filter
+    // Status filter (active/inactive)
     if (this.statusFilter !== 'all') {
       filtered = filtered.filter(item => {
         switch (this.statusFilter) {
-          case 'unread': return !item.isRead;
-          case 'read': return item.isRead && !item.isReplied;
-          case 'replied': return item.isReplied;
+          case 'active': return item.isActive;
+          case 'inactive': return !item.isActive;
           default: return true;
         }
       });
     }
 
-    // Priority filter
-    if (this.priorityFilter !== 'all') {
-      filtered = filtered.filter(item => item.priority === this.priorityFilter);
+    // Location filter
+    if (this.locationFilter !== 'all') {
+      filtered = filtered.filter(item => item.pageLocation === this.locationFilter);
     }
 
     // Category filter
@@ -109,8 +113,8 @@ export class ContactListComponent implements OnInit {
 
     // Sort
     filtered.sort((a, b) => {
-      let aValue = a[this.sortBy as keyof Contact] ?? '';
-      let bValue = b[this.sortBy as keyof Contact] ?? '';
+      let aValue = a[this.sortBy as keyof Contact];
+      let bValue = b[this.sortBy as keyof Contact];
 
       if (typeof aValue === 'string') aValue = aValue.toLowerCase();
       if (typeof bValue === 'string') bValue = bValue.toLowerCase();
@@ -135,8 +139,8 @@ export class ContactListComponent implements OnInit {
     return Math.ceil(this.totalItems / this.itemsPerPage);
   }
 
-  get unreadCount(): number {
-    return this.contacts.filter(c => !c.isRead).length;
+  get activeCount(): number {
+    return this.contacts.filter(c => c.isActive).length;
   }
 
   onSearch(): void {
@@ -184,72 +188,26 @@ export class ContactListComponent implements OnInit {
   }
 
   viewContact(id: string): void {
-    this.contactService.markAsRead(id).subscribe({
-      next: () => {
-        const contact = this.contacts.find(c => c.id === id);
-        if (contact) {
-          contact.isRead = true;
-          contact.readAt = new Date().toISOString();
-        }
-        this.router.navigate(['/admin/contacts', id]);
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Erro ao marcar contato como lido:', error);
-        // Mesmo com erro, tenta navegar para a visualização
-        this.router.navigate(['/admin/contacts', id]);
-      }
-    });
+    this.router.navigate(['/admin/contacts', id]);
   }
 
-  markAsRead(id: string): void {
-    this.contactService.markAsRead(id).subscribe({
-      next: () => {
+  toggleActive(id: string): void {
+    this.contactService.toggleActive(id).subscribe({
+      next: (updatedContact) => {
         const contact = this.contacts.find(c => c.id === id);
         if (contact) {
-          contact.isRead = true;
-          contact.readAt = new Date().toISOString();
+          contact.isActive = updatedContact.isActive;
         }
         this.applyFilters();
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Erro ao marcar contato como lido:', error);
-      }
-    });
-  }
-
-  markAsUnread(id: string): void {
-    this.contactService.markAsUnread(id).subscribe({
-      next: () => {
-        const contact = this.contacts.find(c => c.id === id);
-        if (contact) {
-          contact.isRead = false;
-          contact.readAt = undefined;
-        }
-        this.applyFilters();
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Erro ao marcar contato como não lido:', error);
-      }
-    });
-  }
-
-  setPriority(id: string, priority: 'low' | 'medium' | 'high'): void {
-    this.contactService.setPriority(id, priority).subscribe({
-      next: () => {
-        const contact = this.contacts.find(c => c.id === id);
-        if (contact) {
-          contact.priority = priority;
-        }
-        this.applyFilters();
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Erro ao definir prioridade:', error);
+        console.error('Erro ao alterar status do contato:', error);
       }
     });
   }
 
   deleteContact(id: string): void {
-    if (confirm('Tem certeza que deseja excluir este contato?')) {
+    if (confirm('Tem certeza que deseja excluir este número de telefone?')) {
       this.contactService.deleteContact(id).subscribe({
         next: () => {
           this.contacts = this.contacts.filter(c => c.id !== id);
@@ -262,16 +220,16 @@ export class ContactListComponent implements OnInit {
     }
   }
 
-  bulkMarkAsRead(): void {
+  // Métodos para ações em massa
+  bulkActivate(): void {
     if (this.selectedItems.length === 0) return;
-    
-    forkJoin(this.selectedItems.map(id => this.contactService.markAsRead(id))).subscribe({
+
+    forkJoin(this.selectedItems.map(id => this.contactService.toggleActive(id))).subscribe({
       next: () => {
         this.selectedItems.forEach(id => {
           const contact = this.contacts.find(c => c.id === id);
           if (contact) {
-            contact.isRead = true;
-            contact.readAt = new Date().toISOString();
+            contact.isActive = true;
           }
         });
         this.selectedItems = [];
@@ -279,21 +237,26 @@ export class ContactListComponent implements OnInit {
         this.applyFilters();
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Erro ao marcar contatos como lidos em massa:', error);
+        console.error('Erro ao ativar contatos em massa:', error);
       }
     });
   }
 
-  bulkMarkAsUnread(): void {
+  bulkDeactivate(): void {
     if (this.selectedItems.length === 0) return;
-    
-    forkJoin(this.selectedItems.map(id => this.contactService.markAsUnread(id))).subscribe({
+
+    forkJoin(this.selectedItems.map(id => {
+      const contact = this.contacts.find(c => c.id === id);
+      if (contact && contact.isActive) {
+        return this.contactService.toggleActive(id);
+      }
+      return of(null);
+    })).subscribe({
       next: () => {
         this.selectedItems.forEach(id => {
           const contact = this.contacts.find(c => c.id === id);
           if (contact) {
-            contact.isRead = false;
-            contact.readAt = undefined;
+            contact.isActive = false;
           }
         });
         this.selectedItems = [];
@@ -301,15 +264,15 @@ export class ContactListComponent implements OnInit {
         this.applyFilters();
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Erro ao marcar contatos como não lidos em massa:', error);
+        console.error('Erro ao desativar contatos em massa:', error);
       }
     });
   }
 
   bulkDelete(): void {
     if (this.selectedItems.length === 0) return;
-    
-    if (confirm(`Tem certeza que deseja excluir ${this.selectedItems.length} contato(s)?`)) {
+
+    if (confirm(`Tem certeza que deseja excluir ${this.selectedItems.length} número(s) de telefone?`)) {
       forkJoin(this.selectedItems.map(id => this.contactService.deleteContact(id))).subscribe({
         next: () => {
           this.contacts = this.contacts.filter(c => !this.selectedItems.includes(c.id));
@@ -318,20 +281,19 @@ export class ContactListComponent implements OnInit {
           this.applyFilters();
         },
         error: (error: HttpErrorResponse) => {
-          console.error('Erro ao excluir contatos em massa:', error);
+          console.error('Erro ao excluir números em massa:', error);
         }
       });
     }
   }
 
-  getPriorityLabel(priority: string): string {
-    const p = this.priorities.find(pr => pr.value === priority);
-    return p ? p.label : priority;
+  // Métodos auxiliares para exibição
+  getStatusLabel(isActive: boolean): string {
+    return isActive ? 'Ativo' : 'Inativo';
   }
 
-  getPriorityClass(priority: string): string {
-    const p = this.priorities.find(pr => pr.value === priority);
-    return p ? p.class : 'secondary';
+  getStatusClass(isActive: boolean): string {
+    return isActive ? 'success' : 'secondary';
   }
 
   formatDate(dateString: string): string {
@@ -344,25 +306,7 @@ export class ContactListComponent implements OnInit {
     });
   }
 
-  getTimeAgo(dateString: string): string {
-    const now = new Date();
-    const date = new Date(dateString);
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-    
-    if (diffInHours < 1) return 'Agora há pouco';
-    if (diffInHours < 24) return `${diffInHours}h atrás`;
-    
-    const diffInDays = Math.floor(diffInHours / 24);
-    if (diffInDays < 7) return `${diffInDays}d atrás`;
-    
-    const diffInWeeks = Math.floor(diffInDays / 7);
-    if (diffInWeeks < 4) return `${diffInWeeks}sem atrás`;
-    
-    return this.formatDate(dateString);
-  }
-
   getMin(a: number, b: number): number {
     return Math.min(a, b);
   }
 }
-

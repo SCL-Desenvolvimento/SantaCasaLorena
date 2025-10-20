@@ -3,14 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Contact } from '../models/contact';
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class ContactService {
-  private apiUrl = 'api/contacts'; // Ajuste a URL da API conforme necessário
+  private apiUrl = '/api/contacts';
 
   constructor(private http: HttpClient) { }
 
+  // MANTENHA estes métodos (eles vão servir para números de telefone):
   getContacts(): Observable<Contact[]> {
     return this.http.get<Contact[]>(this.apiUrl);
   }
@@ -31,16 +33,24 @@ export class ContactService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  markAsRead(id: string): Observable<void> {
-    return this.http.patch<void>(`${this.apiUrl}/${id}/mark-as-read`, {});
+  // ADICIONE estes novos métodos:
+  toggleActive(id: string): Observable<Contact> {
+    return this.http.patch<Contact>(`${this.apiUrl}/${id}/toggle-active`, {});
   }
 
-  markAsUnread(id: string): Observable<void> {
-    return this.http.patch<void>(`${this.apiUrl}/${id}/mark-as-unread`, {});
+  getContactsByLocation(location: string): Observable<Contact[]> {
+    return this.http.get<Contact[]>(`${this.apiUrl}/location/${location}`);
   }
 
-  setPriority(id: string, priority: 'low' | 'medium' | 'high'): Observable<void> {
-    return this.http.patch<void>(`${this.apiUrl}/${id}/set-priority`, { priority });
+  // COMENTE ou REMOVA estes métodos antigos:
+  /*
+  markAsRead(id: string): Observable<Contact> {
+    return this.http.patch<Contact>(`${this.apiUrl}/${id}/read`, {});
   }
+
+  markAsUnread(id: string): Observable<Contact> {
+    return this.http.patch<Contact>(`${this.apiUrl}/${id}/unread`, {});
+  }
+  */
 }
 

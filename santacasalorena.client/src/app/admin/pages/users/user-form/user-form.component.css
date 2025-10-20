@@ -1,1 +1,38 @@
+.user-form-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
+.profile-preview {
+  width: 100px;
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 3px solid #dee2e6;
+}
+
+.page-header {
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 1rem;
+}
+
+.card {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+
+.btn {
+  border-radius: 6px;
+}
+
+.form-control, .form-select {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #495057;
+}

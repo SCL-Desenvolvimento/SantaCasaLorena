@@ -9,7 +9,6 @@ import { NewsViewComponent } from './pages/news/news-view/news-view.component';
 import { BannerListComponent } from './pages/banners/banner-list/banner-list.component';
 import { BannerFormComponent } from './pages/banners/banner-form/banner-form.component';
 import { ContactListComponent } from './pages/contacts/contact-list/contact-list.component';
-import { ContactDetailComponent } from './pages/contacts/contact-detail/contact-detail.component';
 import { ConveniosListComponent } from './pages/convenios/convenios-list/convenios-list.component';
 import { ConveniosFormComponent } from './pages/convenios/convenios-form/convenios-form.component';
 import { ProviderListComponent } from './pages/providers/provider-list/provider-list.component';
@@ -18,6 +17,7 @@ import { TransparencyListComponent } from './pages/transparency/transparency-lis
 import { TransparencyFormComponent } from './pages/transparency/transparency-form/transparency-form.component';
 import { UserListComponent } from './pages/users/user-list/user-list.component';
 import { UserFormComponent } from './pages/users/user-form/user-form.component';
+import { ContactNewComponent } from './pages/contacts/contact-new/contact-new.component';
 
 const routes: Routes = [
   // Dashboard
@@ -72,11 +72,7 @@ const routes: Routes = [
     component: ContactListComponent,
     data: { title: 'Gerenciar Contatos', breadcrumb: 'Contatos' }
   },
-  {
-    path: 'contacts/:id',
-    component: ContactDetailComponent,
-    data: { title: 'Detalhes do Contato', breadcrumb: 'Detalhes' }
-  },
+  
 
   // Convenios Management
   {
@@ -151,7 +147,10 @@ const routes: Routes = [
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full'
-  }
+  },
+
+  { path: 'contacts', component: ContactListComponent },
+  { path: 'contacts/new', component: ContactNewComponent },
 ];
 
 @NgModule({

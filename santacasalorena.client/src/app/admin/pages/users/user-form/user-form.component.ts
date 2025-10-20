@@ -17,6 +17,8 @@ export class UserFormComponent implements OnInit {
   saving = false;
   isEditMode = false;
   userId?: string;
+  profileImagePreview: string = '';
+  selectedImageFile: File | null = null;
 
   roles = [
     { value: 'admin', label: 'Administrador' },
@@ -51,11 +53,11 @@ export class UserFormComponent implements OnInit {
 
   createForm(): FormGroup {
     return this.fb.group({
-      name: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-      email: [null, [Validators.required, Validators.email]],
-      password: [null, [Validators.minLength(6), Validators.maxLength(50)]],
-      role: ["viewer", Validators.required],
-      status: ["active", Validators.required]
+      username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.minLength(6), Validators.maxLength(50)]],
+      role: ['viewer', Validators.required],
+      status: ['active', Validators.required]
     });
   }
 
@@ -63,51 +65,186 @@ export class UserFormComponent implements OnInit {
     this.loading = true;
     this.userService.getById(id).subscribe({
       next: (user: User) => {
-        this.userForm.patchValue(user);
-        this.userForm.get("password")?.setValidators([]); // Clear validators for password in edit mode
-        this.userForm.get("password")?.updateValueAndValidity();
+        console.log('Usuário carregado:', user);
+        this.userForm.patchValue({
+          username: user.username,
+          email: user.email,
+          role: user.role,
+          status: user.status
+        });
+
+        // Remove validação de senha em edição
+        this.userForm.get('password')?.clearValidators();
+        this.userForm.get('password')?.updateValueAndValidity();
+
+        // Carrega photoUrl se existir
+        if (user.photoUrl) {
+          this.profileImagePreview = user.photoUrl;
+        }
+
         this.loading = false;
       },
       error: (error: HttpErrorResponse) => {
-        console.error("Erro ao carregar usuário:", error);
-        alert("Erro ao carregar usuário.");
+        console.error('Erro detalhado ao carregar usuário:', error);
+        console.error('Status:', error.status);
+        console.error('Mensagem:', error.message);
+        console.error('Erro completo:', error.error);
+
+        alert('Erro ao carregar usuário.');
         this.loading = false;
-        this.router.navigate(["/admin/users"]);
+        this.router.navigate(['/admin/users']);
       }
     });
   }
 
+  // Método para acionar o input de arquivo
+  triggerFileInput(): void {
+    const fileInput = document.getElementById('profileImage') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+
+    // Validações básicas
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor, selecione apenas arquivos de imagem.');
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert('A imagem deve ter no máximo 2MB.');
+      return;
+    }
+
+    this.selectedImageFile = file;
+
+    // Cria preview
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.profileImagePreview = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeImage(): void {
+    this.profileImagePreview = '';
+    this.selectedImageFile = null;
+
+    const input = document.getElementById('profileImage') as HTMLInputElement;
+    if (input) input.value = '';
+  }
+
   save(): void {
+    console.log('=== INICIANDO SALVAMENTO ===');
+
     if (this.userForm.invalid) {
+      console.log('Formulário inválido:', this.getFormValidationErrors());
       this.markFormGroupTouched();
       return;
     }
 
+    // Validação extra para criação
+    if (!this.isEditMode && !this.userForm.value.password) {
+      alert('Para criar um usuário, a senha é obrigatória.');
+      return;
+    }
+
     this.saving = true;
-    const userData = this.userForm.value;
+
+    const formValue = this.userForm.value;
+
+    console.log('Valores do formulário:', formValue);
+
+    // Cria objeto User SIMPLIFICADO - sem campos problemáticos
+    const userData: any = {
+      username: formValue.username,
+      email: formValue.email,
+      role: formValue.role,
+      status: formValue.status
+    };
+
+    // Password - obrigatório em criação, opcional em edição
+    if (this.isEditMode) {
+      // Em edição, só envia password se foi alterado
+      if (formValue.password && formValue.password.length >= 6) {
+        userData.password = formValue.password;
+      }
+    } else {
+      // Em criação, password é obrigatório
+      userData.password = formValue.password;
+    }
+
+    // photoUrl apenas se existe imagem (e não é muito grande)
+    if (this.profileImagePreview && this.profileImagePreview.length < 100000) { // Limite de ~100KB
+      userData.photoUrl = this.profileImagePreview;
+    }
+
+    console.log('Dados que serão enviados para a API:', userData);
 
     const operation = this.isEditMode
       ? this.userService.update(this.userId!, userData)
       : this.userService.create(userData);
 
     operation.subscribe({
-      next: () => {
+      next: (response) => {
+        console.log('✅ Sucesso! Resposta do servidor:', response);
         this.saving = false;
-        alert(this.isEditMode ? "Usuário atualizado com sucesso!" : "Usuário criado com sucesso!");
-        this.router.navigate(["/admin/users"]);
+        alert(this.isEditMode ? 'Usuário atualizado com sucesso!' : 'Usuário criado com sucesso!');
+        this.router.navigate(['/admin/users']);
       },
       error: (error: HttpErrorResponse) => {
-        console.error("Erro ao salvar usuário:", error);
-        alert("Erro ao salvar usuário. Verifique o console para mais detalhes.");
+        console.error('❌ Erro detalhado ao salvar usuário:', error);
+        console.error('Status:', error.status);
+        console.error('Mensagem:', error.message);
+        console.error('Erro completo:', error.error);
+
+        let errorMessage = 'Erro ao salvar usuário. ';
+
+        if (error.status === 400) {
+          errorMessage += 'Dados inválidos enviados. ';
+          if (error.error && typeof error.error === 'object') {
+            // Tenta extrair mensagens de validação do backend
+            const validationErrors = error.error;
+            Object.keys(validationErrors).forEach(key => {
+              errorMessage += `${key}: ${validationErrors[key]}. `;
+            });
+          } else if (error.error) {
+            errorMessage += error.error;
+          }
+        } else if (error.status === 409) {
+          errorMessage += 'Email ou username já existe.';
+        } else if (error.status === 500) {
+          errorMessage += 'Erro interno do servidor.';
+        } else {
+          errorMessage += 'Tente novamente.';
+        }
+
+        alert(errorMessage);
         this.saving = false;
       }
     });
   }
 
-  markFormGroupTouched(): void {
+  private getFormValidationErrors(): any {
+    const errors: any = {};
     Object.keys(this.userForm.controls).forEach(key => {
       const control = this.userForm.get(key);
-      control?.markAsTouched();
+      if (control?.errors) {
+        errors[key] = control.errors;
+      }
+    });
+    return errors;
+  }
+
+  markFormGroupTouched(): void {
+    Object.keys(this.userForm.controls).forEach(key => {
+      this.userForm.get(key)?.markAsTouched();
     });
   }
 
@@ -119,17 +256,17 @@ export class UserFormComponent implements OnInit {
   getFieldError(fieldName: string): string {
     const field = this.userForm.get(fieldName);
     if (field?.errors) {
-      if (field.errors['required']) return 'Este campo é obrigatório';
-      if (field.errors['minlength']) return `Mínimo de ${field.errors['minlength'].requiredLength} caracteres`;
-      if (field.errors['maxlength']) return `Máximo de ${field.errors['maxlength'].requiredLength} caracteres`;
+      if (field.errors['required']) return 'Campo obrigatório';
+      if (field.errors['minlength']) return `Mínimo ${field.errors['minlength'].requiredLength} caracteres`;
+      if (field.errors['maxlength']) return `Máximo ${field.errors['maxlength'].requiredLength} caracteres`;
       if (field.errors['email']) return 'Email inválido';
     }
     return '';
   }
 
   cancel(): void {
-    if (this.userForm.dirty) {
-      if (confirm('Você tem alterações não salvas. Deseja realmente sair?')) {
+    if (this.userForm.dirty || this.selectedImageFile) {
+      if (confirm('Tem alterações não salvas. Deseja sair?')) {
         this.router.navigate(['/admin/users']);
       }
     } else {
@@ -137,4 +274,3 @@ export class UserFormComponent implements OnInit {
     }
   }
 }
-

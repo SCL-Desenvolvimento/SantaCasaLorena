@@ -3,12 +3,15 @@
   <div class="page-header mb-4">
     <div class="d-flex justify-content-between align-items-center">
       <div>
-        <h2 class="page-title mb-1">Gerenciar Contatos</h2>
+        <h2 class="page-title mb-1">Gerenciar Números de Telefone</h2>
         <p class="page-subtitle text-muted mb-0">
-          Gerencie todas as mensagens de contato recebidas
+          Gerencie os números de telefone exibidos em diferentes páginas do site
         </p>
       </div>
-      <!-- Botão para criar novo contato não é aplicável aqui, pois contatos são recebidos, não criados -->
+      <button class="btn btn-primary" routerLink="/admin/contacts/new">
+        <i class="bi bi-plus-circle me-2"></i>
+        Adicionar Número
+      </button>
     </div>
   </div>
 
@@ -22,7 +25,7 @@
           <div class="input-group">
             <input type="text"
                    class="form-control"
-                   placeholder="Buscar por nome, email, assunto ou mensagem..."
+                   placeholder="Buscar por título, número ou descrição..."
                    [(ngModel)]="searchTerm"
                    (input)="onSearch()">
             <button class="btn btn-outline-secondary" type="button">
@@ -38,22 +41,24 @@
                   [(ngModel)]="statusFilter"
                   (change)="onFilterChange()">
             <option value="all">Todos</option>
-            <option value="unread">Não Lidos ({{ unreadCount }})</option>
-            <option value="read">Lidos</option>
-            <option value="replied">Respondidos</option>
+            <option value="active">Ativos ({{ activeCount }})</option>
+            <option value="inactive">Inativos</option>
           </select>
         </div>
 
-        <!-- Priority Filter -->
+        <!-- Location Filter -->
         <div class="col-md-2">
-          <label class="form-label">Prioridade</label>
+          <label class="form-label">Localização</label>
           <select class="form-select"
-                  [(ngModel)]="priorityFilter"
+                  [(ngModel)]="locationFilter"
                   (change)="onFilterChange()">
-            <option value="all">Todas as prioridades</option>
-            <option *ngFor="let p of priorities" [value]="p.value">
-              {{ p.label }}
-            </option>
+            <option value="all">Todas as localizações</option>
+            <option value="header">Header</option>
+            <option value="footer">Footer</option>
+            <option value="contato">Página Contato</option>
+            <option value="sobre">Página Sobre</option>
+            <option value="home">Home</option>
+            <option value="servicos">Serviços</option>
           </select>
         </div>
 
@@ -64,16 +69,20 @@
                   [(ngModel)]="categoryFilter"
                   (change)="onFilterChange()">
             <option value="all">Todas as categorias</option>
-            <option *ngFor="let category of categories" [value]="category">
-              {{ category }}
-            </option>
+            <option value="comercial">Comercial</option>
+            <option value="suporte">Suporte</option>
+            <option value="emergencia">Emergência</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="vendas">Vendas</option>
+            <option value="financeiro">Financeiro</option>
+            <option value="outros">Outros</option>
           </select>
         </div>
 
         <!-- Clear Filters -->
         <div class="col-md-1 d-flex align-items-end">
           <button class="btn btn-outline-secondary w-100"
-                  (click)="searchTerm = ''; statusFilter = 'all'; priorityFilter = 'all'; categoryFilter = 'all'; onFilterChange()"
+                  (click)="searchTerm = ''; statusFilter = 'all'; locationFilter = 'all'; categoryFilter = 'all'; onFilterChange()"
                   title="Limpar filtros">
             <i class="bi bi-x-lg"></i>
           </button>
@@ -87,18 +96,18 @@
     <div class="alert alert-info d-flex justify-content-between align-items-center">
       <span>
         <i class="bi bi-check-square me-2"></i>
-        {{ selectedItems.length }} mensagem(ns) selecionada(s)
+        {{ selectedItems.length }} número(s) selecionado(s)
       </span>
       <div class="btn-group">
         <button class="btn btn-sm btn-success"
-                (click)="bulkMarkAsRead()">
-          <i class="bi bi-envelope-open me-1"></i>
-          Marcar como lido
+                (click)="bulkActivate()">
+          <i class="bi bi-toggle-on me-1"></i>
+          Ativar
         </button>
         <button class="btn btn-sm btn-warning"
-                (click)="bulkMarkAsUnread()">
-          <i class="bi bi-envelope me-1"></i>
-          Marcar como não lido
+                (click)="bulkDeactivate()">
+          <i class="bi bi-toggle-off me-1"></i>
+          Desativar
         </button>
         <button class="btn btn-sm btn-danger"
                 (click)="bulkDelete()">
@@ -111,7 +120,7 @@
 
   <!-- Loading State -->
   <div class="text-center py-5" *ngIf="loading">
-    <app-loading-spinner message="Carregando contatos..."></app-loading-spinner>
+    <app-loading-spinner message="Carregando números de telefone..."></app-loading-spinner>
   </div>
 
   <!-- Contacts Table -->
@@ -129,23 +138,33 @@
               </div>
             </th>
             <th class="sortable"
-                (click)="onSort('name')">
-              Remetente
+                (click)="onSort('title')">
+              Título
               <i class="bi ms-1"
                  [ngClass]="{
-                   'bi-arrow-up': sortBy === 'name' && sortOrder === 'asc',
-                   'bi-arrow-down': sortBy === 'name' && sortOrder === 'desc',
-                   'bi-arrow-down-up': sortBy !== 'name'
+                   'bi-arrow-up': sortBy === 'title' && sortOrder === 'asc',
+                   'bi-arrow-down': sortBy === 'title' && sortOrder === 'desc',
+                   'bi-arrow-down-up': sortBy !== 'title'
                  }"></i>
             </th>
             <th class="sortable"
-                (click)="onSort('subject')">
-              Assunto
+                (click)="onSort('phoneNumber')">
+              Número
               <i class="bi ms-1"
                  [ngClass]="{
-                   'bi-arrow-up': sortBy === 'subject' && sortOrder === 'asc',
-                   'bi-arrow-down': sortBy === 'subject' && sortOrder === 'desc',
-                   'bi-arrow-down-up': sortBy !== 'subject'
+                   'bi-arrow-up': sortBy === 'phoneNumber' && sortOrder === 'asc',
+                   'bi-arrow-down': sortBy === 'phoneNumber' && sortOrder === 'desc',
+                   'bi-arrow-down-up': sortBy !== 'phoneNumber'
+                 }"></i>
+            </th>
+            <th class="sortable"
+                (click)="onSort('pageLocation')">
+              Localização
+              <i class="bi ms-1"
+                 [ngClass]="{
+                   'bi-arrow-up': sortBy === 'pageLocation' && sortOrder === 'asc',
+                   'bi-arrow-down': sortBy === 'pageLocation' && sortOrder === 'desc',
+                   'bi-arrow-down-up': sortBy !== 'pageLocation'
                  }"></i>
             </th>
             <th class="sortable"
@@ -159,32 +178,22 @@
                  }"></i>
             </th>
             <th class="sortable"
-                (click)="onSort('priority')">
-              Prioridade
+                (click)="onSort('order')">
+              Ordem
               <i class="bi ms-1"
                  [ngClass]="{
-                   'bi-arrow-up': sortBy === 'priority' && sortOrder === 'asc',
-                   'bi-arrow-down': sortBy === 'priority' && sortOrder === 'desc',
-                   'bi-arrow-down-up': sortBy !== 'priority'
+                   'bi-arrow-up': sortBy === 'order' && sortOrder === 'asc',
+                   'bi-arrow-down': sortBy === 'order' && sortOrder === 'desc',
+                   'bi-arrow-down-up': sortBy !== 'order'
                  }"></i>
             </th>
-            <th class="sortable"
-                (click)="onSort('createdAt')">
-              Recebido
-              <i class="bi ms-1"
-                 [ngClass]="{
-                   'bi-arrow-up': sortBy === 'createdAt' && sortOrder === 'asc',
-                   'bi-arrow-down': sortBy === 'createdAt' && sortOrder === 'desc',
-                   'bi-arrow-down-up': sortBy !== 'createdAt'
-                 }"></i>
-            </th>
+            <th>Status</th>
             <th width="150">Ações</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of paginatedContacts"
-              [class.table-active]="isSelected(item.id)"
-              [class.fw-bold]="!item.isRead">
+              [class.table-active]="isSelected(item.id)">
             <td>
               <div class="form-check">
                 <input class="form-check-input"
@@ -194,27 +203,32 @@
               </div>
             </td>
             <td>
-              <div class="contact-sender">
-                <h6 class="mb-0">{{ item.name }}</h6>
-                <small class="text-muted">{{ item.email }}</small>
+              <div class="contact-info">
+                <h6 class="mb-0">{{ item.title }}</h6>
+                <small class="text-muted">{{ item.description }}</small>
               </div>
             </td>
             <td>
-              <div class="contact-subject">
-                <h6 class="mb-0">{{ item.subject }}</h6>
-                <small class="text-muted">{{ item.message | slice:0:80 }}...</small>
-              </div>
+              <h6 class="mb-0">{{ item.phoneNumber }}</h6>
+            </td>
+            <td>
+              <span class="badge bg-info">{{ item.pageLocation }}</span>
             </td>
             <td>
               <span class="badge bg-secondary">{{ item.category }}</span>
             </td>
             <td>
+              <span class="badge bg-light text-dark">{{ item.order }}</span>
+            </td>
+            <td>
               <span class="badge"
-                    [class]="'bg-' + getPriorityClass(item.priority)">
-                {{ getPriorityLabel(item.priority) }}
+                    [class.bg-success]="item.isActive"
+                    [class.bg-secondary]="!item.isActive">
+                <i class="bi me-1"
+                   [ngClass]="item.isActive ? 'bi-check-circle' : 'bi-x-circle'"></i>
+                {{ item.isActive ? 'Ativo' : 'Inativo' }}
               </span>
             </td>
-            <td>{{ getTimeAgo(item.createdAt) }}</td>
             <td>
               <div class="btn-group">
                 <button class="btn btn-sm btn-outline-primary"
@@ -222,17 +236,11 @@
                         title="Ver Detalhes">
                   <i class="bi bi-eye"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-info"
-                        *ngIf="!item.isRead"
-                        (click)="markAsRead(item.id)"
-                        title="Marcar como lido">
-                  <i class="bi bi-envelope-open"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-secondary"
-                        *ngIf="item.isRead"
-                        (click)="markAsUnread(item.id)"
-                        title="Marcar como não lido">
-                  <i class="bi bi-envelope"></i>
+                <button class="btn btn-sm btn-outline-success"
+                        (click)="toggleActive(item.id)"
+                        [title]="item.isActive ? 'Desativar' : 'Ativar'">
+                  <i class="bi"
+                     [ngClass]="item.isActive ? 'bi-toggle-on' : 'bi-toggle-off'"></i>
                 </button>
                 <button class="btn btn-sm btn-outline-danger"
                         (click)="deleteContact(item.id)"
@@ -249,13 +257,13 @@
     <!-- Empty State -->
     <div class="text-center py-5" *ngIf="filteredContacts.length === 0 && !loading">
       <div class="empty-state">
-        <i class="bi bi-chat-dots display-1 text-muted"></i>
-        <h5 class="mt-3">Nenhuma mensagem de contato encontrada</h5>
+        <i class="bi bi-telephone display-1 text-muted"></i>
+        <h5 class="mt-3">Nenhum número de telefone encontrado</h5>
         <p class="text-muted">
           {{
- searchTerm || statusFilter !== 'all' || priorityFilter !== 'all' || categoryFilter !== 'all'
-             ? 'Tente ajustar os filtros de busca'
-             : 'Nenhuma mensagem de contato recebida ainda.'
+            searchTerm || statusFilter !== 'all' || locationFilter !== 'all' || categoryFilter !== 'all'
+            ? 'Tente ajustar os filtros de busca'
+            : 'Nenhum número de telefone cadastrado ainda.'
           }}
         </p>
       </div>

@@ -27,7 +27,6 @@ import { BannerListComponent } from './pages/banners/banner-list/banner-list.com
 import { BannerFormComponent } from './pages/banners/banner-form/banner-form.component';
 // Contact Management Components
 import { ContactListComponent } from './pages/contacts/contact-list/contact-list.component';
-import { ContactDetailComponent } from './pages/contacts/contact-detail/contact-detail.component';
 
 // Convenios Management Components
 import { ConveniosListComponent } from './pages/convenios/convenios-list/convenios-list.component';
@@ -50,6 +49,7 @@ import { LoadingSpinnerComponent } from './components/loading-spinner/loading-sp
 
 // Interceptors
 import { AuthInterceptor } from '../guards/auth.interceptor';
+import { ContactNewComponent } from './pages/contacts/contact-new/contact-new.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +76,6 @@ import { AuthInterceptor } from '../guards/auth.interceptor';
     
     // Contacts
     ContactListComponent,
-    ContactDetailComponent,
     
     // Convenios
     ConveniosListComponent,
@@ -96,6 +95,7 @@ import { AuthInterceptor } from '../guards/auth.interceptor';
         
     // Shared
     LoadingSpinnerComponent,
+    ContactNewComponent,
   ],
   imports: [
     CommonModule,

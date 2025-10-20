@@ -10,9 +10,8 @@
           {{ isEditMode ? 'Edite as informações do usuário existente' : 'Preencha os dados para cadastrar um novo usuário' }}
         </p>
       </div>
-      <button 
-        class="btn btn-outline-secondary"
-        (click)="cancel()">
+      <button class="btn btn-outline-secondary"
+              (click)="cancel()">
         <i class="bi bi-arrow-left me-2"></i>
         Voltar
       </button>
@@ -21,55 +20,120 @@
 
   <!-- Loading State -->
   <div class="text-center py-5" *ngIf="loading">
-    <app-loading-spinner message="Carregando usuário..."></app-loading-spinner>
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+    <p class="mt-2 text-muted">Carregando usuário...</p>
   </div>
 
   <!-- User Form -->
   <div class="card shadow-sm border-0 rounded-3" *ngIf="!loading">
-    <div class="card-body">
+    <div class="card-body p-4">
       <form [formGroup]="userForm" (ngSubmit)="save()">
+
+        <!-- IMAGEM DE PERFIL (OPCIONAL) -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="mb-4">
+              <label class="form-label fw-bold fs-5">
+                <i class="bi bi-camera me-2"></i>Foto de Perfil (Opcional)
+              </label>
+
+              <div class="d-flex flex-column flex-md-row align-items-center gap-4 p-3 border rounded bg-light">
+                <!-- Preview -->
+                <div class="text-center">
+                  <div class="profile-preview mx-auto mb-2 rounded-circle border"
+                       [style.backgroundImage]="'url(' + profileImagePreview + ')'"
+                       [class.bg-light]="!profileImagePreview">
+                    <div *ngIf="!profileImagePreview" class="h-100 w-100 d-flex align-items-center justify-content-center rounded-circle">
+                      <i class="bi bi-person fs-1 text-muted"></i>
+                    </div>
+                  </div>
+                  <small class="text-muted">Preview</small>
+                </div>
+
+                <!-- Upload Controls -->
+                <div class="flex-grow-1">
+                  <div class="mb-3">
+                    <input type="file"
+                           class="form-control"
+                           id="profileImage"
+                           (change)="onImageSelected($event)"
+                           accept="image/jpeg,image/png,image/webp">
+                  </div>
+
+                  <div class="d-flex gap-2 flex-wrap">
+                    <button type="button"
+                            class="btn btn-primary btn-sm"
+                            (click)="triggerFileInput()">
+                      <i class="bi bi-upload me-1"></i> Selecionar Imagem
+                    </button>
+
+                    <button *ngIf="profileImagePreview"
+                            type="button"
+                            class="btn btn-outline-danger btn-sm"
+                            (click)="removeImage()">
+                      <i class="bi bi-trash me-1"></i> Remover
+                    </button>
+                  </div>
+
+                  <div class="form-text text-muted mt-2">
+                    <small>
+                      <i class="bi bi-info-circle me-1"></i>
+                      Formatos: JPG, PNG, WebP. Máximo 2MB
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="row">
+          <!-- Coluna Esquerda -->
           <div class="col-md-6">
-            <!-- Name -->
+            <!-- Username -->
             <div class="mb-3">
-              <label for="name" class="form-label">Nome Completo <span class="text-danger">*</span></label>
-              <input 
-                type="text" 
-                class="form-control"
-                [class.is-invalid]="isFieldInvalid('name')"
-                id="name" 
-                formControlName="name"
-                placeholder="Ex: João Silva">
-              <div class="invalid-feedback" *ngIf="isFieldInvalid('name')">
-                {{ getFieldError('name') }}
+              <label for="username" class="form-label fw-bold">Nome de Usuário *</label>
+              <input type="text"
+                     class="form-control"
+                     [class.is-invalid]="isFieldInvalid('username')"
+                     id="username"
+                     formControlName="username"
+                     placeholder="Ex: joao.silva">
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('username')">
+                {{ getFieldError('username') }}
               </div>
             </div>
 
             <!-- Email -->
             <div class="mb-3">
-              <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-              <input 
-                type="email" 
-                class="form-control"
-                [class.is-invalid]="isFieldInvalid('email')"
-                id="email" 
-                formControlName="email"
-                placeholder="Ex: joao.silva@example.com">
+              <label for="email" class="form-label fw-bold">Email *</label>
+              <input type="email"
+                     class="form-control"
+                     [class.is-invalid]="isFieldInvalid('email')"
+                     id="email"
+                     formControlName="email"
+                     placeholder="Ex: joao.silva@example.com">
               <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
                 {{ getFieldError('email') }}
               </div>
             </div>
+          </div>
 
+          <!-- Coluna Direita -->
+          <div class="col-md-6">
             <!-- Password -->
             <div class="mb-3">
-              <label for="password" class="form-label">Senha <span class="text-danger">*</span></label>
-              <input 
-                type="password" 
-                class="form-control"
-                [class.is-invalid]="isFieldInvalid('password')"
-                id="password" 
-                formControlName="password"
-                placeholder="********">
+              <label for="password" class="form-label fw-bold">
+                Senha {{ !isEditMode ? '*' : '' }}
+              </label>
+              <input type="password"
+                     class="form-control"
+                     [class.is-invalid]="isFieldInvalid('password')"
+                     id="password"
+                     formControlName="password"
+                     placeholder="Mínimo 6 caracteres">
               <div class="invalid-feedback" *ngIf="isFieldInvalid('password')">
                 {{ getFieldError('password') }}
               </div>
@@ -77,17 +141,14 @@
                 Deixe em branco para manter a senha atual.
               </small>
             </div>
-          </div>
 
-          <div class="col-md-6">
             <!-- Role -->
             <div class="mb-3">
-              <label for="role" class="form-label">Cargo <span class="text-danger">*</span></label>
-              <select 
-                class="form-select"
-                [class.is-invalid]="isFieldInvalid('role')"
-                id="role" 
-                formControlName="role">
+              <label for="role" class="form-label fw-bold">Cargo *</label>
+              <select class="form-select"
+                      [class.is-invalid]="isFieldInvalid('role')"
+                      id="role"
+                      formControlName="role">
                 <option *ngFor="let r of roles" [value]="r.value">{{ r.label }}</option>
               </select>
               <div class="invalid-feedback" *ngIf="isFieldInvalid('role')">
@@ -97,12 +158,11 @@
 
             <!-- Status -->
             <div class="mb-3">
-              <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-              <select 
-                class="form-select"
-                [class.is-invalid]="isFieldInvalid('status')"
-                id="status" 
-                formControlName="status">
+              <label for="status" class="form-label fw-bold">Status *</label>
+              <select class="form-select"
+                      [class.is-invalid]="isFieldInvalid('status')"
+                      id="status"
+                      formControlName="status">
                 <option *ngFor="let s of statuses" [value]="s.value">{{ s.label }}</option>
               </select>
               <div class="invalid-feedback" *ngIf="isFieldInvalid('status')">
@@ -112,23 +172,22 @@
           </div>
         </div>
 
-        <div class="d-flex justify-content-end mt-4">
-          <button 
-            type="button" 
-            class="btn btn-outline-secondary me-2"
-            (click)="cancel()">
+        <!-- Botões -->
+        <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+          <button type="button"
+                  class="btn btn-outline-secondary me-2"
+                  (click)="cancel()"
+                  [disabled]="saving">
             Cancelar
           </button>
-          <button 
-            type="submit" 
-            class="btn btn-primary"
-            [disabled]="saving">
-            <span *ngIf="saving" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-            {{ saving ? 'Salvando...' : 'Salvar Usuário' }}
+          <button type="submit"
+                  class="btn btn-primary"
+                  [disabled]="saving || userForm.invalid">
+            <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
+            {{ saving ? 'Salvando...' : (isEditMode ? 'Atualizar' : 'Salvar') }}
           </button>
         </div>
       </form>
     </div>
   </div>
 </div>
-
