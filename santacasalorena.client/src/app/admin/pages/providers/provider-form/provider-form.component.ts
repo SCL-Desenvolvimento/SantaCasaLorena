@@ -1,61 +1,50 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ProviderService } from '../../../../services/provider.service';
 import { Providers } from '../../../../models/provider';
-import { ProviderService } from '../../../../services//provider.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-provider-form',
   standalone: false,
   templateUrl: './provider-form.component.html',
-  styleUrls: ['./provider-form.component.css']
+  styleUrls: ['./provider-form.component.css'],
 })
 export class ProviderFormComponent implements OnInit {
   providerForm!: FormGroup;
   loading = false;
   saving = false;
   isEditMode = false;
-  providerId?: string; // ID é string no modelo Providers
-  serviceAreas: string[] = [
-    'Tecnologia',
-    'Logística',
-    'Construção',
-    'Saúde',
-    'Educação'
-  ];
-  statuses: { value: string, label: string }[] = [
-    { value: 'active', label: 'Ativo' },
-    { value: 'inactive', label: 'Inativo' },
-    { value: 'pending', label: 'Pendente' }
-  ];
+  providerId?: string;
+  selectedFile?: File;
+  previewImage?: string | ArrayBuffer | null;
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private providerService: ProviderService
-  ) { }
+  ) {
+    this.createForm();
+  }
 
   ngOnInit(): void {
-    this.createForm();
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.isEditMode = true;
         this.providerId = params['id'];
-        if (this.providerId)
-          this.loadProvider(this.providerId);
+        if (this.providerId) this.loadProvider(this.providerId);
       }
     });
   }
 
   createForm(): void {
     this.providerForm = this.fb.group({
-      id: [''], // ID pode ser gerado ou preenchido em edição
-      imageUrl: ['', Validators.maxLength(255)],
+      id: [''],
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(150)]],
+      imageUrl: [''],
       startYear: ['', [Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear())]],
-      endYear: ['', [Validators.min(1900), Validators.max(new Date().getFullYear())]]
+      endYear: ['', [Validators.min(1900), Validators.max(new Date().getFullYear())]],
     });
   }
 
@@ -64,15 +53,27 @@ export class ProviderFormComponent implements OnInit {
     this.providerService.getById(id).subscribe({
       next: (provider: Providers) => {
         this.providerForm.patchValue(provider);
+        this.previewImage = provider.imageUrl;
         this.loading = false;
       },
-      error: (err) => {
-        console.error('Erro ao carregar fornecedor:', err);
-        alert('Erro ao carregar fornecedor. Tente novamente mais tarde.');
+      error: error => {
+        console.error('Erro ao carregar provedor:', error);
+        alert('Erro ao carregar provedor. Tente novamente mais tarde.');
         this.loading = false;
         this.router.navigate(['/admin/providers']);
-      }
+      },
     });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+
+      const reader = new FileReader();
+      reader.onload = () => (this.previewImage = reader.result);
+      reader.readAsDataURL(this.selectedFile);
+    }
   }
 
   save(): void {
@@ -82,29 +83,34 @@ export class ProviderFormComponent implements OnInit {
     }
 
     this.saving = true;
-    const formData: Providers = this.providerForm.value;
+    const formValue = this.providerForm.value;
+    const formData = new FormData();
 
-    let operation: Observable<Providers>;
+    formData.append('name', formValue.name);
+    formData.append('startYear', formValue.startYear);
+    if (formValue.endYear) formData.append('endYear', formValue.endYear);
 
-    if (this.isEditMode && this.providerId) {
-      operation = this.providerService.update(this.providerId, formData);
-    } else {
-      // Se o ID não for fornecido para um novo registro, o backend deve gerá-lo.
-      // Se o formulário tiver um campo de ID, ele será enviado.
-      operation = this.providerService.create(formData);
+    if (this.selectedFile) {
+      formData.append('file', this.selectedFile);
+    } else if (formValue.imageUrl) {
+      formData.append('imageUrl', formValue.imageUrl);
     }
 
-    operation.subscribe({
+    const saveOperation = this.isEditMode && this.providerId
+      ? this.providerService.update(this.providerId, formData)
+      : this.providerService.create(formData);
+
+    saveOperation.subscribe({
       next: () => {
-        alert(this.isEditMode ? 'Fornecedor atualizado com sucesso!' : 'Fornecedor criado com sucesso!');
-        this.saving = false;
+        alert(this.isEditMode ? 'Provedor atualizado com sucesso!' : 'Provedor criado com sucesso!');
         this.router.navigate(['/admin/providers']);
-      },
-      error: (err) => {
-        console.error('Erro ao salvar fornecedor:', err);
-        alert('Erro ao salvar fornecedor. Tente novamente mais tarde.');
         this.saving = false;
-      }
+      },
+      error: error => {
+        console.error('Erro ao salvar provedor:', error);
+        alert('Erro ao salvar provedor. Tente novamente mais tarde.');
+        this.saving = false;
+      },
     });
   }
 
@@ -124,22 +130,23 @@ export class ProviderFormComponent implements OnInit {
     const field = this.providerForm.get(fieldName);
     if (field?.errors) {
       if (field.errors['required']) return 'Este campo é obrigatório';
-      if (field.errors['minlength']) return `Mínimo de ${field.errors['minlength'].requiredLength} caracteres`;
-      if (field.errors['maxlength']) return `Máximo de ${field.errors['maxlength'].requiredLength} caracteres`;
-      if (field.errors['min']) return `O ano deve ser no mínimo ${field.errors['min'].min}`;
-      if (field.errors['max']) return `O ano deve ser no máximo ${field.errors['max'].max}`;
+      if (field.errors['minlength'])
+        return `Mínimo de ${field.errors['minlength'].requiredLength} caracteres`;
+      if (field.errors['maxlength'])
+        return `Máximo de ${field.errors['maxlength'].requiredLength} caracteres`;
+      if (field.errors['min'])
+        return `O valor mínimo é ${field.errors['min'].min}`;
+      if (field.errors['max'])
+        return `O valor máximo é ${field.errors['max'].max}`;
     }
     return '';
   }
 
   cancel(): void {
-    if (this.providerForm.dirty) {
-      if (confirm('Você tem alterações não salvas. Deseja realmente sair?')) {
-        this.router.navigate(['/admin/providers']);
-      }
+    if (this.providerForm.dirty && confirm('Você tem alterações não salvas. Deseja realmente sair?')) {
+      this.router.navigate(['/admin/providers']);
     } else {
       this.router.navigate(['/admin/providers']);
     }
   }
 }
-

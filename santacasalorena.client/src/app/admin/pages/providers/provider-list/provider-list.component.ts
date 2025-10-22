@@ -32,18 +32,18 @@ export class ProviderListComponent implements OnInit {
   sortOrder: 'asc' | 'desc' = 'asc';
 
   // Bulk Actions
-  selectedItems: string[] = []; // IDs são strings
+  selectedItems: string[] = [];
   selectAll: boolean = false;
 
   constructor(
     private router: Router,
-    private providerService: ProviderService // Injeta o serviço
+    private providerService: ProviderService
   ) { }
 
   ngOnInit(): void {
     this.loadProviders();
     this.searchSubject.pipe(
-      debounceTime(300) // Espera 300ms após a última digitação
+      debounceTime(300)
     ).subscribe(() => {
       this.applyFiltersAndSort();
     });
@@ -72,8 +72,7 @@ export class ProviderListComponent implements OnInit {
     if (this.searchTerm) {
       const lowerSearchTerm = this.searchTerm.toLowerCase();
       tempProviders = tempProviders.filter(provider =>
-        provider.name.toLowerCase().includes(lowerSearchTerm) ||
-        provider.id.toLowerCase().includes(lowerSearchTerm) // Adicionado busca por ID
+        provider.name.toLowerCase().includes(lowerSearchTerm)
       );
     }
 
@@ -172,9 +171,6 @@ export class ProviderListComponent implements OnInit {
   isSelected(id: string): boolean {
     return this.selectedItems.includes(id);
   }
-
-  // Os métodos bulkActivate e bulkDeactivate foram removidos
-  // pois o modelo original 'Providers' não possui o campo 'status'.
 
   bulkDelete(): void {
     if (this.selectedItems.length === 0) return;
