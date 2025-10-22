@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SantaCasaLorena.Server.DTOs;
 using SantaCasaLorena.Server.Interfaces;
+using SantaCasaLorena.Server.Services;
 
 namespace SantaCasaLorena.Server.Controllers
 {
@@ -53,6 +54,36 @@ namespace SantaCasaLorena.Server.Controllers
         {
             var success = await _service.DeleteAsync(id);
             if (!success) return NotFound();
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/toggle-active")]
+        public async Task<ActionResult<ContactResponseDto>> ToggleActive(Guid id)
+        {
+            var result = await _service.ToggleActiveAsync(id);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        [HttpPost("bulk-delete")]
+        public async Task<ActionResult> BulkDelete([FromBody] IEnumerable<Guid> ids)
+        {
+            var success = await _service.BulkDeleteAsync(ids);
+            if (!success)
+                return NotFound();
+
+            return NoContent();
+        }
+
+        [HttpPost("bulk-toggle")]
+        public async Task<ActionResult> BulkToggle([FromBody] BulkToggleRequest request)
+        {
+            var success = await _service.BulkToggleActiveAsync(request.Ids, request.Activate);
+            if (!success)
+                return NotFound();
+
             return NoContent();
         }
     }

@@ -1,5 +1,5 @@
 <div class="transparency-list-container">
-  <!-- Page Header -->
+  <!-- Cabeçalho -->
   <div class="page-header mb-4">
     <div class="d-flex justify-content-between align-items-center">
       <div>
@@ -8,19 +8,17 @@
           Gerencie todos os itens de transparência do sistema
         </p>
       </div>
-      <button class="btn btn-primary btn-lg"
-              (click)="createTransparencyItem()">
+      <button class="btn btn-primary btn-lg" (click)="createTransparencyItem()">
         <i class="bi bi-plus-circle me-2"></i>
         Novo Item
       </button>
     </div>
   </div>
 
-  <!-- Filters and Search -->
+  <!-- Filtros e Busca -->
   <div class="card shadow-sm border-0 rounded-3 mb-4">
     <div class="card-body">
-      <div class="row g-3">
-        <!-- Search -->
+      <div class="row g-3 align-items-end">
         <div class="col-md-4">
           <label class="form-label">Buscar</label>
           <div class="input-group">
@@ -35,37 +33,26 @@
           </div>
         </div>
 
-        <!-- Status Filter -->
         <div class="col-md-2">
           <label class="form-label">Status</label>
-          <select class="form-select"
-                  [(ngModel)]="statusFilter"
-                  (change)="onFilterChange()">
+          <select class="form-select" [(ngModel)]="statusFilter" (change)="onFilterChange()">
             <option value="all">Todos</option>
-            <option value="published">Publicados</option>
-            <option value="draft">Rascunhos</option>
+            <option value="active">Publicados</option>
+            <option value="inactive">Rascunhos</option>
           </select>
         </div>
 
-        <!-- Category Filter -->
         <div class="col-md-3">
           <label class="form-label">Categoria</label>
-          <select class="form-select"
-                  [(ngModel)]="categoryFilter"
-                  (change)="onFilterChange()">
+          <select class="form-select" [(ngModel)]="categoryFilter" (change)="onFilterChange()">
             <option value="all">Todas as categorias</option>
-            <option *ngFor="let category of categories" [value]="category">
-              {{ category }}
-            </option>
+            <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
           </select>
         </div>
 
-        <!-- Items per page -->
         <div class="col-md-2">
           <label class="form-label">Itens por página</label>
-          <select class="form-select"
-                  [(ngModel)]="itemsPerPage"
-                  (change)="onItemsPerPageChange()">
+          <select class="form-select" [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
             <option value="5">5</option>
             <option value="10">10</option>
             <option value="25">25</option>
@@ -73,10 +60,9 @@
           </select>
         </div>
 
-        <!-- Clear Filters -->
         <div class="col-md-1 d-flex align-items-end">
           <button class="btn btn-outline-secondary w-100"
-                  (click)="searchTerm = ''; statusFilter = 'all'; categoryFilter = 'all'; onFilterChange()"
+                  (click)="clearFilters()"
                   title="Limpar filtros">
             <i class="bi bi-x-lg"></i>
           </button>
@@ -85,7 +71,7 @@
     </div>
   </div>
 
-  <!-- Bulk Actions -->
+  <!-- Ações em Massa -->
   <div class="bulk-actions mb-3" *ngIf="selectedItems.length > 0">
     <div class="alert alert-info d-flex justify-content-between align-items-center">
       <span>
@@ -93,31 +79,25 @@
         {{ selectedItems.length }} item(ns) selecionado(s)
       </span>
       <div class="btn-group">
-        <button class="btn btn-sm btn-success"
-                (click)="bulkPublish()">
-          <i class="bi bi-eye me-1"></i>
-          Publicar
+        <button class="btn btn-sm btn-success" (click)="bulkPublish()">
+          <i class="bi bi-eye me-1"></i> Publicar
         </button>
-        <button class="btn btn-sm btn-warning"
-                (click)="bulkUnpublish()">
-          <i class="bi bi-eye-slash me-1"></i>
-          Despublicar
+        <button class="btn btn-sm btn-warning" (click)="bulkUnpublish()">
+          <i class="bi bi-eye-slash me-1"></i> Despublicar
         </button>
-        <button class="btn btn-sm btn-danger"
-                (click)="bulkDelete()">
-          <i class="bi bi-trash me-1"></i>
-          Excluir
+        <button class="btn btn-sm btn-danger" (click)="bulkDelete()">
+          <i class="bi bi-trash me-1"></i> Excluir
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Loading State -->
+  <!-- Carregando -->
   <div class="text-center py-5" *ngIf="loading">
     <app-loading-spinner message="Carregando itens de transparência..."></app-loading-spinner>
   </div>
 
-  <!-- Transparency Table -->
+  <!-- Tabela -->
   <div class="card shadow-sm border-0 rounded-3" *ngIf="!loading">
     <div class="table-responsive">
       <table class="table table-hover mb-0">
@@ -125,40 +105,31 @@
           <tr>
             <th width="50">
               <div class="form-check">
-                <input class="form-check-input"
-                       type="checkbox"
-                       [(ngModel)]="selectAll"
-                       (change)="toggleSelectAll()">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="selectAll" (change)="toggleSelectAll()">
               </div>
             </th>
-            <th class="sortable"
-                (click)="onSort('title')">
+            <th class="sortable" (click)="onSort('title')">
               Título
-              <i class="bi ms-1"
-                 [ngClass]="{
+              <i class="bi ms-1" [ngClass]="{
                    'bi-arrow-up': sortBy === 'title' && sortOrder === 'asc',
                    'bi-arrow-down': sortBy === 'title' && sortOrder === 'desc',
                    'bi-arrow-down-up': sortBy !== 'title'
                  }"></i>
             </th>
-            <th class="sortable"
-                (click)="onSort('category')">
+            <th class="sortable" (click)="onSort('category')">
               Categoria
-              <i class="bi ms-1"
-                 [ngClass]="{
+              <i class="bi ms-1" [ngClass]="{
                    'bi-arrow-up': sortBy === 'category' && sortOrder === 'asc',
                    'bi-arrow-down': sortBy === 'category' && sortOrder === 'desc',
                    'bi-arrow-down-up': sortBy !== 'category'
                  }"></i>
             </th>
-            <th class="sortable"
-                (click)="onSort('publishDate')">
+            <th class="sortable" (click)="onSort('createdAt')">
               Data de Publicação
-              <i class="bi ms-1"
-                 [ngClass]="{
-                   'bi-arrow-up': sortBy === 'publishDate' && sortOrder === 'asc',
-                   'bi-arrow-down': sortBy === 'publishDate' && sortOrder === 'desc',
-                   'bi-arrow-down-up': sortBy !== 'publishDate'
+              <i class="bi ms-1" [ngClass]="{
+                   'bi-arrow-up': sortBy === 'createdAt' && sortOrder === 'asc',
+                   'bi-arrow-down': sortBy === 'createdAt' && sortOrder === 'desc',
+                   'bi-arrow-down-up': sortBy !== 'createdAt'
                  }"></i>
             </th>
             <th>Status</th>
@@ -170,54 +141,38 @@
           <tr *ngFor="let item of paginatedTransparencyItems" [class.table-active]="isSelected(item.id)">
             <td>
               <div class="form-check">
-                <input class="form-check-input"
-                       type="checkbox"
-                       [checked]="isSelected(item.id)"
-                       (change)="toggleItemSelection(item.id)">
+                <input class="form-check-input" type="checkbox" [checked]="isSelected(item.id)" (change)="toggleItemSelection(item.id)">
               </div>
             </td>
+            <td><h6 class="mb-1">{{ item.title }}</h6></td>
+            <td><span class="badge bg-secondary">{{ item.category }}</span></td>
+            <td>{{ formatDate(item.createdAt) }}</td>
             <td>
-              <div class="transparency-title">
-                <h6 class="mb-1">{{ item.title }}</h6>
-              </div>
-            </td>
-            <td>
-              <span class="badge bg-secondary">{{ item.category }}</span>
-            </td>
-            <td>{{ formatDate(item.publishDate) }}</td>
-            <td>
-              <span class="badge"
-                    [class]="getStatusBadgeClass(item.status)">
-                <i class="bi me-1"
-                   [ngClass]="item.status === 'published' ? 'bi-eye' : 'bi-pencil'"></i>
-                {{ getStatusText(item.status) }}
+              <span class="badge" [class]="getStatusBadgeClass(item.isActive)">
+                <i class="bi me-1" [ngClass]="item.isActive ? 'bi-eye' : 'bi-pencil'"></i>
+                {{ getStatusText(item.isActive) }}
               </span>
             </td>
             <td>
               <a *ngIf="item.fileUrl" [href]="item.fileUrl" target="_blank" class="btn btn-sm btn-outline-info">
-                <i class="bi bi-file-earmark-arrow-down me-1"></i>
-                Download
+                <i class="bi bi-file-earmark-arrow-down me-1"></i> Download
               </a>
               <span *ngIf="!item.fileUrl" class="text-muted">N/A</span>
             </td>
             <td>
               <div class="btn-group">
-                <button class="btn btn-sm btn-outline-primary"
-                        (click)="editTransparencyItem(item.id)"
-                        title="Editar">
+                <button class="btn btn-sm btn-outline-primary" (click)="editTransparencyItem(item.id)" title="Editar">
                   <i class="bi bi-pencil"></i>
                 </button>
                 <button class="btn btn-sm"
-                        [class.btn-outline-success]="item.status === 'draft'"
-                        [class.btn-outline-warning]="item.status === 'published'"
-                        (click)="item.status === 'draft' ? bulkPublish() : bulkUnpublish()"
-                        [title]="item.status === 'draft' ? 'Publicar' : 'Despublicar'">
-                  <i class="bi"
-                     [ngClass]="item.status === 'draft' ? 'bi-eye' : 'bi-eye-slash'"></i>
+                        [class.btn-outline-success]="!item.isActive"
+                        [class.btn-outline-warning]="item.isActive"
+                        (click)="togglePublishStatus(item.id)"
+                        [title]="item.isActive ? 'Despublicar' : 'Publicar'"
+                        [disabled]="!item.id">
+                  <i class="bi" [ngClass]="item.isActive ? 'bi-eye-slash' : 'bi-eye'"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-danger"
-                        (click)="deleteTransparencyItem(item.id)"
-                        title="Excluir">
+                <button class="btn btn-sm btn-outline-danger" (click)="deleteTransparencyItem(item.id)" title="Excluir">
                   <i class="bi bi-trash"></i>
                 </button>
               </div>
@@ -227,61 +182,46 @@
       </table>
     </div>
 
-    <!-- Empty State -->
+    <!-- Estado Vazio -->
     <div class="text-center py-5" *ngIf="filteredTransparencyItems.length === 0 && !loading">
       <div class="empty-state">
         <i class="bi bi-file-earmark-text display-1 text-muted"></i>
-        <h5 class="mt-3">Nenhum item de transparência encontrado</h5>
+        <h5 class="mt-3">Nenhum item encontrado</h5>
         <p class="text-muted">
           {{
- searchTerm || statusFilter !== 'all' || categoryFilter !== 'all'
-             ? 'Tente ajustar os filtros de busca'
-             : 'Comece cadastrando seu primeiro item de transparência'
+            searchTerm || statusFilter !== 'all' || categoryFilter !== 'all'
+              ? 'Ajuste os filtros ou a busca para ver resultados.'
+              : 'Clique em "Novo Item" para adicionar.'
           }}
         </p>
-        <button class="btn btn-primary"
-                (click)="createTransparencyItem()"
-                *ngIf="!searchTerm && statusFilter === 'all' && categoryFilter === 'all'">
-          <i class="bi bi-plus-circle me-2"></i>
-          Cadastrar primeiro item
-        </button>
       </div>
     </div>
 
-    <!-- Pagination -->
+    <!-- Paginação -->
     <div class="card-footer bg-light" *ngIf="totalPages > 1">
       <div class="d-flex justify-content-between align-items-center">
-        <div class="pagination-info">
-          <small class="text-muted">
-            Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} a
-            {{ getMin(currentPage * itemsPerPage, totalItems) }} de
-            {{ totalItems }} resultados
-          </small>
-        </div>
+        <small class="text-muted">
+          Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} a
+          {{ getMin(currentPage * itemsPerPage, filteredTransparencyItems.length) }} de
+          {{ filteredTransparencyItems.length }} resultados
+        </small>
 
         <nav>
           <ul class="pagination pagination-sm mb-0">
             <li class="page-item" [class.disabled]="currentPage === 1">
-              <button class="page-link"
-                      (click)="onPageChange(currentPage - 1)"
-                      [disabled]="currentPage === 1">
+              <button class="page-link" (click)="onPageChange(currentPage - 1)">
                 <i class="bi bi-chevron-left"></i>
               </button>
             </li>
-
             <li class="page-item"
                 *ngFor="let page of [].constructor(totalPages); let i = index"
                 [class.active]="currentPage === i + 1">
-              <button class="page-link"
-                      (click)="onPageChange(i + 1)">
+              <button class="page-link" (click)="onPageChange(i + 1)">
                 {{ i + 1 }}
               </button>
             </li>
-
             <li class="page-item" [class.disabled]="currentPage === totalPages">
-              <button class="page-link"
-                      (click)="onPageChange(currentPage + 1)"
-                      [disabled]="currentPage === totalPages">
+              <button class="page-link" (click)="onPageChange(currentPage + 1)">
                 <i class="bi bi-chevron-right"></i>
               </button>
             </li>

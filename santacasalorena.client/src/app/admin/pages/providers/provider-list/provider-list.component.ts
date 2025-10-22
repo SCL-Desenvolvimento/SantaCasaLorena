@@ -153,7 +153,6 @@ export class ProviderListComponent implements OnInit {
     }
   }
 
-  // Bulk Actions Logic
   toggleSelectAll(): void {
     this.selectedItems = this.selectAll ? this.paginatedProviders.map(p => p.id) : [];
   }

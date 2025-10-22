@@ -8,24 +8,24 @@ namespace SantaCasaLorena.Server.Controllers
     [Route("api/[controller]")]
     public class ContactsController : ControllerBase
     {
-        private readonly IContactService _contactService;
+        private readonly IContactService _service;
 
         public ContactsController(IContactService contactService)
         {
-            _contactService = contactService;
+            _service = contactService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ContactResponseDto>>> GetContacts()
         {
-            var contacts = await _contactService.GetAllContactsAsync();
+            var contacts = await _service.GetAllContactsAsync();
             return Ok(contacts);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ContactResponseDto>> GetContact(Guid id)
         {
-            var contact = await _contactService.GetContactByIdAsync(id);
+            var contact = await _service.GetContactByIdAsync(id);
             if (contact == null)
             {
                 return NotFound();
@@ -36,14 +36,14 @@ namespace SantaCasaLorena.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<ContactResponseDto>> CreateContact(ContactRequestDto dto)
         {
-            var newContact = await _contactService.CreateContactAsync(dto);
+            var newContact = await _service.CreateContactAsync(dto);
             return CreatedAtAction(nameof(GetContact), new { id = newContact.Id }, newContact);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<ContactResponseDto>> UpdateContact(Guid id, ContactRequestDto dto)
         {
-            var updatedContact = await _contactService.UpdateContactAsync(id, dto);
+            var updatedContact = await _service.UpdateContactAsync(id, dto);
             if (updatedContact == null)
             {
                 return NotFound();
@@ -54,7 +54,7 @@ namespace SantaCasaLorena.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteContact(Guid id)
         {
-            var result = await _contactService.DeleteContactAsync(id);
+            var result = await _service.DeleteContactAsync(id);
             if (!result)
             {
                 return NotFound();
@@ -65,7 +65,7 @@ namespace SantaCasaLorena.Server.Controllers
         [HttpPatch("{id}/toggle-active")]
         public async Task<ActionResult<ContactResponseDto>> ToggleActive(Guid id)
         {
-            var result = await _contactService.ToggleActiveAsync(id);
+            var result = await _service.ToggleActiveAsync(id);
             if (result == null)
                 return NotFound();
 
@@ -75,7 +75,7 @@ namespace SantaCasaLorena.Server.Controllers
         [HttpPost("bulk-delete")]
         public async Task<ActionResult> BulkDelete([FromBody] IEnumerable<Guid> ids)
         {
-            var success = await _contactService.BulkDeleteAsync(ids);
+            var success = await _service.BulkDeleteAsync(ids);
             if (!success)
                 return NotFound();
 
@@ -85,7 +85,7 @@ namespace SantaCasaLorena.Server.Controllers
         [HttpPost("bulk-toggle")]
         public async Task<ActionResult> BulkToggle([FromBody] BulkToggleRequest request)
         {
-            var success = await _contactService.BulkToggleActiveAsync(request.Ids, request.Activate);
+            var success = await _service.BulkToggleActiveAsync(request.Ids, request.Activate);
             if (!success)
                 return NotFound();
 

@@ -1,1 +1,194 @@
+.transparency-list-container {
+  animation: fadeIn 0.5s ease-in-out;
+}
 
+/* Cabeçalho */
+.page-header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+/* Filtros */
+.form-label {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #495057;
+}
+
+.form-select,
+.form-control {
+  font-size: 0.875rem;
+}
+
+.input-group .btn {
+  border-left: none;
+}
+
+/* Ações em Massa */
+.bulk-actions .alert {
+  border: none;
+  background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 100%);
+  border-left: 4px solid #2196f3;
+}
+
+/* Tabela */
+.table {
+  font-size: 0.875rem;
+}
+
+  .table th {
+    font-weight: 600;
+    color: #495057;
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+  }
+
+  .table td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f8f9fa;
+  }
+
+  .table tbody tr {
+    transition: all 0.3s ease;
+  }
+
+    .table tbody tr:hover {
+      background-color: rgba(13, 110, 253, 0.05);
+    }
+
+    .table tbody tr.table-active {
+      background-color: rgba(13, 110, 253, 0.1);
+    }
+
+/* Cabeçalhos Ordenáveis */
+.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease;
+}
+
+  .sortable:hover {
+    background-color: #e9ecef;
+    color: #0d6efd;
+  }
+
+  .sortable i {
+    font-size: 0.75rem;
+    opacity: 0.6;
+  }
+
+  .sortable:hover i {
+    opacity: 1;
+  }
+
+/* Badges */
+.badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.375rem 0.5rem;
+}
+
+  .badge.bg-secondary {
+    background: linear-gradient(135deg, #6c757d, #5a6268) !important;
+  }
+
+  .badge.bg-success {
+    background: linear-gradient(135deg, #198754, #146c43) !important;
+  }
+
+  .badge.bg-warning {
+    background: linear-gradient(135deg, #ffc107, #e0a800) !important;
+    color: #212529 !important;
+  }
+
+/* Botões */
+.btn-group .btn {
+  padding: 0.375rem 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Estado Vazio */
+.empty-state {
+  padding: 3rem 2rem;
+}
+
+  .empty-state h5 {
+    color: #6c757d;
+    font-weight: 600;
+  }
+
+  .empty-state p {
+    color: #adb5bd;
+  }
+
+/* Paginação */
+.pagination .page-link {
+  font-size: 0.8125rem;
+  padding: 0.375rem 0.75rem;
+  color: #6c757d;
+}
+
+.pagination .page-item.active .page-link {
+  background: linear-gradient(135deg, #0d6efd, #0056b3);
+  border-color: #0d6efd;
+}
+
+/* Checkboxes */
+.form-check-input:checked {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+/* Animação */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .page-header .d-flex {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .btn-group {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .pagination {
+    justify-content: center;
+  }
+
+  .card-footer .d-flex {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

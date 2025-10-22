@@ -361,6 +361,9 @@ namespace SantaCasaLorena.Server.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<int?>("StartYear")
                         .HasColumnType("int");
 

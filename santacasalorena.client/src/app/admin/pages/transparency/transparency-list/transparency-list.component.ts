@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { TransparencyPortal } from '../../../../models/transparencyPortal';
 import { TransparencyPortalService } from '../../../../services/transparency-portal.service';
+import { TransparencyPortal } from '../../../../models/transparencyPortal';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-transparency-list',
@@ -11,53 +11,45 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./transparency-list.component.css']
 })
 export class TransparencyListComponent implements OnInit {
-  loading = true;
   transparencyItems: TransparencyPortal[] = [];
   filteredTransparencyItems: TransparencyPortal[] = [];
+  paginatedTransparencyItems: TransparencyPortal[] = [];
+  categories: string[] = [];
 
-  // Filters
+  loading = true;
   searchTerm = '';
-  statusFilter = 'all'; // all, published, draft
+  statusFilter = 'all';
   categoryFilter = 'all';
-  sortBy = 'publishDate';
-  sortOrder: 'asc' | 'desc' = 'desc';
 
-  // Pagination
-  currentPage = 1;
-  itemsPerPage = 10;
-  totalItems = 0;
-
-  // Selection
   selectedItems: string[] = [];
   selectAll = false;
 
-  categories = [
-    'Receitas',
-    'Despesas',
-    'Licitações',
-    'Contratos',
-    'Servidores',
-    'Planejamento',
-    'Relatórios'
-  ];
+  sortBy: string = 'createdAt';
+  sortOrder: 'asc' | 'desc' = 'desc';
 
-  constructor(private router: Router, private transparencyPortalService: TransparencyPortalService) { }
+  currentPage = 1;
+  itemsPerPage = 10;
+
+  constructor(
+    private router: Router,
+    private transparencyPortalService: TransparencyPortalService
+  ) { }
 
   ngOnInit(): void {
-    this.loadTransparencyItems();
+    this.fetchTransparencyItems();
   }
 
-  loadTransparencyItems(): void {
+  fetchTransparencyItems(): void {
     this.loading = true;
     this.transparencyPortalService.getAll().subscribe({
-      next: (data: TransparencyPortal[]) => {
-        this.transparencyItems = data;
+      next: (items) => {
+        this.transparencyItems = items;
+        this.categories = Array.from(new Set(items.map(i => i.category)));
         this.applyFilters();
         this.loading = false;
       },
-      error: (error: HttpErrorResponse) => {
-        console.error("Erro ao carregar itens de transparência:", error);
-        alert("Erro ao carregar itens de transparência.");
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao carregar itens:', err);
         this.loading = false;
       }
     });
@@ -66,98 +58,196 @@ export class TransparencyListComponent implements OnInit {
   applyFilters(): void {
     let filtered = [...this.transparencyItems];
 
-    // Search filter
-    if (this.searchTerm) {
+    if (this.statusFilter !== 'all') {
       filtered = filtered.filter(item =>
-        item.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.category.toLowerCase().includes(this.searchTerm.toLowerCase())
+        this.statusFilter === 'active' ? item.isActive : !item.isActive
       );
     }
 
-    // Status filter
-    if (this.statusFilter !== 'all') {
-      //filtered = filtered.filter(item => item.status === this.statusFilter);
-    }
-
-    // Category filter
     if (this.categoryFilter !== 'all') {
       filtered = filtered.filter(item => item.category === this.categoryFilter);
     }
 
-    // Sort
+    if (this.searchTerm.trim() !== '') {
+      const term = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(item =>
+        item.title.toLowerCase().includes(term) ||
+        item.category.toLowerCase().includes(term)
+      );
+    }
+
     filtered.sort((a, b) => {
-      let aValue = a[this.sortBy as keyof TransparencyPortal] ?? '';
-      let bValue = b[this.sortBy as keyof TransparencyPortal] ?? '';
+      let valA = (a as any)[this.sortBy];
+      let valB = (b as any)[this.sortBy];
 
-      if (typeof aValue === 'string') aValue = aValue.toLowerCase();
-      if (typeof bValue === 'string') bValue = bValue.toLowerCase();
+      if (valA == null) valA = '';
+      if (valB == null) valB = '';
 
-      if (aValue < bValue) return this.sortOrder === 'asc' ? -1 : 1;
-      if (aValue > bValue) return this.sortOrder === 'asc' ? 1 : -1;
+      if (typeof valA === 'string') valA = valA.toLowerCase();
+      if (typeof valB === 'string') valB = valB.toLowerCase();
+
+      if (valA < valB) return this.sortOrder === 'asc' ? -1 : 1;
+      if (valA > valB) return this.sortOrder === 'asc' ? 1 : -1;
       return 0;
     });
 
     this.filteredTransparencyItems = filtered;
-    this.totalItems = filtered.length;
-    this.currentPage = 1;
+    this.paginate();
   }
 
-  get paginatedTransparencyItems(): TransparencyPortal[] {
+  paginate(): void {
     const start = (this.currentPage - 1) * this.itemsPerPage;
     const end = start + this.itemsPerPage;
-    return this.filteredTransparencyItems.slice(start, end);
-  }
-
-  get totalPages(): number {
-    return Math.ceil(this.totalItems / this.itemsPerPage);
+    this.paginatedTransparencyItems = this.filteredTransparencyItems.slice(start, end);
   }
 
   onSearch(): void {
+    this.currentPage = 1;
     this.applyFilters();
   }
 
   onFilterChange(): void {
+    this.currentPage = 1;
     this.applyFilters();
   }
 
-  onSort(field: string): void {
-    if (this.sortBy === field) {
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.statusFilter = 'all';
+    this.categoryFilter = 'all';
+    this.applyFilters();
+  }
+
+  onSort(column: string): void {
+    if (this.sortBy === column) {
       this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
     } else {
-      this.sortBy = field;
-      this.sortOrder = 'desc';
+      this.sortBy = column;
+      this.sortOrder = 'asc';
     }
     this.applyFilters();
   }
 
-  onPageChange(page: number): void {
-    this.currentPage = page;
-  }
-
   onItemsPerPageChange(): void {
     this.currentPage = 1;
+    this.paginate();
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.paginate();
+  }
+
+  toggleItemSelection(id: string): void {
+    const index = this.selectedItems.indexOf(id);
+    if (index >= 0) {
+      this.selectedItems.splice(index, 1);
+    } else {
+      this.selectedItems.push(id);
+    }
+    this.selectAll = this.selectedItems.length === this.filteredTransparencyItems.length;
   }
 
   toggleSelectAll(): void {
     if (this.selectAll) {
-      this.selectedItems = this.paginatedTransparencyItems.map(item => item.id);
+      this.selectedItems = this.filteredTransparencyItems.map(i => i.id);
     } else {
       this.selectedItems = [];
     }
   }
 
-  toggleItemSelection(id: string): void {
-    const index = this.selectedItems.indexOf(id);
-    if (index > -1) {
-      this.selectedItems.splice(index, 1);
-    } else {
-      this.selectedItems.push(id);
-    }
-    this.selectAll = this.selectedItems.length === this.paginatedTransparencyItems.length;
-  }
-
   isSelected(id: string): boolean {
     return this.selectedItems.includes(id);
+  }
+
+  // ✅ Atualizado para usar o novo endpoint PATCH /toggle-active
+  togglePublishStatus(id: string): void {
+    const item = this.transparencyItems.find(i => i.id === id);
+    if (!item) return;
+
+    this.transparencyPortalService.toggleActive(id).subscribe({
+      next: (updatedItem) => {
+        item.isActive = updatedItem.isActive;
+        this.applyFilters();
+        alert(`Item "${item.title}" ${item.isActive ? 'publicado' : 'despublicado'} com sucesso!`);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao atualizar status:', err);
+        alert('Erro ao atualizar status do item.');
+      }
+    });
+  }
+
+  // ✅ Agora usa bulkToggle do service
+  bulkPublish(): void {
+    if (this.selectedItems.length === 0) return;
+    this.transparencyPortalService.bulkToggle(this.selectedItems, true).subscribe({
+      next: () => {
+        this.transparencyItems.forEach(item => {
+          if (this.selectedItems.includes(item.id)) item.isActive = true;
+        });
+        this.applyFilters();
+        this.resetSelection();
+        alert('Itens publicados com sucesso!');
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao publicar itens:', err);
+        alert('Erro ao publicar itens selecionados.');
+      }
+    });
+  }
+
+  bulkUnpublish(): void {
+    if (this.selectedItems.length === 0) return;
+    this.transparencyPortalService.bulkToggle(this.selectedItems, false).subscribe({
+      next: () => {
+        this.transparencyItems.forEach(item => {
+          if (this.selectedItems.includes(item.id)) item.isActive = false;
+        });
+        this.applyFilters();
+        this.resetSelection();
+        alert('Itens despublicados com sucesso!');
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao despublicar itens:', err);
+        alert('Erro ao despublicar itens selecionados.');
+      }
+    });
+  }
+
+  bulkDelete(): void {
+    if (this.selectedItems.length === 0) return;
+    if (!confirm('Tem certeza que deseja excluir os itens selecionados?')) return;
+
+    this.transparencyPortalService.bulkDelete(this.selectedItems).subscribe({
+      next: () => {
+        this.transparencyItems = this.transparencyItems.filter(i => !this.selectedItems.includes(i.id));
+        this.applyFilters();
+        this.resetSelection();
+        alert('Itens excluídos com sucesso!');
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao excluir itens:', err);
+        alert('Erro ao excluir itens selecionados.');
+      }
+    });
+  }
+
+  // ✅ Delete individual (mantido)
+  deleteTransparencyItem(id: string, confirmDialog: boolean = true): void {
+    if (confirmDialog && !confirm('Deseja realmente excluir este item?')) return;
+
+    this.transparencyPortalService.delete(id).subscribe({
+      next: () => {
+        this.transparencyItems = this.transparencyItems.filter(i => i.id !== id);
+        this.applyFilters();
+        alert('Item excluído com sucesso!');
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao excluir item:', err);
+        alert('Erro ao excluir item.');
+      }
+    });
   }
 
   createTransparencyItem(): void {
@@ -168,119 +258,34 @@ export class TransparencyListComponent implements OnInit {
     this.router.navigate(['/admin/transparency/edit', id]);
   }
 
-  deleteTransparencyItem(id: string): void {
-    if (confirm("Tem certeza que deseja excluir este item de transparência?")) {
-      this.transparencyPortalService.delete(id).subscribe({
-        next: () => {
-          this.transparencyItems = this.transparencyItems.filter(item => item.id !== id);
-          this.selectedItems = this.selectedItems.filter(selectedId => selectedId !== id);
-          this.applyFilters();
-          alert("Item de transparência excluído com sucesso!");
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error("Erro ao excluir item de transparência:", error);
-          alert("Erro ao excluir item de transparência.");
-        }
-      });
-    }
+  getStatusBadgeClass(isActive: boolean): string {
+    return isActive ? 'badge bg-success' : 'badge bg-secondary';
   }
 
-  bulkDelete(): void {
-    if (this.selectedItems.length === 0) return;
-
-    if (confirm(`Tem certeza que deseja excluir ${this.selectedItems.length} item(ns) de transparência?`)) {
-      const deleteObservables = this.selectedItems.map(id => this.transparencyPortalService.delete(id));
-      // Using forkJoin to wait for all deletions to complete
-      // Or handle each deletion individually and update the UI after each success
-      // For simplicity, let's refetch all items after all delete calls are initiated
-      // A more robust solution would involve tracking individual successes/failures
-      this.selectedItems.forEach(id => {
-        this.transparencyPortalService.delete(id).subscribe({
-          next: () => {
-            this.transparencyItems = this.transparencyItems.filter(item => item.id !== id);
-            this.applyFilters();
-          },
-          error: (error: HttpErrorResponse) => {
-            console.error(`Erro ao excluir item de transparência ${id}:`, error);
-            alert(`Erro ao excluir item de transparência ${id}.`);
-          }
-        });
-      });
-      this.selectedItems = [];
-      this.selectAll = false;
-      alert("Itens de transparência excluídos com sucesso!");
-      this.loadTransparencyItems(); // Reload all items to ensure UI consistency
-    }
+  getStatusText(isActive: boolean): string {
+    return isActive ? 'Publicado' : 'Rascunho';
   }
 
-  bulkPublish(): void {
-    if (this.selectedItems.length === 0) return;
-
-    this.selectedItems.forEach(id => {
-      this.transparencyPortalService.updateTransparencyItemStatus(id, 'published').subscribe({
-        next: () => {
-          // Item status will be updated when all items are reloaded
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error(`Erro ao publicar item de transparência ${id}:`, error);
-          alert(`Erro ao publicar item de transparência ${id}.`);
-        }
-      });
+  formatDate(dateStr: string | Date | null): string {
+    if (!dateStr) return '-';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
     });
-
-    this.selectedItems = [];
-    this.selectAll = false;
-    alert("Itens de transparência publicados com sucesso!");
-    this.loadTransparencyItems(); // Reload all items to ensure UI consistency
   }
 
-  bulkUnpublish(): void {
-    if (this.selectedItems.length === 0) return;
-
-    this.selectedItems.forEach(id => {
-      this.transparencyPortalService.updateTransparencyItemStatus(id, 'draft').subscribe({
-        next: () => {
-          // Item status will be updated when all items are reloaded
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error(`Erro ao despublicar item de transparência ${id}:`, error);
-          alert(`Erro ao despublicar item de transparência ${id}.`);
-        }
-      });
-    });
-
-    this.selectedItems = [];
-    this.selectAll = false;
-    alert("Itens de transparência despublicados com sucesso!");
-    this.loadTransparencyItems(); // Reload all items to ensure UI consistency
-  }
-
-  formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('pt-BR');
-  }
-
-  getStatusBadgeClass(status: string): string {
-    switch (status) {
-      case 'published': return 'bg-success';
-      case 'draft': return 'bg-warning';
-      default: return 'bg-secondary';
-    }
-  }
-
-  getStatusText(status: string): string {
-    switch (status) {
-      case 'published': return 'Publicado';
-      case 'draft': return 'Rascunho';
-      default: return 'Desconhecido';
-    }
-  }
-
-  downloadFile(fileUrl: string): void {
-    window.open(fileUrl, '_blank');
+  get totalPages(): number {
+    return Math.ceil(this.filteredTransparencyItems.length / this.itemsPerPage);
   }
 
   getMin(a: number, b: number): number {
-    return Math.min(a, b);
+    return a < b ? a : b;
+  }
+
+  private resetSelection(): void {
+    this.selectedItems = [];
+    this.selectAll = false;
   }
 }
-

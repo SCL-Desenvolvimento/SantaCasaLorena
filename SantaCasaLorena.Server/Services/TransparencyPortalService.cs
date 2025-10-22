@@ -29,7 +29,8 @@ namespace SantaCasaLorena.Server.Services
                     StartYear = t.StartYear,
                     EndYear = t.EndYear,
                     FileUrl = t.FileUrl,
-                    CreatedAt = t.CreatedAt
+                    CreatedAt = t.CreatedAt,
+                    IsActive = t.IsActive
                 })
                 .ToListAsync();
         }
@@ -49,7 +50,8 @@ namespace SantaCasaLorena.Server.Services
                     StartYear = t.StartYear,
                     EndYear = t.EndYear,
                     FileUrl = t.FileUrl,
-                    CreatedAt = t.CreatedAt
+                    CreatedAt = t.CreatedAt,
+                    IsActive = t.IsActive
                 })
                 .FirstOrDefaultAsync();
         }
@@ -65,6 +67,7 @@ namespace SantaCasaLorena.Server.Services
                 Year = dto.Year,
                 StartYear = dto.StartYear,
                 EndYear = dto.EndYear,
+                IsActive = dto.IsActive,
                 FileUrl = await ProcessarMidiasAsync(dto.File)
             };
 
@@ -82,7 +85,8 @@ namespace SantaCasaLorena.Server.Services
                 StartYear = entity.StartYear,
                 EndYear = entity.EndYear,
                 FileUrl = entity.FileUrl,
-                CreatedAt = entity.CreatedAt
+                CreatedAt = entity.CreatedAt,
+                IsActive = entity.IsActive
             };
         }
 
@@ -98,6 +102,7 @@ namespace SantaCasaLorena.Server.Services
             entity.Year = dto.Year;
             entity.StartYear = dto.StartYear;
             entity.EndYear = dto.EndYear;
+            entity.IsActive = dto.IsActive;
 
             if (!string.IsNullOrEmpty(entity.FileUrl) && dto.File != null)
             {
@@ -126,7 +131,8 @@ namespace SantaCasaLorena.Server.Services
                 StartYear = entity.StartYear,
                 EndYear = entity.EndYear,
                 FileUrl = entity.FileUrl,
-                CreatedAt = entity.CreatedAt
+                CreatedAt = entity.CreatedAt,
+                IsActive = entity.IsActive
             };
         }
 
@@ -136,6 +142,62 @@ namespace SantaCasaLorena.Server.Services
             if (entity == null) return false;
 
             _context.TransparencyPortals.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<TransparencyPortalResponseDto?> ToggleActiveAsync(Guid id)
+        {
+            var entity = await _context.TransparencyPortals.FirstOrDefaultAsync(c => c.Id == id);
+            if (entity == null)
+                return null;
+
+            entity.IsActive = !entity.IsActive;
+
+            await _context.SaveChangesAsync();
+
+            return new TransparencyPortalResponseDto
+            {
+                Id = entity.Id,
+                Category = entity.Category,
+                Title = entity.Title,
+                Description = entity.Description,
+                Type = entity.Type,
+                Year = entity.Year,
+                StartYear = entity.StartYear,
+                EndYear = entity.EndYear,
+                FileUrl = entity.FileUrl,
+                CreatedAt = entity.CreatedAt,
+                IsActive = entity.IsActive
+            };
+        }
+
+        public async Task<bool> BulkDeleteAsync(IEnumerable<Guid> ids)
+        {
+            var entity = await _context.TransparencyPortals
+                .Where(c => ids.Contains(c.Id))
+                .ToListAsync();
+
+            if (!entity.Any()) return false;
+
+            _context.TransparencyPortals.RemoveRange(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> BulkToggleActiveAsync(IEnumerable<Guid> ids, bool activate)
+        {
+            var entity = await _context.TransparencyPortals
+                .Where(c => ids.Contains(c.Id))
+                .ToListAsync();
+
+            if (!entity.Any()) return false;
+
+            foreach (var c in entity)
+            {
+                c.IsActive = activate;
+            }
+
             await _context.SaveChangesAsync();
             return true;
         }
