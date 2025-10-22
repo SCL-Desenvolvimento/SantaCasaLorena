@@ -45,7 +45,11 @@ export class AdminSidebarComponent {
     {
       label: 'Contatos',
       icon: 'bi-chat-dots',
-      route: '/admin/contacts'
+      route: '/admin/contacts',
+      children: [
+        { label: 'Listar Contatos', icon: 'bi-list-ul', route: '/admin/contacts' },
+        { label: 'Novo Contato', icon: 'bi-plus-circle', route: '/admin/contacts/new' }
+      ]
     },
     {
       label: 'Convênios',

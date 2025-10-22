@@ -63,49 +63,10 @@
           <div class="form-text">Descrição opcional sobre a finalidade deste número</div>
         </div>
 
-        <!-- Localização e Categoria -->
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="pageLocation" class="form-label fw-bold">Localização na Página *</label>
-            <select class="form-select"
-                    id="pageLocation"
-                    name="pageLocation"
-                    [(ngModel)]="contact.pageLocation"
-                    required>
-              <option *ngFor="let location of locations" [value]="location.value">
-                {{ location.label }}
-              </option>
-            </select>
-            <div class="form-text">Onde este número será exibido no site</div>
-          </div>
-          <div class="col-md-6">
-            <label for="category" class="form-label fw-bold">Categoria *</label>
-            <select class="form-select"
-                    id="category"
-                    name="category"
-                    [(ngModel)]="contact.category"
-                    required>
-              <option *ngFor="let category of categories" [value]="category.value">
-                {{ category.label }}
-              </option>
-            </select>
-            <div class="form-text">Tipo de atendimento deste número</div>
-          </div>
-        </div>
+
 
         <!-- Ordem e Status -->
         <div class="row mb-4">
-          <div class="col-md-6">
-            <label for="order" class="form-label fw-bold">Ordem de Exibição</label>
-            <input type="number"
-                   class="form-control"
-                   id="order"
-                   name="order"
-                   [(ngModel)]="contact.order"
-                   min="1"
-                   max="100">
-            <div class="form-text">Números menores aparecem primeiro (1, 2, 3...)</div>
-          </div>
           <div class="col-md-6">
             <label class="form-label fw-bold">Status</label>
             <div class="form-check form-switch mt-2">

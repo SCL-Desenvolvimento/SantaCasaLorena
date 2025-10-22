@@ -69,6 +69,7 @@ builder.Services.AddScoped<IProviderService, ProviderService>();
 builder.Services.AddScoped<ITransparencyPortalService, TransparencyPortalService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddHttpClient<RecaptchaService>();
 
 builder.Services.AddControllers();

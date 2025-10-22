@@ -1,63 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Contact } from '../../../../models/contact';
 import { ContactService } from '../../../../services/contact.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { forkJoin, of } from 'rxjs';
+import { Contact } from '../../../../models/contact';
 
 @Component({
   selector: 'app-contact-list',
   standalone: false,
   templateUrl: './contact-list.component.html',
-  styleUrls: ['./contact-list.component.css']
+  styleUrl: './contact-list.component.css'
 })
 export class ContactListComponent implements OnInit {
-  loading = true;
   contacts: Contact[] = [];
   filteredContacts: Contact[] = [];
+  searchTerm: string = '';
+  statusFilter: string = 'all';
 
-  // Filters
-  searchTerm = '';
-  statusFilter = 'all'; // all, active, inactive
-  locationFilter = 'all';
-  categoryFilter = 'all';
-  sortBy = 'order';
-  sortOrder: 'asc' | 'desc' = 'asc';
-
-  // Pagination
-  currentPage = 1;
-  itemsPerPage = 15;
-  totalItems = 0;
-
-  // Selection
+  loading: boolean = true;
   selectedItems: string[] = [];
-  selectAll = false;
 
-  locations = [
-    'header',
-    'footer',
-    'contato',
-    'sobre',
-    'home',
-    'servicos'
-  ];
-
-  categories = [
-    'comercial',
-    'suporte',
-    'emergencia',
-    'whatsapp',
-    'vendas',
-    'financeiro',
-    'outros'
-  ];
-
-  statuses = [
-    { value: 'active', label: 'Ativo', class: 'success' },
-    { value: 'inactive', label: 'Inativo', class: 'secondary' }
-  ];
-
-  constructor(private router: Router, private contactService: ContactService) { }
+  constructor(private contactService: ContactService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadContacts();
@@ -71,76 +32,22 @@ export class ContactListComponent implements OnInit {
         this.applyFilters();
         this.loading = false;
       },
-      error: (error: HttpErrorResponse) => {
-        console.error('Erro ao carregar contatos:', error);
+      error: (err) => {
+        console.error('Erro ao carregar contatos', err);
         this.loading = false;
       }
     });
   }
 
   applyFilters(): void {
-    let filtered = [...this.contacts];
-
-    // Search filter
-    if (this.searchTerm) {
-      filtered = filtered.filter(item =>
-        item.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.phoneNumber.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.description.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-    }
-
-    // Status filter (active/inactive)
-    if (this.statusFilter !== 'all') {
-      filtered = filtered.filter(item => {
-        switch (this.statusFilter) {
-          case 'active': return item.isActive;
-          case 'inactive': return !item.isActive;
-          default: return true;
-        }
-      });
-    }
-
-    // Location filter
-    if (this.locationFilter !== 'all') {
-      filtered = filtered.filter(item => item.pageLocation === this.locationFilter);
-    }
-
-    // Category filter
-    if (this.categoryFilter !== 'all') {
-      filtered = filtered.filter(item => item.category === this.categoryFilter);
-    }
-
-    // Sort
-    filtered.sort((a, b) => {
-      let aValue = a[this.sortBy as keyof Contact];
-      let bValue = b[this.sortBy as keyof Contact];
-
-      if (typeof aValue === 'string') aValue = aValue.toLowerCase();
-      if (typeof bValue === 'string') bValue = bValue.toLowerCase();
-
-      if (aValue < bValue) return this.sortOrder === 'asc' ? -1 : 1;
-      if (aValue > bValue) return this.sortOrder === 'asc' ? 1 : -1;
-      return 0;
+    this.filteredContacts = this.contacts.filter(contact => {
+      const matchesSearch = contact.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        contact.phoneNumber.includes(this.searchTerm);
+      const matchesStatus = this.statusFilter === 'all' ||
+        (this.statusFilter === 'active' && contact.isActive) ||
+        (this.statusFilter === 'inactive' && !contact.isActive);
+      return matchesSearch && matchesStatus;
     });
-
-    this.filteredContacts = filtered;
-    this.totalItems = filtered.length;
-    this.currentPage = 1;
-  }
-
-  get paginatedContacts(): Contact[] {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    return this.filteredContacts.slice(start, end);
-  }
-
-  get totalPages(): number {
-    return Math.ceil(this.totalItems / this.itemsPerPage);
-  }
-
-  get activeCount(): number {
-    return this.contacts.filter(c => c.isActive).length;
   }
 
   onSearch(): void {
@@ -151,25 +58,49 @@ export class ContactListComponent implements OnInit {
     this.applyFilters();
   }
 
-  onSort(field: string): void {
-    if (this.sortBy === field) {
-      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.sortBy = field;
-      this.sortOrder = 'desc';
-    }
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.statusFilter = 'all';
+
     this.applyFilters();
   }
 
-  onPageChange(page: number): void {
-    this.currentPage = page;
+  createContact(): void {
+    this.router.navigate(['/admin/contacts/new']);
   }
 
-  toggleSelectAll(): void {
-    if (this.selectAll) {
-      this.selectedItems = this.paginatedContacts.map(item => item.id);
-    } else {
+  editContact(id: string): void {
+    this.router.navigate([`/admin/contacts/edit/${id}`]);
+  }
+
+  toggleActiveStatus(contact: Contact): void {
+    this.contactService.toggleActive(contact.id).subscribe({
+      next: (updated) => {
+        contact.isActive = updated.isActive;
+      },
+      error: (err) => {
+        console.error('Erro ao alterar status do contato', err);
+      }
+    });
+  }
+
+  deleteContact(id: string): void {
+    if (!confirm('Deseja realmente excluir este contato?')) return;
+
+    this.contactService.deleteContact(id).subscribe({
+      next: () => {
+        this.contacts = this.contacts.filter(c => c.id !== id);
+        this.applyFilters();
+      },
+      error: (err) => console.error('Erro ao excluir contato', err)
+    });
+  }
+
+  toggleAllSelection(): void {
+    if (this.isAllSelected()) {
       this.selectedItems = [];
+    } else {
+      this.selectedItems = this.filteredContacts.map(contact => contact.id);
     }
   }
 
@@ -180,133 +111,57 @@ export class ContactListComponent implements OnInit {
     } else {
       this.selectedItems.push(id);
     }
-    this.selectAll = this.selectedItems.length === this.paginatedContacts.length;
   }
 
   isSelected(id: string): boolean {
     return this.selectedItems.includes(id);
   }
 
-  viewContact(id: string): void {
-    this.router.navigate(['/admin/contacts', id]);
+  isAllSelected(): boolean {
+    return this.filteredContacts.length > 0 && this.selectedItems.length === this.filteredContacts.length;
   }
 
-  toggleActive(id: string): void {
-    this.contactService.toggleActive(id).subscribe({
-      next: (updatedContact) => {
-        const contact = this.contacts.find(c => c.id === id);
-        if (contact) {
-          contact.isActive = updatedContact.isActive;
-        }
-        this.applyFilters();
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Erro ao alterar status do contato:', error);
-      }
-    });
-  }
-
-  deleteContact(id: string): void {
-    if (confirm('Tem certeza que deseja excluir este número de telefone?')) {
-      this.contactService.deleteContact(id).subscribe({
-        next: () => {
-          this.contacts = this.contacts.filter(c => c.id !== id);
-          this.applyFilters();
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error('Erro ao excluir contato:', error);
-        }
-      });
-    }
-  }
-
-  // Métodos para ações em massa
   bulkActivate(): void {
     if (this.selectedItems.length === 0) return;
 
-    forkJoin(this.selectedItems.map(id => this.contactService.toggleActive(id))).subscribe({
+    this.contactService.bulkToggle(this.selectedItems, true).subscribe({
       next: () => {
-        this.selectedItems.forEach(id => {
-          const contact = this.contacts.find(c => c.id === id);
-          if (contact) {
-            contact.isActive = true;
-          }
+        this.contacts.forEach(c => {
+          if (this.selectedItems.includes(c.id)) c.isActive = true;
         });
-        this.selectedItems = [];
-        this.selectAll = false;
         this.applyFilters();
       },
-      error: (error: HttpErrorResponse) => {
-        console.error('Erro ao ativar contatos em massa:', error);
-      }
+      error: (err) => console.error('Erro ao ativar em massa', err)
     });
   }
+
 
   bulkDeactivate(): void {
     if (this.selectedItems.length === 0) return;
 
-    forkJoin(this.selectedItems.map(id => {
-      const contact = this.contacts.find(c => c.id === id);
-      if (contact && contact.isActive) {
-        return this.contactService.toggleActive(id);
-      }
-      return of(null);
-    })).subscribe({
+    this.contactService.bulkToggle(this.selectedItems, false).subscribe({
       next: () => {
-        this.selectedItems.forEach(id => {
-          const contact = this.contacts.find(c => c.id === id);
-          if (contact) {
-            contact.isActive = false;
-          }
+        this.contacts.forEach(c => {
+          if (this.selectedItems.includes(c.id)) c.isActive = false;
         });
-        this.selectedItems = [];
-        this.selectAll = false;
         this.applyFilters();
       },
-      error: (error: HttpErrorResponse) => {
-        console.error('Erro ao desativar contatos em massa:', error);
-      }
+      error: (err) => console.error('Erro ao desativar em massa', err)
     });
   }
 
   bulkDelete(): void {
     if (this.selectedItems.length === 0) return;
+    if (!confirm('Deseja realmente excluir os contatos selecionados?')) return;
 
-    if (confirm(`Tem certeza que deseja excluir ${this.selectedItems.length} número(s) de telefone?`)) {
-      forkJoin(this.selectedItems.map(id => this.contactService.deleteContact(id))).subscribe({
-        next: () => {
-          this.contacts = this.contacts.filter(c => !this.selectedItems.includes(c.id));
-          this.selectedItems = [];
-          this.selectAll = false;
-          this.applyFilters();
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error('Erro ao excluir números em massa:', error);
-        }
-      });
-    }
-  }
-
-  // Métodos auxiliares para exibição
-  getStatusLabel(isActive: boolean): string {
-    return isActive ? 'Ativo' : 'Inativo';
-  }
-
-  getStatusClass(isActive: boolean): string {
-    return isActive ? 'success' : 'secondary';
-  }
-
-  formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    this.contactService.bulkDelete(this.selectedItems).subscribe({
+      next: () => {
+        this.contacts = this.contacts.filter(c => !this.selectedItems.includes(c.id));
+        this.selectedItems = [];
+        this.applyFilters();
+      },
+      error: (err) => console.error('Erro ao excluir em massa', err)
     });
   }
-
-  getMin(a: number, b: number): number {
-    return Math.min(a, b);
-  }
 }
+

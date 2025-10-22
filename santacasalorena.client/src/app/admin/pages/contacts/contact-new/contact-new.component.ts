@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Contact } from '../../../../models/contact';
 import { ContactService } from '../../../../services/contact.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -10,56 +10,83 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './contact-new.component.html',
   styleUrls: ['./contact-new.component.css']
 })
-export class ContactNewComponent {
+export class ContactNewComponent implements OnInit {
   loading = false;
+  contactId?: string;
+  isEditMode = false;
+
   contact: Partial<Contact> = {
     title: '',
     phoneNumber: '',
     description: '',
-    pageLocation: 'footer',
-    category: 'comercial',
-    isActive: true,
-    order: 1
+    isActive: true
   };
-
-  locations = [
-    { value: 'header', label: 'Header' },
-    { value: 'footer', label: 'Footer' },
-    { value: 'contato', label: 'Página Contato' },
-    { value: 'sobre', label: 'Página Sobre' },
-    { value: 'home', label: 'Home' },
-    { value: 'servicos', label: 'Serviços' }
-  ];
-
-  categories = [
-    { value: 'comercial', label: 'Comercial' },
-    { value: 'suporte', label: 'Suporte' },
-    { value: 'emergencia', label: 'Emergência' },
-    { value: 'whatsapp', label: 'WhatsApp' },
-    { value: 'vendas', label: 'Vendas' },
-    { value: 'financeiro', label: 'Financeiro' },
-    { value: 'outros', label: 'Outros' }
-  ];
 
   constructor(
     private contactService: ContactService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const idParam = params.get('id');
+      if (idParam) {
+        this.contactId = idParam;
+        this.isEditMode = true;
+        this.loadContact(this.contactId);
+      }
+    });
+  }
+
+  private loadContact(id: string): void {
+    this.loading = true;
+    this.contactService.getContact(id).subscribe({
+      next: (contact) => {
+        this.contact = contact;
+        this.loading = false;
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Erro ao carregar contato:', error);
+        this.loading = false;
+        alert('Erro ao carregar o contato. Verifique se o contato existe.');
+        this.router.navigate(['/admin/contacts']);
+      }
+    });
+  }
 
   onSubmit(): void {
     this.loading = true;
 
-    this.contactService.createContact(this.contact as Contact).subscribe({
-      next: (newContact) => {
-        this.loading = false;
-        this.router.navigate(['/admin/contacts']);
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Erro ao criar número:', error);
-        this.loading = false;
-        alert('Erro ao criar número. Tente novamente.');
-      }
-    });
+    if (this.isEditMode && this.contactId) {
+      // Atualiza o contato existente
+      this.contactService.updateContact(this.contactId, this.contact as Contact).subscribe({
+        next: () => {
+          this.loading = false;
+          alert('Contato atualizado com sucesso!');
+          this.router.navigate(['/admin/contacts']);
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Erro ao atualizar contato:', error);
+          this.loading = false;
+          alert('Erro ao atualizar contato. Tente novamente.');
+        }
+      });
+    } else {
+      // Cria um novo contato
+      this.contactService.createContact(this.contact as Contact).subscribe({
+        next: () => {
+          this.loading = false;
+          alert('Contato criado com sucesso!');
+          this.router.navigate(['/admin/contacts']);
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Erro ao criar contato:', error);
+          this.loading = false;
+          alert('Erro ao criar contato. Tente novamente.');
+        }
+      });
+    }
   }
 
   onCancel(): void {

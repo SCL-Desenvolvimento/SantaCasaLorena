@@ -22,7 +22,7 @@ namespace SantaCasaLorena.Server.Services
                 {
                     Id = a.Id,
                     Name = a.Name,
-                    imageUrl = a.ImageUrl,
+                    ImageUrl = a.ImageUrl,
                     CreatedAt = a.CreatedAt,
                     IsActive = a.IsActive
                 })
@@ -37,7 +37,7 @@ namespace SantaCasaLorena.Server.Services
                 {
                     Id = a.Id,
                     Name = a.Name,
-                    imageUrl = a.ImageUrl,
+                    ImageUrl = a.ImageUrl,
                     CreatedAt = a.CreatedAt,
                     IsActive = a.IsActive
                 })
@@ -60,7 +60,7 @@ namespace SantaCasaLorena.Server.Services
             {
                 Id = entity.Id,
                 Name = entity.Name,
-                imageUrl = entity.ImageUrl,
+                ImageUrl = entity.ImageUrl,
                 CreatedAt = entity.CreatedAt,
                 IsActive = entity.IsActive
             };
@@ -94,7 +94,7 @@ namespace SantaCasaLorena.Server.Services
             {
                 Id = entity.Id,
                 Name = entity.Name,
-                imageUrl = entity.ImageUrl,
+                ImageUrl = entity.ImageUrl,
                 CreatedAt = entity.CreatedAt,
                 IsActive = entity.IsActive
             };

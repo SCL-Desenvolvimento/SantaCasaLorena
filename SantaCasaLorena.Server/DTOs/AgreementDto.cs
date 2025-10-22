@@ -11,9 +11,8 @@
     {
         public Guid Id { get; set; }
         public required string Name { get; set; }
-        public string imageUrl { get; set; }
+        public string ImageUrl { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
     }
-
 }

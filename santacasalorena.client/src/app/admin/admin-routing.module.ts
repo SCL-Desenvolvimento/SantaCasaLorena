@@ -72,7 +72,16 @@ const routes: Routes = [
     component: ContactListComponent,
     data: { title: 'Gerenciar Contatos', breadcrumb: 'Contatos' }
   },
-  
+  {
+    path: 'contacts/new',
+    component: ContactNewComponent,
+    data: { title: 'Novo Contatos', breadcrumb: 'Novo Contatos' }
+  },
+  {
+    path: 'contacts/edit/:id',
+    component: ContactNewComponent,
+    data: { title: 'Editar Contatos', breadcrumb: 'Editar Contatos' }
+  },
 
   // Convenios Management
   {
@@ -148,9 +157,6 @@ const routes: Routes = [
     redirectTo: 'dashboard',
     pathMatch: 'full'
   },
-
-  { path: 'contacts', component: ContactListComponent },
-  { path: 'contacts/new', component: ContactNewComponent },
 ];
 
 @NgModule({

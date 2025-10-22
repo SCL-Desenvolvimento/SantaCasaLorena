@@ -2,17 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Contact } from '../models/contact';
+import { environment } from '../../environments/environment';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContactService {
-  private apiUrl = '/api/contacts';
+  private apiUrl = `${environment.apiUrl}/contacts`;
 
   constructor(private http: HttpClient) { }
 
-  // MANTENHA estes métodos (eles vão servir para números de telefone):
   getContacts(): Observable<Contact[]> {
     return this.http.get<Contact[]>(this.apiUrl);
   }
@@ -33,24 +33,16 @@ export class ContactService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  // ADICIONE estes novos métodos:
   toggleActive(id: string): Observable<Contact> {
     return this.http.patch<Contact>(`${this.apiUrl}/${id}/toggle-active`, {});
   }
 
-  getContactsByLocation(location: string): Observable<Contact[]> {
-    return this.http.get<Contact[]>(`${this.apiUrl}/location/${location}`);
+  bulkDelete(ids: string[]): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/bulk-delete`, ids);
   }
 
-  // COMENTE ou REMOVA estes métodos antigos:
-  /*
-  markAsRead(id: string): Observable<Contact> {
-    return this.http.patch<Contact>(`${this.apiUrl}/${id}/read`, {});
+  bulkToggle(ids: string[], activate: boolean): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/bulk-toggle`, { ids, activate });
   }
-
-  markAsUnread(id: string): Observable<Contact> {
-    return this.http.patch<Contact>(`${this.apiUrl}/${id}/unread`, {});
-  }
-  */
 }
 
