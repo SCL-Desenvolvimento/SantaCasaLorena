@@ -1,16 +1,6 @@
 .user-form-container {
-  max-width: 1000px;
+  width: 100%;
   margin: 0 auto;
-  padding: 20px;
-}
-
-.profile-preview {
-  width: 100px;
-  height: 100px;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border: 3px solid #dee2e6;
 }
 
 .page-header {
@@ -19,20 +9,45 @@
 }
 
 .card {
+  width: 100%;
   border: 1px solid #dee2e6;
-  border-radius: 8px;
+  border-radius: 10px;
+}
+
+.card-body {
+  padding: 2rem 2.5rem;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #495057;
+}
+
+.form-control,
+.form-select {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
+
+.profile-preview {
+  width: 110px;
+  height: 110px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 3px solid #dee2e6;
+}
+
+.photo-box {
+  min-height: 280px;
 }
 
 .btn {
   border-radius: 6px;
 }
 
-.form-control, .form-select {
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-}
-
-.form-label {
-  font-weight: 600;
-  color: #495057;
+@media (max-width: 992px) {
+  .user-form-container {
+    padding: 16px 20px;
+  }
 }

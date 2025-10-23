@@ -1,40 +1,40 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { finalize } from 'rxjs/operators';
 import { User } from '../../../../models/user';
 import { UserService } from '../../../../services/user.service';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-user-list',
   standalone: false,
   templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.css']
+  styleUrls: ['./user-list.component.css'],
 })
 export class UserListComponent implements OnInit {
   loading = true;
   users: User[] = [];
   filteredUsers: User[] = [];
 
-  // Filters
   searchTerm = '';
-  roleFilter = 'all'; // all, admin, editor, viewer
-  statusFilter = 'all'; // all, active, inactive
-  sortBy = 'createdAt';
+  private searchDebounceTimer: any = null;
+  roleFilter: string = 'all';
+  isActiveFilter: 'all' | 'true' | 'false' = 'all';
+
+  sortBy: keyof User | 'createdAt' = 'createdAt';
   sortOrder: 'asc' | 'desc' = 'desc';
 
-  // Pagination
   currentPage = 1;
   itemsPerPage = 10;
   totalItems = 0;
 
-  // Selection
   selectedItems: string[] = [];
   selectAll = false;
 
   roles = [
     { value: 'admin', label: 'Administrador' },
     { value: 'editor', label: 'Editor' },
-    { value: 'viewer', label: 'Visualizador' }
+    { value: 'viewer', label: 'Visualizador' },
   ];
 
   constructor(private router: Router, private userService: UserService) { }
@@ -45,117 +45,135 @@ export class UserListComponent implements OnInit {
 
   loadUsers(): void {
     this.loading = true;
-    this.userService.getAll().subscribe({
-      next: (data: User[]) => {
-        this.users = data;
-        this.applyFilters();
-        this.loading = false;
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error("Erro ao carregar usuários:", error);
-        alert("Erro ao carregar usuários.");
-        this.loading = false;
-      }
-    });
+    this.userService
+      .getAll()
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: (data: User[]) => {
+          this.users = data.map(u => ({
+            ...u,
+            isActive: typeof u.isActive === 'boolean' ? u.isActive : !!u['isActive'],
+          }));
+          this.applyFilters();
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Erro ao carregar usuários:', err);
+          alert('Erro ao carregar usuários.');
+        },
+      });
   }
 
-  applyFilters(): void {
-    let filtered = [...this.users];
-
-    // Search filter
-    if (this.searchTerm) {
-      filtered = filtered.filter(item =>
-        item.username.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.email.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-    }
-
-    // Role filter
-    if (this.roleFilter !== 'all') {
-      //filtered = filtered.filter(item => item.role === this.roleFilter);
-    }
-
-    // Status filter
-    if (this.statusFilter !== 'all') {
-      //filtered = filtered.filter(item => item.status === this.statusFilter);
-    }
-
-    // Sort
-    filtered.sort((a, b) => {
-      let aValue = a[this.sortBy as keyof User] ?? '';
-      let bValue = b[this.sortBy as keyof User] ?? '';
-
-      if (typeof aValue === 'string') aValue = aValue.toLowerCase();
-      if (typeof bValue === 'string') bValue = bValue.toLowerCase();
-
-      if (aValue < bValue) return this.sortOrder === 'asc' ? -1 : 1;
-      if (aValue > bValue) return this.sortOrder === 'asc' ? 1 : -1;
-      return 0;
-    });
-
-    this.filteredUsers = filtered;
-    this.totalItems = filtered.length;
-    this.currentPage = 1;
-  }
-
-  get paginatedUsers(): User[] {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    return this.filteredUsers.slice(start, end);
-  }
-
-  get totalPages(): number {
-    return Math.ceil(this.totalItems / this.itemsPerPage);
+  // ---------- FILTERS / SEARCH ----------
+  onSearchInput(): void {
+    if (this.searchDebounceTimer) clearTimeout(this.searchDebounceTimer);
+    this.searchDebounceTimer = setTimeout(() => this.applyFilters(), 250);
   }
 
   onSearch(): void {
     this.applyFilters();
   }
 
-  onFilterChange(): void {
-    this.applyFilters();
+  applyFilters(): void {
+    let filtered = [...this.users];
+
+    if (this.searchTerm?.trim()) {
+      const term = this.searchTerm.trim().toLowerCase();
+      filtered = filtered.filter(u =>
+        (u.username || '').toLowerCase().includes(term) ||
+        (u.email || '').toLowerCase().includes(term)
+      );
+    }
+
+    if (this.roleFilter !== 'all') filtered = filtered.filter(u => u.role === this.roleFilter);
+    if (this.isActiveFilter === 'true') filtered = filtered.filter(u => u.isActive);
+    if (this.isActiveFilter === 'false') filtered = filtered.filter(u => !u.isActive);
+
+    filtered.sort((a, b) => this.dynamicSort(a, b, this.sortBy, this.sortOrder));
+
+    this.filteredUsers = filtered;
+    this.totalItems = filtered.length;
+    this.currentPage = 1;
+    this.selectedItems = [];
+    this.selectAll = false;
   }
 
-  onSort(field: string): void {
-    if (this.sortBy === field) {
-      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.sortBy = field;
-      this.sortOrder = 'desc';
-    }
-    this.applyFilters();
+  private dynamicSort(a: any, b: any, field: any, order: 'asc' | 'desc'): number {
+    const aVal = this.resolveField(a, field);
+    const bVal = this.resolveField(b, field);
+
+    const aDate = this.tryParseDate(aVal);
+    const bDate = this.tryParseDate(bVal);
+    if (aDate && bDate) return order === 'asc' ? aDate.getTime() - bDate.getTime() : bDate.getTime() - aDate.getTime();
+
+    const aStr = (aVal ?? '').toString().toLowerCase();
+    const bStr = (bVal ?? '').toString().toLowerCase();
+    if (aStr < bStr) return order === 'asc' ? -1 : 1;
+    if (aStr > bStr) return order === 'asc' ? 1 : -1;
+    return 0;
+  }
+
+  private resolveField(obj: any, field: any): any {
+    return obj ? obj[field as keyof typeof obj] : undefined;
+  }
+
+  private tryParseDate(value: any): Date | null {
+    if (!value) return null;
+    const d = new Date(value);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  // ---------- PAGINATION ----------
+  get paginatedUsers(): User[] {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredUsers.slice(start, start + this.itemsPerPage);
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.totalItems / this.itemsPerPage));
+  }
+
+  get pagesArray(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
 
   onPageChange(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
     this.currentPage = page;
+    this.selectAll = this.paginatedUsers.every(u => this.selectedItems.includes(u.id));
   }
 
   onItemsPerPageChange(): void {
     this.currentPage = 1;
   }
 
-  toggleSelectAll(): void {
-    if (this.selectAll) {
-      this.selectedItems = this.paginatedUsers.map(item => item.id);
+  getMin(a: number, b: number): number {
+    return Math.min(a, b);
+  }
+
+  // ---------- SELECTION ----------
+  toggleSelectAll(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.selectAll = checked;
+    if (checked) {
+      this.selectedItems = Array.from(new Set([...this.selectedItems, ...this.paginatedUsers.map(u => u.id)]));
     } else {
-      this.selectedItems = [];
+      const pageIds = this.paginatedUsers.map(u => u.id);
+      this.selectedItems = this.selectedItems.filter(id => !pageIds.includes(id));
     }
   }
 
   toggleItemSelection(id: string): void {
-    const index = this.selectedItems.indexOf(id);
-    if (index > -1) {
-      this.selectedItems.splice(index, 1);
-    } else {
-      this.selectedItems.push(id);
-    }
-    this.selectAll = this.selectedItems.length === this.paginatedUsers.length;
+    const idx = this.selectedItems.indexOf(id);
+    if (idx > -1) this.selectedItems.splice(idx, 1);
+    else this.selectedItems.push(id);
+    this.selectAll = this.paginatedUsers.every(u => this.selectedItems.includes(u.id));
   }
 
   isSelected(id: string): boolean {
     return this.selectedItems.includes(id);
   }
 
+  // ---------- ACTIONS ----------
   createUser(): void {
     this.router.navigate(['/admin/users/new']);
   }
@@ -165,118 +183,118 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(id: string): void {
-    if (confirm("Tem certeza que deseja excluir este usuário?")) {
-      this.userService.delete(id).subscribe({
-        next: () => {
-          this.users = this.users.filter(item => item.id !== id);
-          this.selectedItems = this.selectedItems.filter(selectedId => selectedId !== id);
-          this.applyFilters();
-          alert("Usuário excluído com sucesso!");
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error("Erro ao excluir usuário:", error);
-          alert("Erro ao excluir usuário.");
-        }
-      });
-    }
+    if (!confirm('Tem certeza que deseja excluir este usuário?')) return;
+    this.userService.bulkDelete([id]).subscribe({
+      next: () => {
+        this.loadUsers();
+        alert('Usuário excluído com sucesso!');
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao excluir usuário:', err);
+        alert('Erro ao excluir usuário.');
+      },
+    });
   }
 
   bulkDelete(): void {
-    if (this.selectedItems.length === 0) return;
-
-    if (confirm(`Tem certeza que deseja excluir ${this.selectedItems.length} usuário(s)?`)) {
-      this.selectedItems.forEach(id => {
-        this.userService.delete(id).subscribe({
-          next: () => {
-            this.users = this.users.filter(item => item.id !== id);
-            this.applyFilters();
-          },
-          error: (error: HttpErrorResponse) => {
-            console.error(`Erro ao excluir usuário ${id}:`, error);
-            alert(`Erro ao excluir usuário ${id}.`);
-          }
-        });
-      });
-      this.selectedItems = [];
-      this.selectAll = false;
-      alert("Usuários excluídos com sucesso!");
-      this.loadUsers(); // Reload all items to ensure UI consistency
-    }
+    if (!this.selectedItems.length) return;
+    if (!confirm(`Tem certeza que deseja excluir ${this.selectedItems.length} usuário(s)?`)) return;
+    this.userService.bulkDelete(this.selectedItems).subscribe({
+      next: () => {
+        this.loadUsers();
+        this.selectedItems = [];
+        this.selectAll = false;
+        alert('Usuários excluídos com sucesso!');
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao excluir usuários:', err);
+        alert('Erro ao excluir usuários.');
+      },
+    });
   }
 
   bulkActivate(): void {
-    if (this.selectedItems.length === 0) return;
-
-    this.selectedItems.forEach(id => {
-      this.userService.updateUserStatus(id, 'active').subscribe({
-        next: () => {
-          // User status will be updated when all users are reloaded
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error(`Erro ao ativar usuário ${id}:`, error);
-          alert(`Erro ao ativar usuário ${id}.`);
-        }
-      });
+    if (!this.selectedItems.length) return;
+    this.userService.bulkToggle(this.selectedItems, true).subscribe({
+      next: () => {
+        this.loadUsers();
+        this.selectedItems = [];
+        this.selectAll = false;
+        alert('Usuários ativados com sucesso!');
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao ativar usuários:', err);
+        alert('Erro ao ativar usuários.');
+      },
     });
-
-    this.selectedItems = [];
-    this.selectAll = false;
-    alert("Usuários ativados com sucesso!");
-    this.loadUsers(); // Reload all items to ensure UI consistency
   }
 
   bulkDeactivate(): void {
-    if (this.selectedItems.length === 0) return;
-
-    this.selectedItems.forEach(id => {
-      this.userService.updateUserStatus(id, 'inactive').subscribe({
-        next: () => {
-          // User status will be updated when all users are reloaded
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error(`Erro ao desativar usuário ${id}:`, error);
-          alert(`Erro ao desativar usuário ${id}.`);
-        }
-      });
+    if (!this.selectedItems.length) return;
+    this.userService.bulkToggle(this.selectedItems, false).subscribe({
+      next: () => {
+        this.loadUsers();
+        this.selectedItems = [];
+        this.selectAll = false;
+        alert('Usuários desativados com sucesso!');
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao desativar usuários:', err);
+        alert('Erro ao desativar usuários.');
+      },
     });
-
-    this.selectedItems = [];
-    this.selectAll = false;
-    alert("Usuários desativados com sucesso!");
-    this.loadUsers(); // Reload all items to ensure UI consistency
   }
 
-  formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('pt-BR');
+  toggleSingleStatus(user: User): void {
+    const action = user.isActive ? 'desativar' : 'ativar';
+    if (!confirm(`Deseja ${action} o usuário ${user.username}?`)) return;
+    this.userService.toggleActive(user.id).subscribe({
+      next: () => this.loadUsers(),
+      error: (err: HttpErrorResponse) => {
+        console.error(`Erro ao ${action} usuário:`, err);
+        alert(`Erro ao ${action} usuário.`);
+      },
+    });
   }
 
-  getRoleText(role: string): string {
+  // ---------- UTIL / UI ----------
+  formatDate(dateString: string | Date | undefined): string {
+    if (!dateString) return '';
+    try {
+      return new Date(dateString).toLocaleDateString('pt-BR');
+    } catch {
+      return String(dateString);
+    }
+  }
+
+  getRoleText(role: string | undefined): string {
     switch (role) {
       case 'admin': return 'Administrador';
       case 'editor': return 'Editor';
       case 'viewer': return 'Visualizador';
-      default: return 'Desconhecido';
+      default: return role ?? 'Desconhecido';
     }
   }
 
-  getStatusBadgeClass(status: string): string {
-    switch (status) {
-      case 'active': return 'bg-success';
-      case 'inactive': return 'bg-danger';
-      default: return 'bg-secondary';
-    }
+  sortIcon(field: string): string {
+    if (this.sortBy !== (field as any)) return 'bi-arrow-down-up';
+    return this.sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down';
   }
 
-  getStatusText(status: string): string {
-    switch (status) {
-      case 'active': return 'Ativo';
-      case 'inactive': return 'Inativo';
-      default: return 'Desconhecido';
+  onSort(field: keyof User | 'createdAt'): void {
+    if (this.sortBy === field) this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    else {
+      this.sortBy = field;
+      this.sortOrder = 'desc';
     }
+    this.applyFilters();
   }
 
-  getMin(a: number, b: number): number {
-    return Math.min(a, b);
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.roleFilter = 'all';
+    this.isActiveFilter = 'all';
+    this.itemsPerPage = 10;
+    this.applyFilters();
   }
 }
-

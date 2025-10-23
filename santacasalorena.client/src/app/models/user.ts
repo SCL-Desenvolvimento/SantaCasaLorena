@@ -5,6 +5,6 @@ export interface User {
   password: string;
   photoUrl: string | null;
   role: string;
-  status: string;
+  isActive: boolean;
   createdAt: string;
 }

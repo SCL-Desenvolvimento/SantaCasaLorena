@@ -10,97 +10,68 @@
           {{ isEditMode ? 'Edite as informações do usuário existente' : 'Preencha os dados para cadastrar um novo usuário' }}
         </p>
       </div>
-      <button class="btn btn-outline-secondary"
-              (click)="cancel()">
-        <i class="bi bi-arrow-left me-2"></i>
-        Voltar
+      <button class="btn btn-outline-secondary" (click)="cancel()">
+        <i class="bi bi-arrow-left me-2"></i> Voltar
       </button>
     </div>
   </div>
 
-  <!-- Loading State -->
+  <!-- Loading -->
   <div class="text-center py-5" *ngIf="loading">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Carregando...</span>
-    </div>
-    <p class="mt-2 text-muted">Carregando usuário...</p>
+    <app-loading-spinner message="Carregando usuário..."></app-loading-spinner>
   </div>
 
-  <!-- User Form -->
+  <!-- Form -->
   <div class="card shadow-sm border-0 rounded-3" *ngIf="!loading">
-    <div class="card-body p-4">
+    <div class="card-body">
       <form [formGroup]="userForm" (ngSubmit)="save()">
-
-        <!-- IMAGEM DE PERFIL (OPCIONAL) -->
-        <div class="row mb-4">
-          <div class="col-12">
-            <div class="mb-4">
-              <label class="form-label fw-bold fs-5">
-                <i class="bi bi-camera me-2"></i>Foto de Perfil (Opcional)
-              </label>
-
-              <div class="d-flex flex-column flex-md-row align-items-center gap-4 p-3 border rounded bg-light">
-                <!-- Preview -->
-                <div class="text-center">
-                  <div class="profile-preview mx-auto mb-2 rounded-circle border"
-                       [style.backgroundImage]="'url(' + profileImagePreview + ')'"
-                       [class.bg-light]="!profileImagePreview">
-                    <div *ngIf="!profileImagePreview" class="h-100 w-100 d-flex align-items-center justify-content-center rounded-circle">
-                      <i class="bi bi-person fs-1 text-muted"></i>
-                    </div>
-                  </div>
-                  <small class="text-muted">Preview</small>
-                </div>
-
-                <!-- Upload Controls -->
-                <div class="flex-grow-1">
-                  <div class="mb-3">
-                    <input type="file"
-                           class="form-control"
-                           id="profileImage"
-                           (change)="onImageSelected($event)"
-                           accept="image/jpeg,image/png,image/webp">
-                  </div>
-
-                  <div class="d-flex gap-2 flex-wrap">
-                    <button type="button"
-                            class="btn btn-primary btn-sm"
-                            (click)="triggerFileInput()">
-                      <i class="bi bi-upload me-1"></i> Selecionar Imagem
-                    </button>
-
-                    <button *ngIf="profileImagePreview"
-                            type="button"
-                            class="btn btn-outline-danger btn-sm"
-                            (click)="removeImage()">
-                      <i class="bi bi-trash me-1"></i> Remover
-                    </button>
-                  </div>
-
-                  <div class="form-text text-muted mt-2">
-                    <small>
-                      <i class="bi bi-info-circle me-1"></i>
-                      Formatos: JPG, PNG, WebP. Máximo 2MB
-                    </small>
-                  </div>
+        <div class="row align-items-start">
+          <!-- Coluna Esquerda (Foto) -->
+          <div class="col-lg-4 col-md-5 mb-4 mb-lg-0">
+            <label class="form-label">Foto de Perfil (opcional)</label>
+            <div class="photo-box border rounded bg-light text-center p-3">
+              <div class="profile-preview mx-auto mb-2 rounded-circle border"
+                   [style.backgroundImage]="'url(' + profileImagePreview + ')'"
+                   [class.bg-light]="!profileImagePreview">
+                <div *ngIf="!profileImagePreview"
+                     class="h-100 w-100 d-flex align-items-center justify-content-center rounded-circle">
+                  <i class="bi bi-person fs-1 text-muted"></i>
                 </div>
               </div>
+              <small class="text-muted d-block mb-2">Preview</small>
+              <input type="file"
+                     id="profileImage"
+                     class="form-control mb-2"
+                     (change)="onImageSelected($event)"
+                     accept="image/jpeg,image/png,image/webp" />
+              <div class="d-flex justify-content-center gap-2 flex-wrap">
+                <button type="button" class="btn btn-primary btn-sm" (click)="triggerFileInput()">
+                  <i class="bi bi-upload me-1"></i> Selecionar
+                </button>
+                <button *ngIf="profileImagePreview"
+                        type="button"
+                        class="btn btn-outline-danger btn-sm"
+                        (click)="removeImage()">
+                  <i class="bi bi-trash me-1"></i> Remover
+                </button>
+              </div>
+              <small class="form-text text-muted mt-2 d-block">
+                <i class="bi bi-info-circle me-1"></i> Formatos: JPG, PNG, WebP. Máx. 2MB
+              </small>
             </div>
           </div>
-        </div>
 
-        <div class="row">
-          <!-- Coluna Esquerda -->
-          <div class="col-md-6">
-            <!-- Username -->
+          <!-- Coluna Direita (Campos) -->
+          <div class="col-lg-8 col-md-7">
+            <!-- Nome -->
             <div class="mb-3">
-              <label for="username" class="form-label fw-bold">Nome de Usuário *</label>
+              <label for="username" class="form-label">Nome de Usuário <span class="text-danger">*</span></label>
               <input type="text"
-                     class="form-control"
-                     [class.is-invalid]="isFieldInvalid('username')"
                      id="username"
+                     class="form-control"
                      formControlName="username"
-                     placeholder="Ex: joao.silva">
+                     [class.is-invalid]="isFieldInvalid('username')"
+                     placeholder="Ex: joao.silva" />
               <div class="invalid-feedback" *ngIf="isFieldInvalid('username')">
                 {{ getFieldError('username') }}
               </div>
@@ -108,81 +79,57 @@
 
             <!-- Email -->
             <div class="mb-3">
-              <label for="email" class="form-label fw-bold">Email *</label>
+              <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
               <input type="email"
-                     class="form-control"
-                     [class.is-invalid]="isFieldInvalid('email')"
                      id="email"
+                     class="form-control"
                      formControlName="email"
-                     placeholder="Ex: joao.silva@example.com">
+                     [class.is-invalid]="isFieldInvalid('email')"
+                     placeholder="Ex: joao.silva@example.com" />
               <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
                 {{ getFieldError('email') }}
               </div>
             </div>
-          </div>
 
-          <!-- Coluna Direita -->
-          <div class="col-md-6">
-            <!-- Password -->
-            <div class="mb-3">
-              <label for="password" class="form-label fw-bold">
-                Senha {{ !isEditMode ? '*' : '' }}
-              </label>
+            <!-- Senha -->
+            <div class="mb-2">
+              <label for="password" class="form-label">Senha {{ !isEditMode ? '*' : '' }}</label>
               <input type="password"
-                     class="form-control"
-                     [class.is-invalid]="isFieldInvalid('password')"
                      id="password"
+                     class="form-control"
                      formControlName="password"
-                     placeholder="Mínimo 6 caracteres">
+                     [class.is-invalid]="isFieldInvalid('password')"
+                     placeholder="Mínimo 6 caracteres" />
               <div class="invalid-feedback" *ngIf="isFieldInvalid('password')">
                 {{ getFieldError('password') }}
               </div>
-              <small class="form-text text-muted" *ngIf="isEditMode">
+              <small *ngIf="isEditMode" class="form-text text-muted">
                 Deixe em branco para manter a senha atual.
               </small>
             </div>
 
-            <!-- Role -->
-            <div class="mb-3">
-              <label for="role" class="form-label fw-bold">Cargo *</label>
-              <select class="form-select"
-                      [class.is-invalid]="isFieldInvalid('role')"
-                      id="role"
-                      formControlName="role">
-                <option *ngFor="let r of roles" [value]="r.value">{{ r.label }}</option>
-              </select>
-              <div class="invalid-feedback" *ngIf="isFieldInvalid('role')">
-                {{ getFieldError('role') }}
-              </div>
-            </div>
-
-            <!-- Status -->
-            <div class="mb-3">
-              <label for="status" class="form-label fw-bold">Status *</label>
-              <select class="form-select"
-                      [class.is-invalid]="isFieldInvalid('status')"
-                      id="status"
-                      formControlName="status">
-                <option *ngFor="let s of statuses" [value]="s.value">{{ s.label }}</option>
-              </select>
-              <div class="invalid-feedback" *ngIf="isFieldInvalid('status')">
-                {{ getFieldError('status') }}
-              </div>
+            <!-- Status (isActive boolean) -->
+            <div class="form-check form-switch mt-4">
+              <input class="form-check-input"
+                     type="checkbox"
+                     id="isActive"
+                     formControlName="isActive" />
+              <label class="form-check-label" for="isActive">
+                {{ userForm.get('isActive')?.value ? 'Ativo' : 'Inativo' }}
+              </label>
             </div>
           </div>
         </div>
 
         <!-- Botões -->
-        <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+        <div class="d-flex justify-content-end mt-3">
           <button type="button"
                   class="btn btn-outline-secondary me-2"
                   (click)="cancel()"
                   [disabled]="saving">
             Cancelar
           </button>
-          <button type="submit"
-                  class="btn btn-primary"
-                  [disabled]="saving || userForm.invalid">
+          <button type="submit" class="btn btn-primary" [disabled]="saving || userForm.invalid">
             <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
             {{ saving ? 'Salvando...' : (isEditMode ? 'Atualizar' : 'Salvar') }}
           </button>

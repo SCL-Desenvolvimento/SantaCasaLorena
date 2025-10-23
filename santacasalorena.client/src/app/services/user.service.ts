@@ -32,13 +32,13 @@ export class UserService {
     );
   }
 
-  create(user: User): Observable<User> {
+  create(user: FormData): Observable<User> {
     return this.http.post<User>(this.apiUrl, user).pipe(
       catchError(this.handleError)
     );
   }
 
-  update(id: string, user: User): Observable<User> {
+  update(id: string, user: FormData): Observable<User> {
     return this.http.put<User>(`${this.apiUrl}/${id}`, user).pipe(
       catchError(this.handleError)
     );
@@ -46,12 +46,6 @@ export class UserService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  updateUserStatus(id: string, status: 'active' | 'inactive'): Observable<void> {
-    return this.http.patch<void>(`${this.apiUrl}/${id}/status`, { status }).pipe(
       catchError(this.handleError)
     );
   }
@@ -66,6 +60,24 @@ export class UserService {
     return this.http.post<void>(`${this.apiUrl}/${userId}/change-password`, { newPassword }).pipe(
       catchError(this.handleError)
     );
+  }
+
+  toggleActive(id: string): Observable<User> {
+    return this.http.patch<User>(`${this.apiUrl}/${id}/toggle-active`, {}).pipe(
+      catchError(this.handleError)
+    );;
+  }
+
+  bulkDelete(ids: string[]): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/bulk-delete`, ids).pipe(
+      catchError(this.handleError)
+    );;
+  }
+
+  bulkToggle(ids: string[], activate: boolean): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/bulk-toggle`, { ids, activate }).pipe(
+      catchError(this.handleError)
+    );;
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
