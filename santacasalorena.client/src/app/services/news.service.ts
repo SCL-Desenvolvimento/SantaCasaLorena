@@ -14,26 +14,34 @@ export class NewsService {
 
   getAll(): Observable<News[]> {
     return this.http.get<News[]>(this.apiUrl).pipe(
-      map(r => r),
+      map(response => response.map(item => ({
+        ...item,
+        imageUrl: `${environment.imageServerUrl}${item.imageUrl}` 
+      }))),
       catchError(this.handleError)
     );
   }
 
   getById(id: string): Observable<News> {
     return this.http.get<News>(`${this.apiUrl}/${id}`).pipe(
-      map(r => r),
+      map(response => ({
+        ...response,
+        imageUrl: `${environment.imageServerUrl}${response.imageUrl}` 
+      })),
       catchError(this.handleError)
     );
   }
 
-  create(dto: any): Observable<News> {
-    return this.http.post<News>(this.apiUrl, dto).pipe(
+  create(news: News, imageFile?: File): Observable<News> {
+    const formData = this.buildFormData(news, imageFile);
+    return this.http.post<News>(this.apiUrl, formData).pipe(
       catchError(this.handleError)
     );
   }
 
-  update(id: string, dto: any): Observable<News> {
-    return this.http.put<News>(`${this.apiUrl}/${id}`, dto).pipe(
+  update(id: string, news: News, imageFile?: File): Observable<News> {
+    const formData = this.buildFormData(news, imageFile);
+    return this.http.put<News>(`${this.apiUrl}/${id}`, formData).pipe(
       catchError(this.handleError)
     );
   }
@@ -44,14 +52,45 @@ export class NewsService {
     );
   }
 
+  updateNewsPublishStatus(id: string, isPublished: boolean): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${id}/publish`, { isPublished }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  private buildFormData(news: News, imageFile?: File): FormData {
+    const formData = new FormData();
+
+    if (imageFile) {
+      formData.append('File', imageFile, imageFile.name);
+    }
+
+    formData.append('Title', news.title);
+    if (news.description) formData.append('Description', news.description);
+    formData.append('Content', news.content);
+    if (news.category) formData.append('Category', news.category);
+    formData.append('IsPublished', news.isPublished.toString());
+    if (news.userId) formData.append('UserId', news.userId);
+
+    if (news.tags && news.tags.length > 0) {
+      news.tags.forEach(tag => formData.append('Tags', tag));
+    }
+    if (news.seoTitle) formData.append('SeoTitle', news.seoTitle);
+    if (news.seoDescription) formData.append('SeoDescription', news.seoDescription);
+    if (news.seoKeywords) formData.append('SeoKeywords', news.seoKeywords);
+
+    return formData;
+  }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Ocorreu um erro. Tente novamente mais tarde.';
     if (error.error instanceof ErrorEvent) {
       errorMessage = `Erro: ${error.error.message}`;
     } else {
-      errorMessage = error.error?.error || errorMessage;
+      // O backend pode retornar um objeto de erro com uma mensagem específica
+      errorMessage = error.error?.message || error.statusText || errorMessage;
     }
     return throwError(() => new Error(errorMessage));
   }
 }
+

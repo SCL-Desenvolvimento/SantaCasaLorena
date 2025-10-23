@@ -118,10 +118,7 @@ export class SobreComponent {
     this.providerService.getAll().subscribe(data => {
       const sorted = data.slice().sort((a, b) => a.startYear - b.startYear);
 
-      this.providers = sorted.map(pro => ({
-        ...pro,
-        imageUrl: `${environment.imageServerUrl}${pro.imageUrl}`
-      }));
+      this.providers = sorted;
     });
   }
 }

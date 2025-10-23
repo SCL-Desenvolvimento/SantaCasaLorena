@@ -33,18 +33,16 @@ namespace SantaCasaLorena.Server.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<NewsResponseDto>> Create(NewsRequestDto dto)
+        public async Task<ActionResult<NewsResponseDto>> Create([FromForm] NewsRequestDto dto)
         {
-            dto.UserId = Guid.Parse("b18d15a3-c3e3-4c44-aa4c-55036ce69873");
             var created = await _service.AddAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [Authorize]
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult<NewsResponseDto>> Update(Guid id, NewsRequestDto dto)
+        public async Task<ActionResult<NewsResponseDto>> Update(Guid id, [FromForm] NewsRequestDto dto)
         {
-            dto.UserId = Guid.Parse("b18d15a3-c3e3-4c44-aa4c-55036ce69873");
             var updated = await _service.UpdateAsync(id, dto);
             return Ok(updated);
         }
@@ -57,5 +55,21 @@ namespace SantaCasaLorena.Server.Controllers
             if (!success) return NotFound();
             return NoContent();
         }
+
+        [Authorize]
+        [HttpPatch("{id:guid}/publish")]
+        public async Task<ActionResult> UpdatePublishStatus(Guid id, [FromBody] NewsPublishStatusDto dto)
+        {
+            var success = await _service.UpdatePublishStatusAsync(id, dto.IsPublished);
+            if (!success) return NotFound();
+            return NoContent();
+        }
+    }
+
+    // DTO para o status de publicação, pois o PATCH espera um corpo JSON simples
+    public class NewsPublishStatusDto
+    {
+        public bool IsPublished { get; set; }
     }
 }
+

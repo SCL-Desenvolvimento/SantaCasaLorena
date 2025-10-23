@@ -25,18 +25,21 @@ export class TransparencyPortalService {
 
   getById(id: string): Observable<TransparencyPortal> {
     return this.http.get<TransparencyPortal>(`${this.apiUrl}/${id}`).pipe(
-      map(response => response),
+      map(response => ({
+        ...response,
+        fileUrl: `${environment.imageServerUrl}${response.fileUrl}`
+      })),
       catchError(this.handleError)
     );
   }
 
-  create(dto: any): Observable<TransparencyPortal> {
+  create(dto: FormData): Observable<TransparencyPortal> {
     return this.http.post<TransparencyPortal>(this.apiUrl, dto).pipe(
       catchError(this.handleError)
     );
   }
 
-  update(id: string, dto: any): Observable<TransparencyPortal> {
+  update(id: string, dto: FormData): Observable<TransparencyPortal> {
     return this.http.put<TransparencyPortal>(`${this.apiUrl}/${id}`, dto).pipe(
       catchError(this.handleError)
     );
@@ -46,6 +49,30 @@ export class TransparencyPortalService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
+  }
+
+  updateTransparencyItemStatus(id: string, status: boolean): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${id}/status`, { status }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  toggleActive(id: string): Observable<TransparencyPortal> {
+    return this.http.patch<TransparencyPortal>(`${this.apiUrl}/${id}/toggle-active`, {}).pipe(
+      catchError(this.handleError)
+    );;
+  }
+
+  bulkDelete(ids: string[]): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/bulk-delete`, ids).pipe(
+      catchError(this.handleError)
+    );;
+  }
+
+  bulkToggle(ids: string[], activate: boolean): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/bulk-toggle`, { ids, activate }).pipe(
+      catchError(this.handleError)
+    );;
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
@@ -58,3 +85,4 @@ export class TransparencyPortalService {
     return throwError(() => new Error(errorMessage));
   }
 }
+

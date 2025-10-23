@@ -1,0 +1,77 @@
+<div class="recent-items">
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="items.length === 0">
+    <div class="empty-icon">
+      <i class="bi bi-inbox"></i>
+    </div>
+    <p class="empty-message">{{ emptyMessage }}</p>
+  </div>
+
+  <!-- Items List -->
+  <div class="items-list" *ngIf="items.length > 0">
+    <div 
+      class="recent-item" 
+      *ngFor="let item of displayItems; let last = last"
+      [class.border-bottom-0]="last">
+      
+      <div class="item-content">
+        <div class="item-main">
+          <h6 class="item-title mb-1">
+            <a 
+              [routerLink]="item.route" 
+              *ngIf="item.route; else titleText"
+              class="text-decoration-none text-dark">
+              {{ item.title }}
+            </a>
+            <ng-template #titleText>
+              {{ item.title }}
+            </ng-template>
+          </h6>
+          
+          <p class="item-subtitle text-muted mb-1" *ngIf="item.subtitle">
+            {{ item.subtitle }}
+          </p>
+          
+          <small class="item-date text-muted" *ngIf="showDate">
+            <i class="bi bi-clock me-1"></i>
+            {{ formatDate(item.date) }}
+          </small>
+        </div>
+
+        <div class="item-status">
+          <span 
+            class="badge d-flex align-items-center gap-1"
+            [ngClass]="getStatusBadgeClass(item.statusClass)">
+            <i class="bi" 
+               [ngClass]="{
+                 'bi-check-circle': item.statusClass === 'success',
+                 'bi-exclamation-triangle': item.statusClass === 'warning',
+                 'bi-x-circle': item.statusClass === 'danger',
+                 'bi-info-circle': item.statusClass === 'info',
+                 'bi-circle': item.statusClass === 'primary' || item.statusClass === 'secondary'
+               }"></i>
+            {{ item.status }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="item-action" *ngIf="item.route">
+        <a 
+          [routerLink]="item.route" 
+          class="btn btn-sm btn-outline-secondary"
+          title="Ver detalhes">
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Show More Button -->
+  <div class="show-more" *ngIf="items.length > maxItems">
+    <button class="btn btn-sm btn-link text-primary">
+      Ver mais {{ items.length - maxItems }} itens
+      <i class="bi bi-chevron-down ms-1"></i>
+    </button>
+  </div>
+</div>

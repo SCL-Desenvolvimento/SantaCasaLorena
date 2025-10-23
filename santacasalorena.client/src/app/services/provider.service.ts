@@ -14,26 +14,40 @@ export class ProviderService {
 
   getAll(): Observable<Providers[]> {
     return this.http.get<Providers[]>(this.apiUrl).pipe(
-      map(r => r),
+      map(response =>
+        response.map(item => ({
+          ...item,
+          imageUrl: item.imageUrl
+            ? `${environment.imageServerUrl}${item.imageUrl}`
+            : ''
+        }))
+      ),
       catchError(this.handleError)
     );
   }
 
   getById(id: string): Observable<Providers> {
     return this.http.get<Providers>(`${this.apiUrl}/${id}`).pipe(
-      map(r => r),
+      map(response => ({
+        ...response,
+        imageUrl: response.imageUrl
+          ? `${environment.imageServerUrl}${response.imageUrl}`
+          : ''
+      })),
       catchError(this.handleError)
     );
   }
 
-  create(dto: any): Observable<Providers> {
-    return this.http.post<Providers>(this.apiUrl, dto).pipe(
+  // 👇 Ajustado para aceitar FormData
+  create(formData: FormData): Observable<Providers> {
+    return this.http.post<Providers>(this.apiUrl, formData).pipe(
       catchError(this.handleError)
     );
   }
 
-  update(id: string, dto: any): Observable<Providers> {
-    return this.http.put<Providers>(`${this.apiUrl}/${id}`, dto).pipe(
+  // 👇 Ajustado para aceitar FormData também
+  update(id: string, formData: FormData): Observable<Providers> {
+    return this.http.put<Providers>(`${this.apiUrl}/${id}`, formData).pipe(
       catchError(this.handleError)
     );
   }
@@ -44,13 +58,14 @@ export class ProviderService {
     );
   }
 
-
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Ocorreu um erro. Tente novamente mais tarde.';
     if (error.error instanceof ErrorEvent) {
       errorMessage = `Erro: ${error.error.message}`;
-    } else {
-      errorMessage = error.error?.error || errorMessage;
+    } else if (error.error?.error) {
+      errorMessage = error.error.error;
+    } else if (typeof error.error === 'string') {
+      errorMessage = error.error;
     }
     return throwError(() => new Error(errorMessage));
   }

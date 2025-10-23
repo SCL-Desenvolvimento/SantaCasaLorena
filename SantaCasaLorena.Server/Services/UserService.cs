@@ -26,7 +26,9 @@ namespace SantaCasaLorena.Server.Services
                     Id = u.Id,
                     Username = u.Username,
                     Email = u.Email,
-                    PhotoUrl = u.PhotoUrl
+                    PhotoUrl = u.PhotoUrl,
+                    CreatedAt = u.CreatedAt,
+                    IsActive = u.IsActive
                 })
                 .ToListAsync();
         }
@@ -40,7 +42,9 @@ namespace SantaCasaLorena.Server.Services
                     Id = u.Id,
                     Username = u.Username,
                     Email = u.Email,
-                    PhotoUrl = u.PhotoUrl
+                    PhotoUrl = u.PhotoUrl,
+                    CreatedAt = u.CreatedAt,
+                    IsActive = u.IsActive
                 })
                 .FirstOrDefaultAsync();
         }
@@ -51,6 +55,7 @@ namespace SantaCasaLorena.Server.Services
             {
                 Username = dto.Username,
                 Email = dto.Email,
+                IsActive = dto.IsActive,
                 PasswordHash = _passwordHasher.HashPassword(null!, dto.Password ?? "SantaCasa123"),
                 PhotoUrl = dto.File == null ? "Uploads/Usuarios/padrao.png" : await ProcessarMidiasAsync(dto.File)
             };
@@ -63,19 +68,22 @@ namespace SantaCasaLorena.Server.Services
                 Id = entity.Id,
                 Username = entity.Username,
                 Email = entity.Email,
-                PhotoUrl = entity.PhotoUrl
+                PhotoUrl = entity.PhotoUrl,
+                CreatedAt = entity.CreatedAt,
+                IsActive = entity.IsActive
             };
         }
 
         public async Task<UserResponseDto> UpdateAsync(Guid id, UserRequestDto dto)
         {
             var entity = await _context.Users.FindAsync(id) ?? throw new Exception("Usuário não encontrado");
-            
+
             entity.Username = dto.Username;
             entity.Email = dto.Email;
+            entity.IsActive = dto.IsActive;
 
-            if (!string.IsNullOrEmpty(dto.Password))
-                _passwordHasher.HashPassword(null!, dto.Password);
+            if (!string.IsNullOrWhiteSpace(dto.Password))
+                entity.PasswordHash = _passwordHasher.HashPassword(null!, dto.Password);
 
             if (!string.IsNullOrEmpty(entity.PhotoUrl) && dto.File != null)
             {
@@ -87,10 +95,6 @@ namespace SantaCasaLorena.Server.Services
 
             if (dto.File != null)
                 entity.PhotoUrl = await ProcessarMidiasAsync(dto.File);
-            
-
-            if (!string.IsNullOrWhiteSpace(dto.Password))
-                entity.PasswordHash = _passwordHasher.HashPassword(null!, dto.Password ?? "SantaCasa123");
 
             _context.Users.Update(entity);
             await _context.SaveChangesAsync();
@@ -100,7 +104,9 @@ namespace SantaCasaLorena.Server.Services
                 Id = entity.Id,
                 Username = entity.Username,
                 Email = entity.Email,
-                PhotoUrl = entity.PhotoUrl
+                PhotoUrl = entity.PhotoUrl,
+                CreatedAt = entity.CreatedAt,
+                IsActive = entity.IsActive
             };
         }
 
@@ -114,23 +120,72 @@ namespace SantaCasaLorena.Server.Services
             return true;
         }
 
+        public async Task<UserResponseDto?> ToggleActiveAsync(Guid id)
+        {
+            var entity = await _context.Users.FirstOrDefaultAsync(c => c.Id == id);
+            if (entity == null)
+                return null;
+
+            entity.IsActive = !entity.IsActive;
+
+            await _context.SaveChangesAsync();
+
+            return new UserResponseDto
+            {
+                Id = entity.Id,
+                Username = entity.Username,
+                Email = entity.Email,
+                PhotoUrl = entity.PhotoUrl,
+                CreatedAt = entity.CreatedAt,
+                IsActive = entity.IsActive
+            };
+
+        }
+
+        public async Task<bool> BulkDeleteAsync(IEnumerable<Guid> ids)
+        {
+            var entity = await _context.Users
+                .Where(c => ids.Contains(c.Id))
+                .ToListAsync();
+
+            if (!entity.Any()) return false;
+
+            _context.Users.RemoveRange(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> BulkToggleActiveAsync(IEnumerable<Guid> ids, bool activate)
+        {
+            var entity = await _context.Users
+                .Where(c => ids.Contains(c.Id))
+                .ToListAsync();
+
+            if (entity.Count == 0) return false;
+
+            foreach (var c in entity)
+            {
+                c.IsActive = activate;
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+
         private static async Task<string?> ProcessarMidiasAsync(IFormFile midia)
         {
             if (midia == null) return null;
 
-            // Define o caminho para a pasta "Usuarios"
             var baseDirectory = Path.Combine("Uploads", "Usuarios").Replace("\\", "/");
 
-            // Verifica se a pasta "Usuarios" existe, e a cria caso não exista
             if (!Directory.Exists(baseDirectory))
             {
                 Directory.CreateDirectory(baseDirectory);
             }
 
-            // Gera o caminho completo para o arquivo dentro da pasta "Usuarios"
             var filePath = Path.Combine(baseDirectory, Guid.NewGuid() + Path.GetExtension(midia.FileName)).Replace("\\", "/");
 
-            // Salva o arquivo no caminho especificado
             await using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await midia.CopyToAsync(stream);

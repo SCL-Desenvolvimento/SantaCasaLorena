@@ -1,0 +1,236 @@
+<div class="user-list-container">
+  <!-- Page Header -->
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="page-title mb-1">Gerenciar Usuários</h2>
+        <p class="page-subtitle text-muted mb-0">
+          Gerencie todos os usuários do sistema
+        </p>
+      </div>
+      <button class="btn btn-primary btn-lg" (click)="createUser()">
+        <i class="bi bi-plus-circle me-2"></i>
+        Novo Usuário
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="card shadow-sm border-0 rounded-3 mb-4">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <!-- Search -->
+        <div class="col-md-4">
+          <label class="form-label">Buscar</label>
+          <div class="input-group">
+            <input type="text"
+                   class="form-control"
+                   placeholder="Buscar por nome ou email..."
+                   [(ngModel)]="searchTerm"
+                   (input)="onSearchInput()" />
+            <button class="btn btn-outline-secondary" type="button" (click)="onSearch()">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Role Filter -->
+        <div class="col-md-3">
+          <label class="form-label">Papel</label>
+          <select class="form-select" [(ngModel)]="roleFilter" (change)="applyFilters()">
+            <option value="all">Todos os Papéis</option>
+            <option *ngFor="let role of roles" [value]="role.value">
+              {{ role.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Status Filter (isActive) -->
+        <div class="col-md-2">
+          <label class="form-label">Status</label>
+          <select class="form-select" [(ngModel)]="isActiveFilter" (change)="applyFilters()">
+            <option value="all">Todos</option>
+            <option value="true">Ativo</option>
+            <option value="false">Inativo</option>
+          </select>
+        </div>
+
+        <!-- Items per page -->
+        <div class="col-md-2">
+          <label class="form-label">Itens por página</label>
+          <select class="form-select" [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+            <option [value]="25">25</option>
+            <option [value]="50">50</option>
+          </select>
+        </div>
+
+        <!-- Clear Filters -->
+        <div class="col-md-1 d-flex align-items-end">
+          <button class="btn btn-outline-secondary w-100"
+                  (click)="clearFilters()"
+                  title="Limpar filtros">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Actions -->
+  <div class="bulk-actions mb-3" *ngIf="selectedItems.length > 0">
+    <div class="alert alert-info d-flex justify-content-between align-items-center">
+      <span>
+        <i class="bi bi-check-square me-2"></i>
+        {{ selectedItems.length }} item(s) selecionado(s)
+      </span>
+      <div class="btn-group">
+        <button class="btn btn-sm btn-success" (click)="bulkActivate()">
+          <i class="bi bi-check-circle me-1"></i>
+          Ativar
+        </button>
+        <button class="btn btn-sm btn-warning" (click)="bulkDeactivate()">
+          <i class="bi bi-slash-circle me-1"></i>
+          Desativar
+        </button>
+        <button class="btn btn-sm btn-danger" (click)="bulkDelete()">
+          <i class="bi bi-trash me-1"></i>
+          Excluir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="text-center py-5" *ngIf="loading">
+    <app-loading-spinner message="Carregando usuários..."></app-loading-spinner>
+  </div>
+
+  <!-- Users Table -->
+  <div class="card shadow-sm border-0 rounded-3" *ngIf="!loading">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th width="50">
+              <div class="form-check">
+                <input class="form-check-input"
+                       type="checkbox"
+                       [checked]="selectAll"
+                       (change)="toggleSelectAll($event)" />
+              </div>
+            </th>
+            <th class="sortable" (click)="onSort('username')">
+              Nome
+              <i class="bi ms-1" [ngClass]="sortIcon('username')"></i>
+            </th>
+            <th>Email</th>
+            <th class="sortable" (click)="onSort('role')">
+              Papel
+              <i class="bi ms-1" [ngClass]="sortIcon('role')"></i>
+            </th>
+            <th>Status</th>
+            <th class="sortable" (click)="onSort('createdAt')">
+              Data de Criação
+              <i class="bi ms-1" [ngClass]="sortIcon('createdAt')"></i>
+            </th>
+            <th width="150">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of paginatedUsers" [class.table-active]="isSelected(item.id)">
+            <td>
+              <div class="form-check">
+                <input class="form-check-input"
+                       type="checkbox"
+                       [checked]="isSelected(item.id)"
+                       (change)="toggleItemSelection(item.id)" />
+              </div>
+            </td>
+            <td>
+              <div class="user-name">
+                <h6 class="mb-1">{{ item.username }}</h6>
+                <small class="text-muted">{{ item.email }}</small>
+              </div>
+            </td>
+            <td>{{ item.email }}</td>
+            <td>
+              <span class="badge bg-info">{{ getRoleText(item.role) }}</span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="item.isActive ? 'bg-success' : 'bg-danger'">
+                <i class="bi me-1" [ngClass]="item.isActive ? 'bi-check-circle' : 'bi-slash-circle'"></i>
+                {{ item.isActive ? 'Ativo' : 'Inativo' }}
+              </span>
+            </td>
+            <td>
+              <small class="text-muted">{{ formatDate(item.createdAt) }}</small>
+            </td>
+            <td>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-primary" (click)="editUser(item.id)" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" (click)="toggleSingleStatus(item)" title="Ativar/Desativar">
+                  <i class="bi" [ngClass]="item.isActive ? 'bi-toggle-on' : 'bi-toggle-off'"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="deleteUser(item.id)" title="Excluir">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div class="text-center py-5" *ngIf="filteredUsers.length === 0 && !loading">
+      <div class="empty-state">
+        <i class="bi bi-people display-1 text-muted"></i>
+        <h5 class="mt-3">Nenhum usuário encontrado</h5>
+        <p class="text-muted">
+          {{ searchTerm || roleFilter !== 'all' || isActiveFilter !== 'all' ? 'Tente ajustar os filtros de busca' : 'Comece cadastrando seu primeiro usuário' }}
+        </p>
+        <button class="btn btn-primary" (click)="createUser()" *ngIf="!searchTerm && roleFilter === 'all' && isActiveFilter === 'all'">
+          <i class="bi bi-plus-circle me-2"></i>
+          Cadastrar primeiro usuário
+        </button>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="card-footer bg-light" *ngIf="totalPages > 1">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="pagination-info">
+          <small class="text-muted">
+            Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} a
+            {{ getMin(currentPage * itemsPerPage, totalItems) }} de
+            {{ totalItems }} resultados
+          </small>
+        </div>
+
+        <nav>
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <button class="page-link" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+            </li>
+
+            <li class="page-item" *ngFor="let page of pagesArray" [class.active]="currentPage === page">
+              <button class="page-link" (click)="onPageChange(page)">{{ page }}</button>
+            </li>
+
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <button class="page-link" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

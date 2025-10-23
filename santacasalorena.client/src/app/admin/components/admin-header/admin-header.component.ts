@@ -1,17 +1,35 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { User } from '../../../models/user';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth.service'; 
 
 @Component({
   selector: 'app-admin-header',
   standalone: false,
   templateUrl: './admin-header.component.html',
-  styleUrl: './admin-header.component.css'
+  styleUrls: ['./admin-header.component.css']
 })
 export class AdminHeaderComponent {
-  @Input() user: User | null = null;
-  @Output() logout = new EventEmitter<void>();
+  @Input() pageTitle = '';
+  @Input() breadcrumbs: string[] = [];
+  @Output() toggleSidebar = new EventEmitter<void>();
 
-  onLogout() {
-    this.logout.emit();
+  showUserMenu = false;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) { }
+
+  onToggleSidebar(): void {
+    this.toggleSidebar.emit();
+  }
+
+  toggleUserMenu(): void {
+    this.showUserMenu = !this.showUserMenu;
+  }
+
+  logout(): void {
+    this.authService.logout();      
+    this.router.navigate(['/login']);
   }
 }

@@ -14,25 +14,31 @@ export class AgreementService {
 
   getAll(): Observable<Agreement[]> {
     return this.http.get<Agreement[]>(this.apiUrl).pipe(
-      map(r => r),
+      map(response => response.map(item => ({
+        ...item,
+        imageUrl: `${environment.imageServerUrl}${item.imageUrl}`
+      }))),
       catchError(this.handleError)
     );
   }
 
   getById(id: string): Observable<Agreement> {
     return this.http.get<Agreement>(`${this.apiUrl}/${id}`).pipe(
-      map(r => r),
+      map(response => ({
+        ...response,
+        imageUrl: `${environment.imageServerUrl}${response.imageUrl}`
+      })),
       catchError(this.handleError)
     );
   }
 
-  create(dto: any): Observable<Agreement> {
+  create(dto: FormData): Observable<Agreement> {
     return this.http.post<Agreement>(this.apiUrl, dto).pipe(
       catchError(this.handleError)
     );
   }
 
-  update(id: string, dto: any): Observable<Agreement> {
+  update(id: string, dto: FormData): Observable<Agreement> {
     return this.http.put<Agreement>(`${this.apiUrl}/${id}`, dto).pipe(
       catchError(this.handleError)
     );
@@ -44,14 +50,20 @@ export class AgreementService {
     );
   }
 
+  updateAgreementStatus(id: string, status: boolean): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${id}/status`, { status }).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Ocorreu um erro. Tente novamente mais tarde.';
     if (error.error instanceof ErrorEvent) {
       errorMessage = `Erro: ${error.error.message}`;
     } else {
-      errorMessage = error.error?.error || errorMessage;
+      errorMessage = error.error?.message || error.statusText || errorMessage;
     }
     return throwError(() => new Error(errorMessage));
   }
 }
+

@@ -26,6 +26,7 @@
         // Caminho do arquivo
         public required string FileUrl { get; set; }
 
+        public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

@@ -1,45 +1,102 @@
-// Modules
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QuillModule } from 'ngx-quill';
 import { AdminRoutingModule } from './admin-routing.module';
-import { ReactiveFormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
-// Components
+// Layout Components
 import { AdminComponent } from './admin.component';
+import { AdminLayoutComponent } from './layout/admin-layout/admin-layout.component';
 import { AdminHeaderComponent } from './components/admin-header/admin-header.component';
 import { AdminFooterComponent } from './components/admin-footer/admin-footer.component';
-import { AdminLayoutComponent } from './layout/admin-layout/admin-layout.component';
+import { AdminSidebarComponent } from './components/admin-sidebar/admin-sidebar.component';
 
-//Interceptors
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+// Dashboard Components
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { NewsComponent } from './pages/news/news.component';
-import { ContactsComponent } from './pages/contacts/contacts.component';
-import { ConveniosComponent } from './pages/convenios/convenios.component';
-import { EntityDialogComponent } from './components/entity-dialog/entity-dialog.component';
-import { HomeBannerComponent } from './pages/home-banner/home-banner.component';
-import { ProviderComponent } from './pages/provider/provider.component';
-import { TransparencyPortalComponent } from './pages/transparency-portal/transparency-portal.component';
-import { UsersComponent } from './pages/user/users.component';
+import { StatsCardComponent } from './components/stats-card/stats-card.component';
+import { RecentItemsComponent } from './components/recent-items/recent-items.component';
+
+// News Management Components
+import { NewsListComponent } from './pages/news/news-list/news-list.component';
+import { NewsFormComponent } from './pages/news/news-form/news-form.component';
+import { NewsViewComponent } from './pages/news/news-view/news-view.component';
+
+// Banner Management Components
+import { BannerListComponent } from './pages/banners/banner-list/banner-list.component';
+import { BannerFormComponent } from './pages/banners/banner-form/banner-form.component';
+
+// Contact Management Components
+import { ContactListComponent } from './pages/contacts/contact-list/contact-list.component';
+import { ContactNewComponent } from './pages/contacts/contact-new/contact-new.component';
+
+// Convenios Management Components
+import { ConveniosListComponent } from './pages/convenios/convenios-list/convenios-list.component';
+import { ConveniosFormComponent } from './pages/convenios/convenios-form/convenios-form.component';
+
+// Provider Management Components
+import { ProviderListComponent } from './pages/providers/provider-list/provider-list.component';
+import { ProviderFormComponent } from './pages/providers/provider-form/provider-form.component';
+
+// Transparency Portal Components
+import { TransparencyListComponent } from './pages/transparency/transparency-list/transparency-list.component';
+import { TransparencyFormComponent } from './pages/transparency/transparency-form/transparency-form.component';
+
+// User Management Components
+import { UserListComponent } from './pages/users/user-list/user-list.component';
+import { UserFormComponent } from './pages/users/user-form/user-form.component';
+
+// Shared Components
+import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
+
+// Interceptors
 import { AuthInterceptor } from '../guards/auth.interceptor';
 
 @NgModule({
   declarations: [
+    // Layout
     AdminComponent,
+    AdminLayoutComponent,
     AdminHeaderComponent,
     AdminFooterComponent,
-    AdminLayoutComponent,
+    AdminSidebarComponent,
+    
+    // Dashboard
     DashboardComponent,
-    NewsComponent,
-    ContactsComponent,
-    ConveniosComponent,
-    EntityDialogComponent,
-    HomeBannerComponent,
-    ProviderComponent,
-    TransparencyPortalComponent,
-    UsersComponent
+    StatsCardComponent,
+    RecentItemsComponent,
+    
+    // News
+    NewsListComponent,
+    NewsFormComponent,
+    NewsViewComponent,
+    
+    // Banners
+    BannerListComponent,
+    BannerFormComponent,
+    
+    // Contacts
+    ContactListComponent,
+    ContactNewComponent,
+
+    // Convenios
+    ConveniosListComponent,
+    ConveniosFormComponent,
+    
+    // Providers
+    ProviderListComponent,
+    ProviderFormComponent,
+    
+    // Transparency
+    TransparencyListComponent,
+    TransparencyFormComponent,
+    
+    // Users
+    UserListComponent,
+    UserFormComponent,
+        
+    // Shared
+    LoadingSpinnerComponent,
   ],
   imports: [
     CommonModule,
@@ -51,7 +108,8 @@ import { AuthInterceptor } from '../guards/auth.interceptor';
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor, multi: true
+      useClass: AuthInterceptor,
+      multi: true
     }
   ]
 })

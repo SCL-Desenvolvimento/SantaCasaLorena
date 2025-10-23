@@ -35,7 +35,6 @@ export class NewsDetailComponent implements OnInit {
     this.newsService.getById(id).subscribe({
       next: (res) => {
         this.news = res;
-        this.news.imageUrl = `${environment.imageServerUrl}${this.news.imageUrl}`;
         this.loading = false;
       },
       error: () => {
@@ -49,10 +48,7 @@ export class NewsDetailComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     this.newsService.getAll().subscribe({
       next: (res) => {
-        this.relatedNews = res.filter(n => n.id !== id).map(n => ({
-          ...n,
-          imageUrl: `${environment.imageServerUrl}${n.imageUrl}`
-        }));
+        this.relatedNews = res.filter(n => n.id !== id);
       }
     });
   }

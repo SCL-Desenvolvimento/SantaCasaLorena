@@ -22,7 +22,9 @@ namespace SantaCasaLorena.Server.Services
                 {
                     Id = a.Id,
                     Name = a.Name,
-                    imageUrl = a.ImageUrl
+                    ImageUrl = a.ImageUrl,
+                    CreatedAt = a.CreatedAt,
+                    IsActive = a.IsActive
                 })
                 .ToListAsync();
         }
@@ -35,7 +37,9 @@ namespace SantaCasaLorena.Server.Services
                 {
                     Id = a.Id,
                     Name = a.Name,
-                    imageUrl = a.ImageUrl
+                    ImageUrl = a.ImageUrl,
+                    CreatedAt = a.CreatedAt,
+                    IsActive = a.IsActive
                 })
                 .FirstOrDefaultAsync();
         }
@@ -45,7 +49,8 @@ namespace SantaCasaLorena.Server.Services
             var entity = new Agreement
             {
                 Name = dto.Name,
-                ImageUrl = await ProcessarMidiasAsync(dto.File)
+                ImageUrl = await ProcessarMidiasAsync(dto.File),
+                IsActive = dto.IsActive
             };
 
             _context.Agreements.Add(entity);
@@ -55,7 +60,9 @@ namespace SantaCasaLorena.Server.Services
             {
                 Id = entity.Id,
                 Name = entity.Name,
-                imageUrl = entity.ImageUrl
+                ImageUrl = entity.ImageUrl,
+                CreatedAt = entity.CreatedAt,
+                IsActive = entity.IsActive
             };
         }
 
@@ -65,6 +72,7 @@ namespace SantaCasaLorena.Server.Services
             if (entity == null) throw new Exception("Convênio não encontrado");
 
             entity.Name = dto.Name;
+            entity.IsActive = dto.IsActive;
 
             if (!string.IsNullOrEmpty(entity.ImageUrl) && dto.File != null)
             {
@@ -86,7 +94,9 @@ namespace SantaCasaLorena.Server.Services
             {
                 Id = entity.Id,
                 Name = entity.Name,
-                imageUrl = entity.ImageUrl
+                ImageUrl = entity.ImageUrl,
+                CreatedAt = entity.CreatedAt,
+                IsActive = entity.IsActive
             };
         }
 

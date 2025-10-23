@@ -1,0 +1,326 @@
+<div class="news-form-container">
+  <!-- Loading State -->
+  <div class="loading-overlay" *ngIf="loading">
+    <app-loading-spinner message="Carregando notícia..."></app-loading-spinner>
+  </div>
+
+  <!-- Form Content -->
+  <div class="news-form-content" *ngIf="!loading">
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="page-title mb-1">
+            {{ isEditMode ? 'Editar Notícia' : 'Nova Notícia' }}
+          </h2>
+          <p class="page-subtitle text-muted mb-0">
+            {{ isEditMode ? 'Atualize as informações da notícia' : 'Preencha os dados para criar uma nova notícia' }}
+          </p>
+        </div>
+
+        <div class="header-actions">
+          <button type="button"
+                  class="btn btn-outline-secondary me-2"
+                  (click)="cancel()">
+            <i class="bi bi-x-lg me-2"></i>
+            Cancelar
+          </button>
+          <button type="button"
+                  class="btn btn-outline-primary me-2"
+                  (click)="previewNews()"
+                  [disabled]="newsForm.invalid">
+            <i class="bi bi-eye me-2"></i>
+            Visualizar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <form [formGroup]="newsForm" (ngSubmit)="save()">
+      <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+          <!-- Basic Information -->
+          <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">
+                <i class="bi bi-info-circle me-2"></i>
+                Informações Básicas
+              </h5>
+            </div>
+            <div class="card-body">
+              <!-- Title -->
+              <div class="mb-3">
+                <label class="form-label required">Título</label>
+                <input type="text"
+                       class="form-control"
+                       formControlName="title"
+                       placeholder="Digite o título da notícia..."
+                       [class.is-invalid]="isFieldInvalid('title')"
+                       (blur)="generateSeoFromTitle()">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('title')">
+                  {{ getFieldError('title') }}
+                </div>
+                <div class="form-text">
+                  {{ newsForm.get('title')?.value?.length || 0 }}/200 caracteres
+                </div>
+              </div>
+
+              <!-- description -->
+              <div class="mb-3">
+                <label class="form-label required">Resumo</label>
+                <textarea class="form-control"
+                          formControlName="description"
+                          rows="3"
+                          placeholder="Digite um resumo da notícia..."
+                          [class.is-invalid]="isFieldInvalid('description')"
+                          (blur)="generateSeoFromDescription()"></textarea>
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('description')">
+                  {{ getFieldError('description') }}
+                </div>
+                <div class="form-text">
+                  {{ newsForm.get('description')?.value?.length || 0 }}/300 caracteres
+                </div>
+              </div>
+
+              <!-- Content -->
+              <div class="mb-3">
+                <label class="form-label required">Conteúdo</label>
+                <quill-editor formControlName="content"
+                              [modules]="editorConfig"
+                              placeholder="Digite o conteúdo completo da notícia..."
+                              [class.is-invalid]="isFieldInvalid('content')">
+                </quill-editor>
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('content')">
+                  {{ getFieldError('content') }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SEO Settings -->
+          <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">
+                <i class="bi bi-search me-2"></i>
+                Configurações de SEO
+              </h5>
+            </div>
+            <div class="card-body">
+              <!-- SEO Title -->
+              <div class="mb-3">
+                <label class="form-label">Título SEO</label>
+                <input type="text"
+                       class="form-control"
+                       formControlName="seoTitle"
+                       placeholder="Título otimizado para mecanismos de busca..."
+                       [class.is-invalid]="isFieldInvalid('seoTitle')">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('seoTitle')">
+                  {{ getFieldError('seoTitle') }}
+                </div>
+                <div class="form-text">
+                  {{ newsForm.get('seoTitle')?.value?.length || 0 }}/60 caracteres
+                </div>
+              </div>
+
+              <!-- SEO Description -->
+              <div class="mb-3">
+                <label class="form-label">Descrição SEO</label>
+                <textarea class="form-control"
+                          formControlName="seoDescription"
+                          rows="2"
+                          placeholder="Descrição otimizada para mecanismos de busca..."
+                          [class.is-invalid]="isFieldInvalid('seoDescription')"></textarea>
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('seoDescription')">
+                  {{ getFieldError('seoDescription') }}
+                </div>
+                <div class="form-text">
+                  {{ newsForm.get('seoDescription')?.value?.length || 0 }}/160 caracteres
+                </div>
+              </div>
+
+              <!-- SEO Keywords -->
+              <div class="mb-3">
+                <label class="form-label">Palavras-chave SEO</label>
+                <input type="text"
+                       class="form-control"
+                       formControlName="seoKeywords"
+                       placeholder="palavra1, palavra2, palavra3..."
+                       [class.is-invalid]="isFieldInvalid('seoKeywords')">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('seoKeywords')">
+                  {{ getFieldError('seoKeywords') }}
+                </div>
+                <div class="form-text">
+                  Separe as palavras-chave com vírgulas
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+          <!-- Publish Settings -->
+          <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">
+                <i class="bi bi-gear me-2"></i>
+                Configurações de Publicação
+              </h5>
+            </div>
+            <div class="card-body">
+              <!-- Category -->
+              <div class="mb-3">
+                <label class="form-label required">Categoria</label>
+                <select class="form-select"
+                        formControlName="category"
+                        [class.is-invalid]="isFieldInvalid('category')">
+                  <option value="">Selecione uma categoria</option>
+                  <option *ngFor="let category of categories" [value]="category">
+                    {{ category }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('category')">
+                  {{ getFieldError('category') }}
+                </div>
+              </div>
+
+              <!-- Publish Status -->
+              <div class="mb-3">
+                <div class="form-check form-switch">
+                  <input class="form-check-input"
+                         type="checkbox"
+                         formControlName="isPublished"
+                         (change)="onPublishToggle()">
+                  <label class="form-check-label">
+                    Publicar imediatamente
+                  </label>
+                </div>
+              </div>
+
+              <!-- Publish Date -->
+              <div class="mb-3" *ngIf="newsForm.get('isPublished')?.value">
+                <label class="form-label">Data de Publicação</label>
+                <input type="datetime-local"
+                       class="form-control"
+                       formControlName="publishedAt">
+              </div>
+            </div>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">
+                <i class="bi bi-image me-2"></i>
+                Imagem Destacada
+              </h5>
+            </div>
+            <div class="card-body">
+              <!-- Image Preview -->
+              <div class="image-preview mb-3" *ngIf="imagePreview">
+                <img [src]="imagePreview" alt="Preview" class="img-fluid rounded">
+                <button type="button"
+                        class="btn btn-sm btn-danger image-remove-btn"
+                        (click)="removeImage()">
+                  <i class="bi bi-x"></i>
+                </button>
+              </div>
+
+              <!-- Upload Area -->
+              <div class="upload-area" *ngIf="!imagePreview">
+                <input type="file"
+                       id="imageInput"
+                       class="d-none"
+                       accept="image/*"
+                       (change)="onImageSelected($event)">
+                <label for="imageInput" class="upload-label">
+                  <i class="bi bi-cloud-upload display-4 text-muted"></i>
+                  <p class="mt-2 mb-1">Clique para selecionar uma imagem</p>
+                  <small class="text-muted">PNG, JPG até 5MB</small>
+                </label>
+              </div>
+
+              <!-- Change Image Button -->
+              <button type="button"
+                      class="btn btn-outline-secondary w-100"
+                      *ngIf="imagePreview"                      (click)="triggerFileInput()">                <i class="bi bi-arrow-repeat me-2"></i>
+                Alterar Imagem
+              </button>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">
+                <i class="bi bi-tags me-2"></i>
+                Tags
+              </h5>
+            </div>
+            <div class="card-body">
+              <!-- Selected Tags -->
+              <div class="selected-tags mb-3" *ngIf="selectedTags.length > 0">
+                <span class="badge bg-primary me-1 mb-1"
+                      *ngFor="let tag of selectedTags">
+                  {{ tag }}
+                  <button type="button"
+                          class="btn-close btn-close-white ms-1"
+                          (click)="removeTag(tag)"></button>
+                </span>
+              </div>
+
+              <!-- Available Tags -->
+              <div class="available-tags mb-3">
+                <small class="text-muted d-block mb-2">Tags sugeridas:</small>
+                <button type="button"
+                        class="btn btn-sm btn-outline-secondary me-1 mb-1"
+                        *ngFor="let tag of availableTags"
+                        [disabled]="selectedTags.includes(tag)"
+                        (click)="addTag(tag)">
+                  {{ tag }}
+                </button>
+              </div>
+
+              <!-- Custom Tag Input -->
+              <div class="custom-tag-input">
+                <input type="text"
+                       class="form-control form-control-sm"
+                       placeholder="Digite uma tag personalizada..."
+                       (keyup.enter)="addCustomTag($event)">
+                <small class="form-text text-muted">
+                  Pressione Enter para adicionar
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body">
+              <div class="d-grid gap-2">
+                <button type="button"
+                        class="btn btn-success btn-lg"
+                        (click)="publishNews()"
+                        [disabled]="newsForm.invalid || saving">
+                  <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
+                  <i class="bi bi-check-circle me-2" *ngIf="!saving"></i>
+                  {{ isEditMode ? 'Atualizar e Publicar' : 'Publicar Notícia' }}
+                </button>
+
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        (click)="saveDraft()"
+                        [disabled]="newsForm.invalid || saving">
+                  <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
+                  <i class="bi bi-save me-2" *ngIf="!saving"></i>
+                  Salvar como Rascunho
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

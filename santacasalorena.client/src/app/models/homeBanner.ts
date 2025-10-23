@@ -1,9 +1,14 @@
 export interface HomeBanner {
   id: string;
+  title: string;
+  description?: string;
   desktopImageUrl: string;
   tabletImageUrl: string;
   mobileImageUrl: string;
-  timeSeconds: number;
   order: number;
-  newsId: string | null;
+  timeSeconds: number;
+  createdAt: string;
+  isActive: boolean;
+  newsId: string;
+  newsTitle: string;
 }

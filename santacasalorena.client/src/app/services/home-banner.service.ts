@@ -14,25 +14,35 @@ export class HomeBannerService {
 
   getAll(): Observable<HomeBanner[]> {
     return this.http.get<HomeBanner[]>(this.apiUrl).pipe(
-      map(r => r),
+      map(response => response.map(item => ({
+        ...item,
+        desktopImageUrl: `${environment.imageServerUrl}${item.desktopImageUrl}`,
+        mobileImageUrl: `${environment.imageServerUrl}${item.mobileImageUrl}`,
+        tabletImageUrl: `${environment.imageServerUrl}${item.tabletImageUrl}`
+      }))),
       catchError(this.handleError)
     );
   }
 
   getById(id: string): Observable<HomeBanner> {
     return this.http.get<HomeBanner>(`${this.apiUrl}/${id}`).pipe(
-      map(r => r),
+      map(response => ({
+        ...response,
+        desktopImageUrl: `${environment.imageServerUrl}${response.desktopImageUrl}`,
+        mobileImageUrl: `${environment.imageServerUrl}${response.mobileImageUrl}`,
+        tabletImageUrl: `${environment.imageServerUrl}${response.tabletImageUrl}`
+      })),
       catchError(this.handleError)
     );
   }
 
-  create(dto: any): Observable<HomeBanner> {
+  create(dto: FormData): Observable<HomeBanner> {
     return this.http.post<HomeBanner>(this.apiUrl, dto).pipe(
       catchError(this.handleError)
     );
   }
 
-  update(id: string, dto: any): Observable<HomeBanner> {
+  update(id: string, dto: FormData): Observable<HomeBanner> {
     return this.http.put<HomeBanner>(`${this.apiUrl}/${id}`, dto).pipe(
       catchError(this.handleError)
     );
@@ -44,6 +54,17 @@ export class HomeBannerService {
     );
   }
 
+  updateBannerStatus(id: string, isActive: boolean): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/status?status=${isActive}`, null).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateBannerOrder(id: string, order: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/order?order=${order}`, null).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Ocorreu um erro. Tente novamente mais tarde.';
@@ -55,3 +76,4 @@ export class HomeBannerService {
     return throwError(() => new Error(errorMessage));
   }
 }
+

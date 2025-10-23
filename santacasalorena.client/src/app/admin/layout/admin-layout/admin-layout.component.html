@@ -1,138 +1,27 @@
-<div class="min-h-screen bg-light">
-  <!-- Header -->
-  <app-admin-header [user]="user()" (logout)="handleLogout()"></app-admin-header>
+<div class="admin-layout" [class.sidebar-collapsed]="sidebarCollapsed">
+  <!-- Sidebar -->
+  <app-admin-sidebar 
+    [collapsed]="sidebarCollapsed"
+    [currentRoute]="currentRoute">
+  </app-admin-sidebar>
 
-  <!-- Main Content -->
-  <div class="container-fluid py-4">
-    <!-- Tabs Navigation -->
-    <ul class="nav nav-tabs mb-4" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link"
-                [class.active]="activeTab() === 'dashboard'"
-                (click)="setActiveTab('dashboard')">
-          <i class="bi bi-speedometer2 me-2"></i> Dashboard
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link"
-                [class.active]="activeTab() === 'news'"
-                (click)="setActiveTab('news')">
-          <i class="bi bi-newspaper me-2"></i> Notícias
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link"
-                [class.active]="activeTab() === 'convenios'"
-                (click)="setActiveTab('convenios')">
-          <i class="bi bi-people me-2"></i> Convênios
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link"
-                [class.active]="activeTab() === 'contacts'"
-                (click)="setActiveTab('contacts')">
-          <i class="bi bi-chat-dots me-2"></i> Contatos
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link"
-                [class.active]="activeTab() === 'homeBanner'"
-                (click)="setActiveTab('homeBanner')">
-          <i class="bi bi-image me-2"></i> Banners
-        </button>
-      </li>
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <!-- Header -->
+    <app-admin-header 
+      [pageTitle]="pageTitle"
+      [breadcrumbs]="breadcrumbs"
+      (toggleSidebar)="toggleSidebar()">
+    </app-admin-header>
 
-      <li class="nav-item" role="presentation">
-        <button class="nav-link"
-                [class.active]="activeTab() === 'provider'"
-                (click)="setActiveTab('provider')">
-          <i class="bi bi-hospital me-2"></i> Provedores
-        </button>
-      </li>
+    <!-- Page Content -->
+    <main class="page-content">
+      <div class="container-fluid">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
 
-      <li class="nav-item" role="presentation">
-        <button class="nav-link"
-                [class.active]="activeTab() === 'transparencyPortal'"
-                (click)="setActiveTab('transparencyPortal')">
-          <i class="bi bi-archive me-2"></i> Transparência
-        </button>
-      </li>
-
-      <li class="nav-item" role="presentation">
-        <button class="nav-link"
-                [class.active]="activeTab() === 'user'"
-                (click)="setActiveTab('user')">
-          <i class="bi bi-person-badge me-2"></i> Usuários
-        </button>
-      </li>
-
-    </ul>
-
-    <!-- Tab Content -->
-    <div [ngSwitch]="activeTab()">
-      <app-dashboard *ngSwitchCase="'dashboard'"
-                     [stats]="stats()"
-                     [news]="news()"
-                     [contacts]="contacts()">
-      </app-dashboard>
-
-      <app-news *ngSwitchCase="'news'"
-                [news]="news()"
-                (createNews)="openEditDialog('news')"
-                (editNews)="openEditDialog('news', $event)"
-                (deleteNews)="handleDelete('news', $event)">
-      </app-news>
-
-      <app-convenios *ngSwitchCase="'convenios'"
-                     [convenios]="convenios()"
-                     (createConvenio)="openEditDialog('convenios')"
-                     (editConvenio)="openEditDialog('convenios', $event)"
-                     (deleteConvenio)="handleDelete('convenios', $event)">
-      </app-convenios>
-
-      <app-contacts *ngSwitchCase="'contacts'"
-                    [contacts]="contacts()"
-                    (markAsRead)="markAsRead($event)"
-                    (deleteContact)="handleDelete('contacts', $event)">
-      </app-contacts>
-
-      <app-home-banner *ngSwitchCase="'homeBanner'"
-                       [banners]="homeBanners()"
-                       (createBanner)="openEditDialog('homeBanner')"
-                       (editBanner)="openEditDialog('homeBanner', $event)"
-                       (deleteBanner)="handleDelete('homeBanner', $event)">
-      </app-home-banner>
-
-      <app-provider *ngSwitchCase="'provider'"
-                    [providers]="providers()"
-                    (createProvider)="openEditDialog('provider')"
-                    (editProvider)="openEditDialog('provider', $event)"
-                    (deleteProvider)="handleDelete('provider', $event)">
-      </app-provider>
-
-      <app-transparency-portal *ngSwitchCase="'transparencyPortal'"
-                               [items]="transparencyPortal()"
-                               (createItem)="openEditDialog('transparencyPortal')"
-                               (editItem)="openEditDialog('transparencyPortal', $event)"
-                               (deleteItem)="handleDelete('transparencyPortal', $event)">
-      </app-transparency-portal>
-
-      <app-users *ngSwitchCase="'user'"
-                 [users]="users()"
-                 (createUser)="openEditDialog('user')"
-                 (editUser)="openEditDialog('user', $event)"
-                 (deleteUser)="handleDelete('user', $event)">
-      </app-users>
-
-    </div>
+    <!-- Footer -->
+    <app-admin-footer></app-admin-footer>
   </div>
-
-  <!-- Modal Create/Edit -->
-  <app-entity-dialog *ngIf="isDialogOpen()"
-                     [activeTab]="activeTab()"
-                     [editingItem]="editingItem()"
-                     [formData]="formData()"
-                     (save)="handleSave($event)"
-                     (close)="closeDialog()">
-  </app-entity-dialog>
 </div>

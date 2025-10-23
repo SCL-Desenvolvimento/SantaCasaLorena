@@ -1,0 +1,224 @@
+<div class="banner-form-container">
+  <div class="page-header mb-4 d-flex justify-content-between align-items-center">
+    <div>
+      <h2 class="page-title mb-1">
+        {{ isEditMode ? 'Editar Banner' : 'Novo Banner' }}
+      </h2>
+      <p class="page-subtitle text-muted mb-0">
+        {{ isEditMode ? 'Atualize as imagens e informações do banner' : 'Preencha os dados para cadastrar um novo banner' }}
+      </p>
+    </div>
+    <button class="btn btn-outline-secondary" (click)="cancel()">
+      <i class="bi bi-arrow-left me-2"></i> Voltar
+    </button>
+  </div>
+
+  <!-- Loading do Banner -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+    <p class="mt-2 text-muted">Carregando banner...</p>
+  </div>
+
+  <!-- Formulário -->
+  <div *ngIf="!loading" class="card shadow-sm border-0 rounded-3">
+    <div class="card-body">
+      <form [formGroup]="bannerForm" (ngSubmit)="save()">
+        <div class="row">
+          <!-- Coluna Esquerda -->
+          <div class="col-md-8">
+            <!-- Título -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Título *</label>
+              <input type="text"
+                     class="form-control"
+                     formControlName="title"
+                     placeholder="Digite o título do banner"
+                     [class.is-invalid]="title?.invalid && title?.touched">
+              <div *ngIf="title?.invalid && title?.touched" class="invalid-feedback">
+                <div *ngIf="title?.errors?.['required']">Título é obrigatório</div>
+                <div *ngIf="title?.errors?.['maxlength']">Máximo de 200 caracteres</div>
+              </div>
+            </div>
+
+            <!-- Descrição -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Descrição</label>
+              <textarea class="form-control"
+                        formControlName="description"
+                        rows="3"
+                        placeholder="Digite uma descrição (opcional)"></textarea>
+              <div class="form-text">{{ description?.value?.length || 0 }}/500 caracteres</div>
+            </div>
+
+            <!-- Upload Desktop -->
+            <div class="mb-4 p-3 border rounded">
+              <label class="form-label fw-bold">{{ IMAGE_SIZES.desktop.label }} {{ !isEditMode ? '*' : '' }}</label>
+              <input type="file"
+                     class="form-control"
+                     id="desktopFile"
+                     (change)="onImageSelected($event, 'desktop')"
+                     accept="image/*">
+              <div class="form-text text-muted">
+                Formato: JPG, PNG ou WebP. Tamanho máximo: 5MB
+              </div>
+
+              <!-- Preview -->
+              <div class="mt-2" *ngIf="previews.desktop">
+                <img [src]="previews.desktop"
+                     class="img-thumbnail"
+                     style="max-width: 300px; max-height: 150px; object-fit: contain;">
+                <button type="button"
+                        class="btn btn-sm btn-outline-danger ms-2"
+                        (click)="removeImage('desktop')">
+                  <i class="bi bi-x-circle"></i> Remover
+                </button>
+              </div>
+            </div>
+
+            <!-- Upload Tablet -->
+            <div class="mb-4 p-3 border rounded">
+              <label class="form-label fw-bold">{{ IMAGE_SIZES.tablet.label }} {{ !isEditMode ? '*' : '' }}</label>
+              <input type="file"
+                     class="form-control"
+                     id="tabletFile"
+                     (change)="onImageSelected($event, 'tablet')"
+                     accept="image/*">
+              <div class="form-text text-muted">
+                Formato: JPG, PNG ou WebP. Tamanho máximo: 5MB
+              </div>
+
+              <!-- Preview -->
+              <div class="mt-2" *ngIf="previews.tablet">
+                <img [src]="previews.tablet"
+                     class="img-thumbnail"
+                     style="max-width: 250px; max-height: 180px; object-fit: contain;">
+                <button type="button"
+                        class="btn btn-sm btn-outline-danger ms-2"
+                        (click)="removeImage('tablet')">
+                  <i class="bi bi-x-circle"></i> Remover
+                </button>
+              </div>
+            </div>
+
+            <!-- Upload Mobile -->
+            <div class="mb-4 p-3 border rounded">
+              <label class="form-label fw-bold">{{ IMAGE_SIZES.mobile.label }} {{ !isEditMode ? '*' : '' }}</label>
+              <input type="file"
+                     class="form-control"
+                     id="mobileFile"
+                     (change)="onImageSelected($event, 'mobile')"
+                     accept="image/*">
+              <div class="form-text text-muted">
+                Formato: JPG, PNG ou WebP. Tamanho máximo: 5MB
+              </div>
+
+              <!-- Preview -->
+              <div class="mt-2" *ngIf="previews.mobile">
+                <img [src]="previews.mobile"
+                     class="img-thumbnail"
+                     style="max-width: 200px; max-height: 200px; object-fit: contain;">
+                <button type="button"
+                        class="btn btn-sm btn-outline-danger ms-2"
+                        (click)="removeImage('mobile')">
+                  <i class="bi bi-x-circle"></i> Remover
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Coluna Direita -->
+          <div class="col-md-4">
+            <!-- Ordem -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Ordem *</label>
+              <input type="number"
+                     class="form-control"
+                     formControlName="order"
+                     min="0"
+                     [class.is-invalid]="order?.invalid && order?.touched">
+              <div *ngIf="order?.invalid && order?.touched" class="invalid-feedback">
+                <div *ngIf="order?.errors?.['required']">Ordem é obrigatória</div>
+                <div *ngIf="order?.errors?.['min']">Ordem deve ser maior ou igual a 0</div>
+              </div>
+              <div class="form-text">Define a ordem de exibição do banner</div>
+            </div>
+
+            <!-- Tempo -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Tempo (segundos) *</label>
+              <input type="number"
+                     class="form-control"
+                     formControlName="timeSeconds"
+                     min="1"
+                     [class.is-invalid]="timeSeconds?.invalid && timeSeconds?.touched">
+              <div *ngIf="timeSeconds?.invalid && timeSeconds?.touched" class="invalid-feedback">
+                <div *ngIf="timeSeconds?.errors?.['required']">Tempo é obrigatório</div>
+                <div *ngIf="timeSeconds?.errors?.['min']">Tempo deve ser maior ou igual a 1</div>
+              </div>
+              <div class="form-text">Tempo que o banner ficará visível</div>
+            </div>
+
+            <!-- Notícia Relacionada -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Notícia Relacionada</label>
+              <select class="form-select" formControlName="newsId" [class.opacity-50]="loadingNews">
+                <option value="">Nenhuma notícia vinculada</option>
+                <option *ngFor="let news of newsList" [value]="news.id">
+                  {{ news.title | slice:0:50 }}{{ news.title.length > 50 ? '...' : '' }}
+                </option>
+              </select>
+
+              <div *ngIf="loadingNews" class="form-text text-warning">
+                <i class="bi bi-arrow-repeat spinner"></i> Carregando notícias...
+              </div>
+              <div class="form-text">Vincule o banner a uma notícia específica</div>
+            </div>
+
+            <!-- Status -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Status</label>
+              <select class="form-select" formControlName="isActive">
+                <option [ngValue]="true">Ativo</option>
+                <option [ngValue]="false">Inativo</option>
+              </select>
+              <div class="form-text">Banners inativos não são exibidos</div>
+            </div>
+
+            <!-- Informações -->
+            <div class="alert alert-info mt-4">
+              <h6 class="alert-heading"><i class="bi bi-info-circle"></i> Informações Importantes</h6>
+              <small class="mb-0">
+                <strong>Dimensões obrigatórias:</strong><br>
+                • Desktop: 1920x540px<br>
+                • Tablet: 1280x800px<br>
+                • Mobile: 600x600px<br><br>
+                <strong>Formatos aceitos:</strong><br>
+                • JPG, PNG, WebP<br>
+                • Máx. 5MB por imagem
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões -->
+        <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+          <button type="button"
+                  class="btn btn-outline-secondary me-2"
+                  (click)="cancel()"
+                  [disabled]="saving">
+            <i class="bi bi-x-circle me-1"></i> Cancelar
+          </button>
+          <button type="submit"
+                  class="btn btn-primary"
+                  [disabled]="saving || bannerForm.invalid">
+            <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
+            <i class="bi bi-check-circle me-1" *ngIf="!saving"></i>
+            {{ saving ? 'Salvando...' : (isEditMode ? 'Atualizar' : 'Cadastrar') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

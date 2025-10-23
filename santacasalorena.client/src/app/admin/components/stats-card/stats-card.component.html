@@ -1,0 +1,52 @@
+<div class="stats-card card shadow-sm border-0 rounded-3 h-100">
+  <div class="card-body">
+    <!-- Loading State -->
+    <div class="loading-skeleton" *ngIf="loading">
+      <div class="skeleton-icon"></div>
+      <div class="skeleton-content">
+        <div class="skeleton-label"></div>
+        <div class="skeleton-value"></div>
+      </div>
+    </div>
+
+    <!-- Card Content -->
+    <div class="stats-content" *ngIf="!loading">
+      <div class="stats-info">
+        <h6 class="stats-label text-muted mb-1">{{ label }}</h6>
+        <h3 class="stats-value fw-bold mb-0" [ngClass]="textClass">
+          {{ value | number }}
+        </h3>
+
+        <!-- Trend Indicator -->
+        <div class="stats-trend mt-2" *ngIf="trend">
+          <span class="trend-indicator"
+                [class.trend-positive]="trend.isPositive"
+                [class.trend-negative]="!trend.isPositive">
+            <i class="bi"
+               [ngClass]="trend.isPositive ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
+            {{ trend.value }}%
+          </span>
+          <span class="trend-text text-muted ms-1">
+            {{ trend.isPositive ? 'aumento' : 'diminuição' }} este mês
+          </span>
+        </div>
+      </div>
+
+      <div class="stats-icon">
+        <div class="icon-circle" [ngClass]="bgClass">
+          <i class="bi" [ngClass]="icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Footer with Action -->
+  <div class="card-footer bg-transparent border-0 pt-0" *ngIf="!loading && detailsLink">
+    <div class="stats-action">
+      <a [routerLink]="detailsLink" class="text-decoration-none" [ngClass]="textClass">
+        <small>Ver detalhes</small>
+        <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
+  </div>
+</div>

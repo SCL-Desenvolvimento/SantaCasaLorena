@@ -1,0 +1,140 @@
+<div class="user-form-container">
+  <!-- Page Header -->
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="page-title mb-1">
+          {{ isEditMode ? 'Editar Usuário' : 'Novo Usuário' }}
+        </h2>
+        <p class="page-subtitle text-muted mb-0">
+          {{ isEditMode ? 'Edite as informações do usuário existente' : 'Preencha os dados para cadastrar um novo usuário' }}
+        </p>
+      </div>
+      <button class="btn btn-outline-secondary" (click)="cancel()">
+        <i class="bi bi-arrow-left me-2"></i> Voltar
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="text-center py-5" *ngIf="loading">
+    <app-loading-spinner message="Carregando usuário..."></app-loading-spinner>
+  </div>
+
+  <!-- Form -->
+  <div class="card shadow-sm border-0 rounded-3" *ngIf="!loading">
+    <div class="card-body">
+      <form [formGroup]="userForm" (ngSubmit)="save()">
+        <div class="row align-items-start">
+          <!-- Coluna Esquerda (Foto) -->
+          <div class="col-lg-4 col-md-5 mb-4 mb-lg-0">
+            <label class="form-label">Foto de Perfil (opcional)</label>
+            <div class="photo-box border rounded bg-light text-center p-3">
+              <div class="profile-preview mx-auto mb-2 rounded-circle border"
+                   [style.backgroundImage]="'url(' + profileImagePreview + ')'"
+                   [class.bg-light]="!profileImagePreview">
+                <div *ngIf="!profileImagePreview"
+                     class="h-100 w-100 d-flex align-items-center justify-content-center rounded-circle">
+                  <i class="bi bi-person fs-1 text-muted"></i>
+                </div>
+              </div>
+              <small class="text-muted d-block mb-2">Preview</small>
+              <input type="file"
+                     id="profileImage"
+                     class="form-control mb-2"
+                     (change)="onImageSelected($event)"
+                     accept="image/jpeg,image/png,image/webp" />
+              <div class="d-flex justify-content-center gap-2 flex-wrap">
+                <button type="button" class="btn btn-primary btn-sm" (click)="triggerFileInput()">
+                  <i class="bi bi-upload me-1"></i> Selecionar
+                </button>
+                <button *ngIf="profileImagePreview"
+                        type="button"
+                        class="btn btn-outline-danger btn-sm"
+                        (click)="removeImage()">
+                  <i class="bi bi-trash me-1"></i> Remover
+                </button>
+              </div>
+              <small class="form-text text-muted mt-2 d-block">
+                <i class="bi bi-info-circle me-1"></i> Formatos: JPG, PNG, WebP. Máx. 2MB
+              </small>
+            </div>
+          </div>
+
+          <!-- Coluna Direita (Campos) -->
+          <div class="col-lg-8 col-md-7">
+            <!-- Nome -->
+            <div class="mb-3">
+              <label for="username" class="form-label">Nome de Usuário <span class="text-danger">*</span></label>
+              <input type="text"
+                     id="username"
+                     class="form-control"
+                     formControlName="username"
+                     [class.is-invalid]="isFieldInvalid('username')"
+                     placeholder="Ex: joao.silva" />
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('username')">
+                {{ getFieldError('username') }}
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+              <input type="email"
+                     id="email"
+                     class="form-control"
+                     formControlName="email"
+                     [class.is-invalid]="isFieldInvalid('email')"
+                     placeholder="Ex: joao.silva@example.com" />
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('email')">
+                {{ getFieldError('email') }}
+              </div>
+            </div>
+
+            <!-- Senha -->
+            <div class="mb-2">
+              <label for="password" class="form-label">Senha {{ !isEditMode ? '*' : '' }}</label>
+              <input type="password"
+                     id="password"
+                     class="form-control"
+                     formControlName="password"
+                     [class.is-invalid]="isFieldInvalid('password')"
+                     placeholder="Mínimo 6 caracteres" />
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('password')">
+                {{ getFieldError('password') }}
+              </div>
+              <small *ngIf="isEditMode" class="form-text text-muted">
+                Deixe em branco para manter a senha atual.
+              </small>
+            </div>
+
+            <!-- Status (isActive boolean) -->
+            <div class="form-check form-switch mt-4">
+              <input class="form-check-input"
+                     type="checkbox"
+                     id="isActive"
+                     formControlName="isActive" />
+              <label class="form-check-label" for="isActive">
+                {{ userForm.get('isActive')?.value ? 'Ativo' : 'Inativo' }}
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões -->
+        <div class="d-flex justify-content-end mt-3">
+          <button type="button"
+                  class="btn btn-outline-secondary me-2"
+                  (click)="cancel()"
+                  [disabled]="saving">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="saving || userForm.invalid">
+            <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
+            {{ saving ? 'Salvando...' : (isEditMode ? 'Atualizar' : 'Salvar') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

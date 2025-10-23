@@ -1,0 +1,147 @@
+.news-view-container {
+  padding: 20px;
+}
+
+.loading-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.page-header {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: #777;
+}
+
+.header-actions .btn {
+  margin-left: 10px;
+}
+
+.card-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.card-subtitle {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.news-meta span {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.news-meta i {
+  margin-right: 5px;
+}
+
+.news-content {
+  margin-top: 20px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.news-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 15px 0;
+  border-radius: 8px;
+}
+
+.news-content h1, .news-content h2, .news-content h3, .news-content h4, .news-content h5, .news-content h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+.news-content p {
+  margin-bottom: 1em;
+}
+
+.news-content ul, .news-content ol {
+  margin-bottom: 1em;
+  padding-left: 20px;
+}
+
+.news-content a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.news-content a:hover {
+  text-decoration: underline;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 1rem 1.25rem;
+}
+
+.card-header h5 {
+  margin-bottom: 0;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+}
+
+.empty-state {
+  padding: 50px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px dashed #e9ecef;
+}
+
+.empty-state i {
+  font-size: 4rem;
+  color: #ced4da;
+}
+
+.empty-state h5 {
+  margin-top: 20px;
+  color: #6c757d;
+}
+
+.empty-state p {
+  color: #adb5bd;
+}
+
+.badge {
+  font-size: 0.85em;
+  padding: 0.4em 0.6em;
+}
+
+.badge.bg-success {
+  background-color: #28a745 !important;
+}
+
+.badge.bg-warning {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+

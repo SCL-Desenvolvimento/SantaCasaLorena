@@ -1,28 +1,90 @@
-<header class="admin-header shadow-sm border-bottom">
-  <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center py-3 flex-wrap gap-3">
+<header class="admin-header">
+  <div class="header-content">
+    <!-- Left Section -->
+    <div class="header-left">
+      <!-- Sidebar Toggle -->
+      <button 
+        class="sidebar-toggle btn btn-link" 
+        (click)="onToggleSidebar()"
+        title="Toggle Sidebar">
+        <i class="bi bi-list"></i>
+      </button>
 
-      <!-- Título e subtítulo -->
-      <div class="header-title">
-        <h1 class="h4 mb-1 text-dark fw-bold d-flex align-items-center">
-          <i class="bi bi-speedometer2 text-primary me-2"></i>
-          Painel Administrativo
-        </h1>
-        <p class="text-muted small mb-0">Santa Casa de Lorena</p>
+      <!-- Page Title & Breadcrumbs -->
+      <div class="page-info">
+        <h1 class="page-title">{{ pageTitle }}</h1>
+        <nav class="breadcrumb-nav" *ngIf="breadcrumbs.length > 0">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a routerLink="/admin/dashboard">
+                <i class="bi bi-house"></i>
+              </a>
+            </li>
+            <li 
+              class="breadcrumb-item" 
+              *ngFor="let crumb of breadcrumbs; let last = last"
+              [class.active]="last">
+              {{ crumb }}
+            </li>
+          </ol>
+        </nav>
       </div>
+    </div>
 
-      <!-- Ações do usuário -->
-      <div class="d-flex align-items-center gap-3 header-actions">
-        <span class="user-info text-muted small d-flex align-items-center">
-          <i class="bi bi-person-circle me-1 text-primary"></i>
-          Olá, <strong class="ms-1">{{ user?.username || 'Admin' }}</strong>
-        </span>
-        <button class="btn btn-sm btn-gradient" (click)="onLogout()">
-          <i class="bi bi-box-arrow-right me-1"></i>
-          Sair
+    <!-- Right Section -->
+    <div class="header-right">   
+
+      <!-- User Menu -->
+      <div class="dropdown user-dropdown">
+        <button 
+          class="btn btn-link user-btn" 
+          (click)="toggleUserMenu()"
+          [class.active]="showUserMenu">
+          <div class="user-avatar">
+            <i class="bi bi-person-circle"></i>
+          </div>
+          <span class="user-name">Admin</span>
+          <i class="bi bi-chevron-down"></i>
         </button>
-      </div>
 
+        <div class="dropdown-menu user-menu" [class.show]="showUserMenu">
+          <div class="dropdown-header">
+            <div class="user-info">
+              <div class="user-avatar-large">
+                <i class="bi bi-person-circle"></i>
+              </div>
+              <div class="user-details">
+                <div class="user-name">Administrador</div>
+                <div class="user-email">admin@sistema.com</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="dropdown-divider"></div>
+          
+          <a class="dropdown-item" href="#">
+            <i class="bi bi-person"></i>
+            Meu Perfil
+          </a>
+          
+          <a class="dropdown-item" href="#">
+            <i class="bi bi-gear"></i>
+            Configurações
+          </a>
+          
+          <a class="dropdown-item" href="#">
+            <i class="bi bi-question-circle"></i>
+            Ajuda
+          </a>
+          
+          <div class="dropdown-divider"></div>
+          
+          <button class="dropdown-item text-danger" (click)="logout()">
+            <i class="bi bi-box-arrow-right"></i>
+            Sair
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </header>

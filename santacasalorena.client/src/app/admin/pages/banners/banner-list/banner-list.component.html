@@ -1,0 +1,156 @@
+<div class="banner-list-container">
+  <!-- Cabeçalho -->
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="page-title mb-1">Gerenciar Banners</h2>
+        <p class="page-subtitle text-muted mb-0">
+          Gerencie os banners exibidos no site
+        </p>
+      </div>
+      <button class="btn btn-primary" (click)="createBanner()">
+        <i class="bi bi-plus-circle me-2"></i> Novo Banner
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card shadow-sm border-0 rounded-3 mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Buscar</label>
+          <div class="input-group">
+            <input type="text" class="form-control"
+                   placeholder="Buscar por título, descrição ou notícia..."
+                   [(ngModel)]="searchTerm" (input)="onSearch()">
+            <button class="btn btn-outline-secondary" type="button">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label">Status</label>
+          <select class="form-select" [(ngModel)]="statusFilter" (change)="onFilterChange()">
+            <option value="all">Todos</option>
+            <option value="active">Ativos</option>
+            <option value="inactive">Inativos</option>
+          </select>
+        </div>
+
+        <div class="col-md-1 d-flex align-items-end">
+          <button class="btn btn-outline-secondary w-100"
+                  (click)="clearFilters()" title="Limpar filtros">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ações em massa -->
+  <div class="bulk-actions mb-3" *ngIf="selectedItems.length > 0">
+    <div class="alert alert-info d-flex justify-content-between align-items-center">
+      <span>
+        <i class="bi bi-check-square me-2"></i>
+        {{ selectedItems.length }} banner(s) selecionado(s)
+      </span>
+      <div class="btn-group">
+        <button class="btn btn-sm btn-success" (click)="bulkActivate()">
+          <i class="bi bi-check-circle me-1"></i> Ativar
+        </button>
+        <button class="btn btn-sm btn-warning" (click)="bulkDeactivate()">
+          <i class="bi bi-x-circle me-1"></i> Desativar
+        </button>
+        <button class="btn btn-sm btn-danger" (click)="bulkDelete()">
+          <i class="bi bi-trash me-1"></i> Excluir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado de carregamento -->
+  <div class="text-center py-5" *ngIf="loading">
+    <app-loading-spinner message="Carregando banners..."></app-loading-spinner>
+  </div>
+
+  <!-- Lista -->
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" *ngIf="!loading">
+    <div class="col" *ngFor="let banner of filteredBanners; let i = index">
+      <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+        <div class="position-relative">
+          <img [src]="banner.desktopImageUrl" alt="Imagem desktop" class="card-img-top">
+          <div class="position-absolute top-0 start-0 p-2">
+            <span class="badge"
+                  [class.bg-success]="banner.isActive"
+                  [class.bg-secondary]="!banner.isActive">
+              {{ banner.isActive ? 'Ativo' : 'Inativo' }}
+            </span>
+          </div>
+          <div class="position-absolute top-0 end-0 p-2">
+            <input class="form-check-input" type="checkbox"
+                   [checked]="isSelected(banner.id)"
+                   (change)="toggleItemSelection(banner.id)">
+          </div>
+        </div>
+
+        <div class="card-body">
+          <h5 class="card-title mb-2">#{{ banner.title  }}</h5>
+          <p class="card-text text-muted mb-1">Notícia: {{ banner.newsTitle || '—' }}</p>
+          <p class="card-text text-muted mb-1">{{ banner.description }}</p>
+          <p class="card-text text-muted mb-1">Ordem: {{ banner.order }}</p>
+          <p class="card-text text-muted mb-1">Tempo: {{ banner.timeSeconds }}s</p>
+
+          <div class="d-flex gap-1 mt-2">
+            <img [src]="banner.tabletImageUrl" alt="Tablet" class="img-thumbnail" style="max-width: 60px;">
+            <img [src]="banner.mobileImageUrl" alt="Mobile" class="img-thumbnail" style="max-width: 60px;">
+          </div>
+        </div>
+
+        <div class="card-footer bg-transparent border-0 d-flex justify-content-end gap-2">
+          <button class="btn btn-sm btn-outline-secondary"
+                  (click)="moveUp(i)" [disabled]="i === 0"
+                  title="Mover para cima">
+            <i class="bi bi-arrow-up"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-secondary"
+                  (click)="moveDown(i)" [disabled]="i === filteredBanners.length - 1"
+                  title="Mover para baixo">
+            <i class="bi bi-arrow-down"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-primary"
+                  (click)="editBanner(banner.id)" title="Editar">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn btn-sm"
+                  [ngClass]="banner.isActive ? 'btn-outline-warning' : 'btn-outline-success'"
+                  (click)="toggleActiveStatus(banner)" [title]="banner.isActive ? 'Desativar' : 'Ativar'">
+            <i class="bi" [ngClass]="banner.isActive ? 'bi-toggle-on' : 'bi-toggle-off'"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger"
+                  (click)="deleteBanner(banner.id)" title="Excluir">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nenhum item -->
+  <div class="text-center py-5" *ngIf="filteredBanners.length === 0 && !loading">
+    <i class="bi bi-image display-1 text-muted"></i>
+    <h5 class="mt-3">Nenhum banner encontrado</h5>
+    <p class="text-muted">
+      {{
+        searchTerm || statusFilter !== 'all'
+          ? 'Tente ajustar os filtros de busca'
+          : 'Nenhum banner cadastrado ainda.'
+      }}
+    </p>
+    <button class="btn btn-primary mt-3" (click)="createBanner()">
+      <i class="bi bi-plus-circle me-2"></i>
+      Criar Primeiro Banner
+    </button>
+  </div>
+</div>

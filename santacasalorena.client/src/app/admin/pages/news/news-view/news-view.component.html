@@ -1,0 +1,117 @@
+<div class="news-view-container">
+  <div class="loading-overlay" *ngIf="loading">
+    <app-loading-spinner message="Carregando detalhes da notícia..."></app-loading-spinner>
+  </div>
+
+  <div class="news-view-content" *ngIf="!loading && news">
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="page-title mb-1">{{ news.title }}</h2>
+          <p class="page-subtitle text-muted mb-0">
+            Visualizando detalhes da notícia
+          </p>
+        </div>
+
+        <div class="header-actions">
+          <button type="button"
+                  class="btn btn-outline-secondary me-2"
+                  (click)="goBack()">
+            <i class="bi bi-arrow-left me-2"></i>
+            Voltar
+          </button>
+          <button type="button"
+                  class="btn btn-primary"
+                  (click)="editNews(news.id)">
+            <i class="bi bi-pencil me-2"></i>
+            Editar Notícia
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+          <div class="card-body">
+            <h3 class="card-title">{{ news.title }}</h3>
+            <p class="card-subtitle mb-2 text-muted">{{ news.description }}</p>
+            <div class="news-meta mb-3">
+              <span class="badge bg-primary me-2">{{ news.category }}</span>
+              <span class="text-muted me-2"><i class="bi bi-calendar me-1"></i>{{ formatDate(news.createdAt) }}</span>
+              <span class="text-muted"><i class="bi bi-eye me-1"></i>{{ news.views | number }} visualizações</span>
+            </div>
+            <div class="news-content" [innerHTML]="news.content"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-image me-2"></i>
+              Imagem Destacada
+            </h5>
+          </div>
+          <div class="card-body text-center">
+            <img [src]="news.imageUrl || 'assets/images/placeholder.jpg'" class="img-fluid rounded mb-3" alt="Imagem da Notícia">
+            <!--<p class="text-muted">{{ news.imageCaption }}</p>-->
+          </div>
+        </div>
+
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-tags me-2"></i>
+              Tags
+            </h5>
+          </div>
+          <div class="card-body">
+            <span class="badge bg-secondary me-1 mb-1" *ngFor="let tag of news.tags">{{ tag }}</span>
+          </div>
+        </div>
+
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">
+              <i class="bi bi-info-circle me-2"></i>
+              Status
+            </h5>
+          </div>
+          <div class="card-body">
+            <p class="mb-1">
+              <strong>Status de Publicação:</strong>
+              <span class="badge" [class.bg-success]="news.isPublished" [class.bg-warning]="!news.isPublished">
+                {{ news.isPublished ? 'Publicado' : 'Rascunho' }}
+              </span>
+            </p>
+            <p *ngIf="news.isPublished">
+              <strong>Publicado em:</strong> {{ formatDate(news.publishedAt) }}
+            </p>
+            <p>
+              <strong>Criado em:</strong> {{ formatDate(news.createdAt) }}
+            </p>
+            <p *ngIf="news.updatedAt">
+              <strong>Última atualização:</strong> {{ formatDate(news.updatedAt) }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center py-5" *ngIf="!loading && !news">
+    <div class="empty-state">
+      <i class="bi bi-exclamation-circle display-1 text-muted"></i>
+      <h5 class="mt-3">Notícia não encontrada</h5>
+      <p class="text-muted">A notícia que você está tentando visualizar não existe ou foi removida.</p>
+      <button class="btn btn-primary" (click)="goBack()">
+        <i class="bi bi-arrow-left me-2"></i>
+        Voltar para a lista
+      </button>
+    </div>
+  </div>
+</div>
+

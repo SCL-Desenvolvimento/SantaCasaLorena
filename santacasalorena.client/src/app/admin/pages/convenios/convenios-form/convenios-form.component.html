@@ -1,0 +1,114 @@
+<div class="convenios-form-container">
+  <!-- Page Header -->
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="page-title mb-1">
+          {{ isEditMode ? 'Editar Convênio' : 'Novo Convênio' }}
+        </h2>
+        <p class="page-subtitle text-muted mb-0">
+          {{ isEditMode ? 'Edite as informações do convênio existente' : 'Preencha os dados para cadastrar um novo convênio' }}
+        </p>
+      </div>
+      <button class="btn btn-outline-secondary" (click)="cancel()">
+        <i class="bi bi-arrow-left me-2"></i>
+        Voltar
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="text-center py-5" *ngIf="loading">
+    <app-loading-spinner message="Carregando convênio..."></app-loading-spinner>
+  </div>
+
+  <!-- Convenio Form -->
+  <div class="card shadow-sm border-0 rounded-3" *ngIf="!loading">
+    <div class="card-body">
+      <form [formGroup]="convenioForm" (ngSubmit)="save()">
+        <div class="row">
+          <div class="col-md-8">
+            <!-- Nome -->
+            <div class="mb-3">
+              <label for="name" class="form-label">Nome do Convênio <span class="text-danger">*</span></label>
+              <input type="text"
+                     class="form-control"
+                     [class.is-invalid]="isFieldInvalid('name')"
+                     id="name"
+                     formControlName="name"
+                     placeholder="Ex: Convênio Hospital Santa Clara" />
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('name')">
+                {{ getFieldError('name') }}
+              </div>
+            </div>
+
+            <!-- Upload da Imagem -->
+            <div class="mb-3">
+              <label for="image" class="form-label">Imagem do Convênio <span class="text-danger">*</span></label>
+              <input type="file"
+                     id="image"
+                     class="form-control"
+                     accept="image/*"
+                     (change)="onFileSelected($event)" />
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('imageUrl')">
+                {{ getFieldError('imageUrl') }}
+              </div>
+            </div>
+
+            <!-- Preview da Imagem -->
+            <div class="mb-3 text-center" *ngIf="previewImage">
+              <img [src]="previewImage"
+                   alt="Prévia da Imagem"
+                   class="img-fluid rounded shadow-sm"
+                   style="max-height: 200px;" />
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <!-- Ativo -->
+            <div class="mb-3">
+              <label for="isActive" class="form-label">Status <span class="text-danger">*</span></label>
+              <select class="form-select"
+                      [class.is-invalid]="isFieldInvalid('isActive')"
+                      id="isActive"
+                      formControlName="isActive">
+                <option [ngValue]="true">Ativo</option>
+                <option [ngValue]="false">Inativo</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('isActive')">
+                {{ getFieldError('isActive') }}
+              </div>
+            </div>
+
+            <!-- Data de Criação (somente leitura) -->
+            <div class="mb-3" *ngIf="isEditMode">
+              <label for="createdAt" class="form-label">Data de Criação</label>
+              <input type="text"
+                     id="createdAt"
+                     class="form-control"
+                     [value]="convenioForm.get('createdAt')?.value | date: 'dd/MM/yyyy HH:mm'"
+                     readonly />
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end mt-4">
+          <button type="button"
+                  class="btn btn-outline-secondary me-2"
+                  (click)="cancel()">
+            Cancelar
+          </button>
+          <button type="submit"
+                  class="btn btn-primary"
+                  [disabled]="saving">
+            <span *ngIf="saving"
+                  class="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"></span>
+            {{ saving ? 'Salvando...' : 'Salvar Convênio' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -123,11 +123,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             if (!b.createdAt) return -1;
             return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
           })
-          .slice(0, 5) // Aumentei para 5 para ter mais notícias para filtrar
-          .map(n => ({
-            ...n,
-            imageUrl: `${environment.imageServerUrl}${n.imageUrl}`
-          }));
+          .slice(0, 5); // Aumentei para 5 para ter mais notícias para filtrar
 
         // Inicializa as notícias filtradas
         this.filteredNews = [...this.news];
@@ -143,11 +139,19 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Extrai categorias únicas das notícias
   private extractCategories(): void {
-    const uniqueCategories = [...new Set(this.news.map(item => item.category))].filter(cat => cat && cat.trim() !== '');
+    const uniqueCategories = [
+      ...new Set(
+        this.news
+          .map(item => item.category)
+          .filter((cat): cat is string => typeof cat === 'string' && cat.trim() !== '')
+      ),
+    ];
+
     if (uniqueCategories.length > 0) {
       this.categories = uniqueCategories;
     }
   }
+
 
   // Filtra notícias por categoria
   filterByCategory(category: string): void {
@@ -185,19 +189,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   loadAgreement() {
     this.agreementService.getAll().subscribe({
       next: (data) => {
-        this.convenios.items = data.map(con => ({
-          ...con,
-          imageUrl: `${environment.imageServerUrl}${con.imageUrl}`
-        }));
+        this.convenios.items = data;
       },
       error: (err) => console.error('Erro ao carregar convênios', err)
     });
   }
 
   private pickImageForWidth(slide: HomeBanner, width: number): string {
-    if (width < 768) return `${environment.imageServerUrl}${slide.mobileImageUrl}`;
-    if (width < 1280) return `${environment.imageServerUrl}${slide.tabletImageUrl} `;
-    return `${environment.imageServerUrl}${slide.desktopImageUrl}`;
+    if (width < 768) return `${slide.mobileImageUrl}`;
+    if (width < 1280) return `${slide.tabletImageUrl} `;
+    return `${slide.desktopImageUrl}`;
   }
 
   updateTranslate(): void {

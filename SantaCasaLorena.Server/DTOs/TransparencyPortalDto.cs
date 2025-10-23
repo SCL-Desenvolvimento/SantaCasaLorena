@@ -10,6 +10,7 @@
         public int? StartYear { get; set; }
         public int? EndYear { get; set; }
         public IFormFile? File { get; set; }
+        public bool IsActive { get; set; }
     }
 
     public class TransparencyPortalResponseDto
@@ -24,5 +25,6 @@
         public int? EndYear { get; set; }
         public string FileUrl { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
+        public bool IsActive { get; set; }
     }
 }

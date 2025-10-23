@@ -9,5 +9,9 @@ namespace SantaCasaLorena.Server.Interfaces
         Task<TransparencyPortalResponseDto> AddAsync(TransparencyPortalRequestDto dto);
         Task<TransparencyPortalResponseDto> UpdateAsync(Guid id, TransparencyPortalRequestDto dto);
         Task<bool> DeleteAsync(Guid id);
+        Task<TransparencyPortalResponseDto?> ToggleActiveAsync(Guid id);
+        Task<bool> BulkDeleteAsync(IEnumerable<Guid> ids);
+        Task<bool> BulkToggleActiveAsync(IEnumerable<Guid> ids, bool activate);
+
     }
 }

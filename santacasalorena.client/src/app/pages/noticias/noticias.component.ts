@@ -30,10 +30,7 @@ export class NoticiasComponent implements OnInit {
     this.loading = true;
     this.newsService.getAll().subscribe({
       next: (response) => {
-        this.news = response.map(n => ({
-          ...n,
-          imageUrl: `${environment.imageServerUrl}${n.imageUrl}`
-        }));
+        this.news = response;
         this.applyFilters();
       },
       error: () => {
@@ -67,8 +64,16 @@ export class NoticiasComponent implements OnInit {
   }
 
   categories(): string[] {
-    return ['all', ...new Set(this.news.map(item => item.category))];
+    return [
+      'all',
+      ...new Set(
+        this.news
+          .map(item => item.category)
+          .filter((cat): cat is string => typeof cat === 'string' && cat.trim() !== '')
+      ),
+    ];
   }
+
 
   formatDate(dateString: string | undefined): string {
     if (!dateString)
@@ -82,7 +87,7 @@ export class NoticiasComponent implements OnInit {
     });
   }
 
-  getCategoryClass(category: string): string {
+  getCategoryClass(category?: string): string {
     const classes: { [key: string]: string } = {
       'Parcerias': 'badge bg-primary',
       'Medicina': 'badge bg-success',
@@ -90,7 +95,7 @@ export class NoticiasComponent implements OnInit {
       'Tecnologia': 'badge bg-purple',
       'Eventos': 'badge bg-danger'
     };
-    return classes[category] || 'badge bg-secondary';
+    return classes[category || ''] || 'badge bg-secondary';
   }
 
   changePage(page: number) {

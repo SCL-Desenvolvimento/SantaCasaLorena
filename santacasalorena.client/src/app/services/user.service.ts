@@ -8,52 +8,76 @@ import { User } from '../models/user';
   providedIn: 'root',
 })
 export class UserService {
-  private apiUrl = `${environment.apiUrl}/users`
+  private apiUrl = `${environment.apiUrl}/users`;
 
   constructor(private http: HttpClient) { }
 
-  getUser(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}`).pipe(
-      map(response => response),
+  getAll(): Observable<User[]> {
+    return this.http.get<User[]>(this.apiUrl).pipe(
+      map(response => response.map(item => ({
+        ...item,
+        photoUrl: `${environment.imageServerUrl}${item.photoUrl}`
+      }))),
       catchError(this.handleError)
     );
   }
 
-  getUserById(id: string): Observable<User> {
+  getById(id: string): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${id}`).pipe(
-      map(response => response),
+      map(response => ({
+        ...response,
+        photoUrl: `${environment.imageServerUrl}${response.photoUrl}`
+      })),
       catchError(this.handleError)
     );
   }
 
-  createUser(user: FormData): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, user).pipe(
+  create(user: FormData): Observable<User> {
+    return this.http.post<User>(this.apiUrl, user).pipe(
       catchError(this.handleError)
     );
   }
 
-  updateUser(id: string, user: FormData): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, user).pipe(
+  update(id: string, user: FormData): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/${id}`, user).pipe(
       catchError(this.handleError)
     );
   }
 
-  deleteUser(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
-  resetPassword(userId: string) {
-    return this.http.post(`${this.apiUrl}/reset-password/${userId}`, {}).pipe(
+  resetPassword(userId: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/reset-password/${userId}`, {}).pipe(
       catchError(this.handleError)
     );
   }
 
-  changePassword(userId: string, newPassword: string) {
-    return this.http.post<any>(`${this.apiUrl}/${userId}/change-password`, { newPassword }).pipe(
+  changePassword(userId: number, newPassword: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/${userId}/change-password`, { newPassword }).pipe(
       catchError(this.handleError)
     );
+  }
+
+  toggleActive(id: string): Observable<User> {
+    return this.http.patch<User>(`${this.apiUrl}/${id}/toggle-active`, {}).pipe(
+      catchError(this.handleError)
+    );;
+  }
+
+  bulkDelete(ids: string[]): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/bulk-delete`, ids).pipe(
+      catchError(this.handleError)
+    );;
+  }
+
+  bulkToggle(ids: string[], activate: boolean): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/bulk-toggle`, { ids, activate }).pipe(
+      catchError(this.handleError)
+    );;
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
