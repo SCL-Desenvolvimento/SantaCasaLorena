@@ -56,6 +56,7 @@ namespace SantaCasaLorena.Server.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpPatch("{id}/toggle-active")]
         public async Task<ActionResult<UserResponseDto>> ToggleActive(Guid id)
         {
@@ -66,6 +67,7 @@ namespace SantaCasaLorena.Server.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpPost("bulk-delete")]
         public async Task<ActionResult> BulkDelete([FromBody] IEnumerable<Guid> ids)
         {
@@ -76,6 +78,7 @@ namespace SantaCasaLorena.Server.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpPost("bulk-toggle")]
         public async Task<ActionResult> BulkToggle([FromBody] BulkToggleRequest request)
         {

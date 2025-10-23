@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SantaCasaLorena.Server.DTOs;
 using SantaCasaLorena.Server.Interfaces;
 
@@ -33,6 +34,7 @@ namespace SantaCasaLorena.Server.Controllers
             return Ok(contact);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<ContactResponseDto>> CreateContact(ContactRequestDto dto)
         {
@@ -40,6 +42,7 @@ namespace SantaCasaLorena.Server.Controllers
             return CreatedAtAction(nameof(GetContact), new { id = newContact.Id }, newContact);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult<ContactResponseDto>> UpdateContact(Guid id, ContactRequestDto dto)
         {
@@ -51,6 +54,7 @@ namespace SantaCasaLorena.Server.Controllers
             return Ok(updatedContact);
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteContact(Guid id)
         {
@@ -62,6 +66,7 @@ namespace SantaCasaLorena.Server.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpPatch("{id}/toggle-active")]
         public async Task<ActionResult<ContactResponseDto>> ToggleActive(Guid id)
         {
@@ -72,6 +77,7 @@ namespace SantaCasaLorena.Server.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpPost("bulk-delete")]
         public async Task<ActionResult> BulkDelete([FromBody] IEnumerable<Guid> ids)
         {
@@ -82,6 +88,7 @@ namespace SantaCasaLorena.Server.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpPost("bulk-toggle")]
         public async Task<ActionResult> BulkToggle([FromBody] BulkToggleRequest request)
         {
