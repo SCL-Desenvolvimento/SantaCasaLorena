@@ -3,6 +3,8 @@ import { TransparencyPortalService } from '../../../../services/transparency-por
 import { TransparencyPortal } from '../../../../models/transparencyPortal';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-transparency-list',
@@ -32,7 +34,8 @@ export class TransparencyListComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private transparencyPortalService: TransparencyPortalService
+    private transparencyPortalService: TransparencyPortalService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -50,6 +53,7 @@ export class TransparencyListComponent implements OnInit {
       },
       error: (err: HttpErrorResponse) => {
         console.error('Erro ao carregar itens:', err);
+        this.toastr.error('Erro ao carregar os itens do portal de transparência.', 'Erro');
         this.loading = false;
       }
     });
@@ -160,94 +164,159 @@ export class TransparencyListComponent implements OnInit {
     return this.selectedItems.includes(id);
   }
 
-  // ✅ Atualizado para usar o novo endpoint PATCH /toggle-active
-  togglePublishStatus(id: string): void {
+  // ✅ Atualizado para usar SweetAlert e Toastr
+  async togglePublishStatus(id: string): Promise<void> {
     const item = this.transparencyItems.find(i => i.id === id);
     if (!item) return;
 
-    this.transparencyPortalService.toggleActive(id).subscribe({
-      next: (updatedItem) => {
-        item.isActive = updatedItem.isActive;
-        this.applyFilters();
-        alert(`Item "${item.title}" ${item.isActive ? 'publicado' : 'despublicado'} com sucesso!`);
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error('Erro ao atualizar status:', err);
-        alert('Erro ao atualizar status do item.');
-      }
+    const actionText = item.isActive ? 'despublicar' : 'publicar';
+    const result = await Swal.fire({
+      title: `Deseja ${actionText} este item?`,
+      text: `O item "${item.title}" será ${item.isActive ? 'despublicado' : 'publicado'}.`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: `Sim, ${actionText}`,
+      cancelButtonText: 'Cancelar'
     });
+
+    if (result.isConfirmed) {
+      this.transparencyPortalService.toggleActive(id).subscribe({
+        next: (updatedItem) => {
+          item.isActive = updatedItem.isActive;
+          this.applyFilters();
+          this.toastr.success(
+            `Item "${item.title}" ${item.isActive ? 'publicado' : 'despublicado'} com sucesso!`,
+            'Sucesso'
+          );
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Erro ao atualizar status:', err);
+          this.toastr.error('Erro ao atualizar o status do item.', 'Erro');
+        }
+      });
+    }
   }
 
-  // ✅ Agora usa bulkToggle do service
-  bulkPublish(): void {
-    if (this.selectedItems.length === 0) return;
-    this.transparencyPortalService.bulkToggle(this.selectedItems, true).subscribe({
-      next: () => {
-        this.transparencyItems.forEach(item => {
-          if (this.selectedItems.includes(item.id)) item.isActive = true;
-        });
-        this.applyFilters();
-        this.resetSelection();
-        alert('Itens publicados com sucesso!');
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error('Erro ao publicar itens:', err);
-        alert('Erro ao publicar itens selecionados.');
-      }
+  async bulkPublish(): Promise<void> {
+    if (this.selectedItems.length === 0) {
+      this.toastr.warning('Nenhum item selecionado.', 'Atenção');
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: 'Publicar itens selecionados?',
+      text: `Deseja publicar ${this.selectedItems.length} item(ns)?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, publicar',
+      cancelButtonText: 'Cancelar'
     });
+
+    if (result.isConfirmed) {
+      this.transparencyPortalService.bulkToggle(this.selectedItems, true).subscribe({
+        next: () => {
+          this.transparencyItems.forEach(item => {
+            if (this.selectedItems.includes(item.id)) item.isActive = true;
+          });
+          this.applyFilters();
+          this.resetSelection();
+          this.toastr.success('Itens publicados com sucesso!', 'Sucesso');
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Erro ao publicar itens:', err);
+          this.toastr.error('Erro ao publicar os itens selecionados.', 'Erro');
+        }
+      });
+    }
   }
 
-  bulkUnpublish(): void {
-    if (this.selectedItems.length === 0) return;
-    this.transparencyPortalService.bulkToggle(this.selectedItems, false).subscribe({
-      next: () => {
-        this.transparencyItems.forEach(item => {
-          if (this.selectedItems.includes(item.id)) item.isActive = false;
-        });
-        this.applyFilters();
-        this.resetSelection();
-        alert('Itens despublicados com sucesso!');
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error('Erro ao despublicar itens:', err);
-        alert('Erro ao despublicar itens selecionados.');
-      }
+  async bulkUnpublish(): Promise<void> {
+    if (this.selectedItems.length === 0) {
+      this.toastr.warning('Nenhum item selecionado.', 'Atenção');
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: 'Despublicar itens selecionados?',
+      text: `Deseja despublicar ${this.selectedItems.length} item(ns)?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, despublicar',
+      cancelButtonText: 'Cancelar'
     });
+
+    if (result.isConfirmed) {
+      this.transparencyPortalService.bulkToggle(this.selectedItems, false).subscribe({
+        next: () => {
+          this.transparencyItems.forEach(item => {
+            if (this.selectedItems.includes(item.id)) item.isActive = false;
+          });
+          this.applyFilters();
+          this.resetSelection();
+          this.toastr.success('Itens despublicados com sucesso!', 'Sucesso');
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Erro ao despublicar itens:', err);
+          this.toastr.error('Erro ao despublicar os itens selecionados.', 'Erro');
+        }
+      });
+    }
   }
 
-  bulkDelete(): void {
-    if (this.selectedItems.length === 0) return;
-    if (!confirm('Tem certeza que deseja excluir os itens selecionados?')) return;
+  async bulkDelete(): Promise<void> {
+    if (this.selectedItems.length === 0) {
+      this.toastr.warning('Nenhum item selecionado.', 'Atenção');
+      return;
+    }
 
-    this.transparencyPortalService.bulkDelete(this.selectedItems).subscribe({
-      next: () => {
-        this.transparencyItems = this.transparencyItems.filter(i => !this.selectedItems.includes(i.id));
-        this.applyFilters();
-        this.resetSelection();
-        alert('Itens excluídos com sucesso!');
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error('Erro ao excluir itens:', err);
-        alert('Erro ao excluir itens selecionados.');
-      }
+    const result = await Swal.fire({
+      title: 'Excluir itens selecionados?',
+      text: 'Esta ação não poderá ser desfeita.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar'
     });
+
+    if (result.isConfirmed) {
+      this.transparencyPortalService.bulkDelete(this.selectedItems).subscribe({
+        next: () => {
+          this.transparencyItems = this.transparencyItems.filter(i => !this.selectedItems.includes(i.id));
+          this.applyFilters();
+          this.resetSelection();
+          this.toastr.success('Itens excluídos com sucesso!', 'Sucesso');
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Erro ao excluir itens:', err);
+          this.toastr.error('Erro ao excluir os itens selecionados.', 'Erro');
+        }
+      });
+    }
   }
 
-  // ✅ Delete individual (mantido)
-  deleteTransparencyItem(id: string, confirmDialog: boolean = true): void {
-    if (confirmDialog && !confirm('Deseja realmente excluir este item?')) return;
-
-    this.transparencyPortalService.delete(id).subscribe({
-      next: () => {
-        this.transparencyItems = this.transparencyItems.filter(i => i.id !== id);
-        this.applyFilters();
-        alert('Item excluído com sucesso!');
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error('Erro ao excluir item:', err);
-        alert('Erro ao excluir item.');
-      }
+  async deleteTransparencyItem(id: string): Promise<void> {
+    const result = await Swal.fire({
+      title: 'Excluir item?',
+      text: 'Esta ação não poderá ser desfeita.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar'
     });
+
+    if (result.isConfirmed) {
+      this.transparencyPortalService.delete(id).subscribe({
+        next: () => {
+          this.transparencyItems = this.transparencyItems.filter(i => i.id !== id);
+          this.applyFilters();
+          this.toastr.success('Item excluído com sucesso!', 'Sucesso');
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Erro ao excluir item:', err);
+          this.toastr.error('Erro ao excluir o item.', 'Erro');
+        }
+      });
+    }
   }
 
   createTransparencyItem(): void {

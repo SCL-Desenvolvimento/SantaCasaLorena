@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { Agreement } from '../../../../models/agreement';
 import { AgreementService } from '../../../../services/agreement.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-convenios-list',
@@ -30,7 +32,11 @@ export class ConveniosListComponent implements OnInit {
   selectedItems: string[] = [];
   selectAll = false;
 
-  constructor(private router: Router, private agreementService: AgreementService) { }
+  constructor(
+    private router: Router,
+    private agreementService: AgreementService,
+    private toastr: ToastrService // ✅ Toastr injetado
+  ) { }
 
   ngOnInit(): void {
     this.loadConvenios();
@@ -45,8 +51,8 @@ export class ConveniosListComponent implements OnInit {
         this.loading = false;
       },
       error: (error: HttpErrorResponse) => {
+        this.toastr.error('Erro ao carregar convênios.', 'Erro');
         console.error('Erro ao carregar convênios:', error);
-        alert('Erro ao carregar convênios. Tente novamente mais tarde.');
         this.loading = false;
       }
     });
@@ -153,19 +159,28 @@ export class ConveniosListComponent implements OnInit {
   }
 
   deleteConvenio(id: string): void {
-    if (confirm('Tem certeza que deseja excluir este convênio?')) {
-      this.agreementService.delete(id).subscribe({
-        next: () => {
-          this.convenios = this.convenios.filter(item => item.id !== id);
-          this.applyFilters();
-          alert('Convênio excluído com sucesso!');
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error('Erro ao excluir convênio:', error);
-          alert('Erro ao excluir convênio. Tente novamente mais tarde.');
-        }
-      });
-    }
+    Swal.fire({
+      title: 'Excluir convênio?',
+      text: 'Esta ação não poderá ser desfeita!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.agreementService.delete(id).subscribe({
+          next: () => {
+            this.convenios = this.convenios.filter(item => item.id !== id);
+            this.applyFilters();
+            this.toastr.success('Convênio excluído com sucesso!', 'Sucesso');
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error('Erro ao excluir convênio:', error);
+            this.toastr.error('Erro ao excluir convênio.', 'Erro');
+          }
+        });
+      }
+    });
   }
 
   formatDate(dateString?: string): string {

@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../../../models/user';
 import { UserService } from '../../../../services/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-form',
@@ -24,7 +26,8 @@ export class UserFormComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private toastr: ToastrService
   ) {
     this.userForm = this.createForm();
   }
@@ -62,7 +65,7 @@ export class UserFormComponent implements OnInit {
         this.userForm.get('password')?.clearValidators();
         this.userForm.get('password')?.updateValueAndValidity();
 
-        // Carrega imagem
+        // Carrega imagem se houver
         if (user.photoUrl) {
           this.profileImagePreview = user.photoUrl;
         }
@@ -71,7 +74,7 @@ export class UserFormComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error('Erro ao carregar usuário:', error);
-        alert('Erro ao carregar usuário.');
+        this.toastr.error('Erro ao carregar usuário.', 'Erro');
         this.loading = false;
         this.router.navigate(['/admin/users']);
       }
@@ -89,12 +92,12 @@ export class UserFormComponent implements OnInit {
 
     const file = input.files[0];
     if (!file.type.startsWith('image/')) {
-      alert('Por favor, selecione apenas arquivos de imagem.');
+      Swal.fire('Arquivo inválido', 'Por favor, selecione apenas arquivos de imagem.', 'warning');
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      alert('A imagem deve ter no máximo 2MB.');
+      Swal.fire('Imagem muito grande', 'A imagem deve ter no máximo 2MB.', 'warning');
       return;
     }
 
@@ -111,19 +114,19 @@ export class UserFormComponent implements OnInit {
     if (input) input.value = '';
   }
 
-  save(): void {
+  async save(): Promise<void> {
     if (this.userForm.invalid) {
       this.markFormGroupTouched();
+      this.toastr.warning('Preencha os campos obrigatórios corretamente.', 'Atenção');
       return;
     }
 
     if (!this.isEditMode && !this.userForm.value.password) {
-      alert('Para criar um usuário, a senha é obrigatória.');
+      Swal.fire('Senha obrigatória', 'Para criar um usuário, a senha é obrigatória.', 'warning');
       return;
     }
 
     this.saving = true;
-
     const formValue = this.userForm.value;
 
     // === CRIA O FORM DATA CONFORME UserRequestDto ===
@@ -145,15 +148,24 @@ export class UserFormComponent implements OnInit {
       : this.userService.create(formData);
 
     operation.subscribe({
-      next: () => {
-        alert(this.isEditMode ? 'Usuário atualizado com sucesso!' : 'Usuário criado com sucesso!');
+      next: async () => {
         this.saving = false;
+        this.toastr.success(
+          this.isEditMode ? 'Usuário atualizado com sucesso!' : 'Usuário criado com sucesso!',
+          'Sucesso'
+        );
+        await Swal.fire({
+          icon: 'success',
+          title: this.isEditMode ? 'Usuário atualizado!' : 'Usuário criado!',
+          showConfirmButton: false,
+          timer: 1200
+        });
         this.router.navigate(['/admin/users']);
       },
       error: (error: HttpErrorResponse) => {
         console.error('Erro ao salvar usuário:', error);
-        alert('Erro ao salvar usuário. Tente novamente.');
         this.saving = false;
+        this.toastr.error('Erro ao salvar usuário. Tente novamente.', 'Erro');
       }
     });
   }
@@ -182,9 +194,18 @@ export class UserFormComponent implements OnInit {
     return '';
   }
 
-  cancel(): void {
+  async cancel(): Promise<void> {
     if (this.userForm.dirty || this.selectedImageFile) {
-      if (confirm('Tem alterações não salvas. Deseja sair?')) {
+      const result = await Swal.fire({
+        title: 'Tem certeza?',
+        text: 'Você tem alterações não salvas. Deseja realmente sair?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim, sair',
+        cancelButtonText: 'Cancelar'
+      });
+
+      if (result.isConfirmed) {
         this.router.navigate(['/admin/users']);
       }
     } else {

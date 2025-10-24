@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { News } from '../../../../models/news';
 import { NewsService } from '../../../../services/news.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-news-list',
@@ -41,7 +43,11 @@ export class NewsListComponent implements OnInit {
     'Assistência Social'
   ];
 
-  constructor(private router: Router, private newsService: NewsService) { }
+  constructor(
+    private router: Router,
+    private newsService: NewsService,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
     this.loadNews();
@@ -57,7 +63,7 @@ export class NewsListComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error('Erro ao carregar notícias:', error);
-        alert('Erro ao carregar notícias. Por favor, tente novamente.');
+        this.toastr.error('Erro ao carregar notícias. Por favor, tente novamente.');
         this.loading = false;
       }
     });
@@ -66,7 +72,6 @@ export class NewsListComponent implements OnInit {
   applyFilters(): void {
     let filtered = [...this.news];
 
-    // Search filter
     if (this.searchTerm) {
       filtered = filtered.filter(item =>
         item.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
@@ -77,24 +82,20 @@ export class NewsListComponent implements OnInit {
       );
     }
 
-    // Status filter
     if (this.statusFilter !== 'all') {
       filtered = filtered.filter(item =>
         this.statusFilter === 'published' ? item.isPublished : !item.isPublished
       );
     }
 
-    // Category filter
     if (this.categoryFilter !== 'all') {
       filtered = filtered.filter(item => item.category === this.categoryFilter);
     }
 
-    // Sort
     filtered.sort((a, b) => {
       let aValue: any = (a as any)[this.sortBy];
       let bValue: any = (b as any)[this.sortBy];
 
-      // Handle undefined or null values for sorting
       if (aValue === undefined || aValue === null) aValue = '';
       if (bValue === undefined || bValue === null) bValue = '';
 
@@ -126,7 +127,7 @@ export class NewsListComponent implements OnInit {
   }
 
   onFilterChange(): void {
-    this.currentPage = 1; // Reset page when filters change
+    this.currentPage = 1;
     this.applyFilters();
   }
 
@@ -135,7 +136,7 @@ export class NewsListComponent implements OnInit {
       this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
     } else {
       this.sortBy = field;
-      this.sortOrder = 'desc'; // Default to descending for new sort field
+      this.sortOrder = 'desc';
     }
     this.applyFilters();
   }
@@ -148,7 +149,7 @@ export class NewsListComponent implements OnInit {
 
   onItemsPerPageChange(): void {
     this.currentPage = 1;
-    this.applyFilters(); // Re-apply filters to adjust pagination
+    this.applyFilters();
   }
 
   toggleSelectAll(): void {
@@ -171,14 +172,10 @@ export class NewsListComponent implements OnInit {
       }
       this.selectAll = this.selectedItems.length === this.paginatedNews.length && this.paginatedNews.length > 0;
     }
-    else return;
   }
 
   isSelected(id: string | undefined): boolean {
-    if (id)
-      return this.selectedItems.includes(id);
-    else
-      return false;
+    return id ? this.selectedItems.includes(id) : false;
   }
 
   createNews(): void {
@@ -186,170 +183,169 @@ export class NewsListComponent implements OnInit {
   }
 
   viewNews(id: string | undefined): void {
-    if (id)
-      this.router.navigate(['/admin/news/view', id]);
+    if (id) this.router.navigate(['/admin/news/view', id]);
   }
 
   editNews(id: string | undefined): void {
-    if (id)
-      this.router.navigate(['/admin/news/edit', id]);
+    if (id) this.router.navigate(['/admin/news/edit', id]);
   }
 
-
-
   togglePublishStatus(id: string | undefined): void {
-    if (id) {
+    if (!id) return;
 
-      const newsItem = this.news.find(item => item.id === id);
-      if (newsItem) {
-        const newStatus = !newsItem.isPublished;
+    const newsItem = this.news.find(item => item.id === id);
+    if (!newsItem) return;
+
+    const newStatus = !newsItem.isPublished;
+    const actionText = newStatus ? 'publicar' : 'despublicar';
+
+    Swal.fire({
+      title: `Deseja realmente ${actionText} esta notícia?`,
+      text: newsItem.title,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sim',
+      cancelButtonText: 'Cancelar'
+    }).then(result => {
+      if (result.isConfirmed) {
         this.newsService.updateNewsPublishStatus(id, newStatus).subscribe({
           next: () => {
             newsItem.isPublished = newStatus;
             newsItem.publishedAt = newStatus ? new Date().toISOString() : undefined;
             this.applyFilters();
-            alert(`Notícia ${newsItem.title} ${newStatus ? 'publicada' : 'despublicada'} com sucesso!`);
+            this.toastr.success(`Notícia ${newStatus ? 'publicada' : 'despublicada'} com sucesso!`);
           },
           error: (error: HttpErrorResponse) => {
-            console.error('Erro ao atualizar status de publicação da notícia:', error);
-            alert(`Erro ao atualizar status de publicação: ${error.error?.message || error.message}`);
+            console.error('Erro ao atualizar status:', error);
+            this.toastr.error(`Erro ao atualizar status: ${error.error?.message || error.message}`);
           }
         });
       }
-    }
+    });
   }
 
   deleteNews(id: string | undefined): void {
-    if (id) {
-      if (confirm('Tem certeza que deseja excluir esta notícia?')) {
+    if (!id) return;
+
+    Swal.fire({
+      title: 'Tem certeza que deseja excluir esta notícia?',
+      text: 'Esta ação não poderá ser desfeita!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar'
+    }).then(result => {
+      if (result.isConfirmed) {
         this.newsService.delete(id).subscribe({
           next: () => {
             this.news = this.news.filter(item => item.id !== id);
             this.applyFilters();
-            alert('Notícia excluída com sucesso!');
+            this.toastr.success('Notícia excluída com sucesso!');
           },
           error: (error: HttpErrorResponse) => {
             console.error('Erro ao excluir notícia:', error);
-            alert(`Erro ao excluir notícia: ${error.error?.message || error.message}`);
+            this.toastr.error(`Erro ao excluir notícia: ${error.error?.message || error.message}`);
           }
         });
       }
-    }
+    });
   }
 
-  bulkDelete(): void {
+  async bulkDelete(): Promise<void> {
     if (this.selectedItems.length === 0) return;
 
-    if (confirm(`Tem certeza que deseja excluir ${this.selectedItems.length} notícia(s)?`)) {
-      let successfulDeletions = 0;
-      let failedDeletions = 0;
+    const result = await Swal.fire({
+      title: `Excluir ${this.selectedItems.length} notícia(s)?`,
+      text: 'Esta ação não poderá ser desfeita.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar'
+    });
 
-      const deleteNext = (index: number) => {
-        if (index < this.selectedItems.length) {
-          const idToDelete = this.selectedItems[index];
-          this.newsService.delete(idToDelete).subscribe({
-            next: () => {
-              successfulDeletions++;
-              deleteNext(index + 1);
-            },
-            error: (error: HttpErrorResponse) => {
-              console.error(`Erro ao excluir notícia ${idToDelete}:`, error);
-              failedDeletions++;
-              deleteNext(index + 1);
-            }
-          });
-        } else {
-          // All deletions attempted
-          if (failedDeletions === 0) {
-            alert(`${successfulDeletions} notícia(s) excluída(s) com sucesso!`);
-          } else if (successfulDeletions > 0) {
-            alert(`${successfulDeletions} notícia(s) excluída(s), mas ${failedDeletions} falharam.`);
-          } else {
-            alert('Nenhuma notícia foi excluída devido a erros.');
-          }
-          this.selectedItems = [];
-          this.selectAll = false;
-          this.loadNews(); // Reload news to reflect changes
-        }
-      };
-      deleteNext(0);
+    if (!result.isConfirmed) return;
+
+    let successful = 0;
+    let failed = 0;
+
+    for (const id of this.selectedItems) {
+      try {
+        await this.newsService.delete(id).toPromise();
+        successful++;
+      } catch {
+        failed++;
+      }
     }
+
+    this.toastr.success(`${successful} notícia(s) excluída(s).`);
+    if (failed > 0) this.toastr.warning(`${failed} falharam ao excluir.`);
+    this.selectedItems = [];
+    this.selectAll = false;
+    this.loadNews();
   }
 
-  bulkPublish(): void {
+  async bulkPublish(): Promise<void> {
     if (this.selectedItems.length === 0) return;
 
-    if (confirm(`Tem certeza que deseja publicar ${this.selectedItems.length} notícia(s)?`)) {
-      let successfulPublishes = 0;
-      let failedPublishes = 0;
+    const result = await Swal.fire({
+      title: `Publicar ${this.selectedItems.length} notícia(s)?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, publicar',
+      cancelButtonText: 'Cancelar'
+    });
 
-      const publishNext = (index: number) => {
-        if (index < this.selectedItems.length) {
-          const idToPublish = this.selectedItems[index];
-          this.newsService.updateNewsPublishStatus(idToPublish, true).subscribe({
-            next: () => {
-              successfulPublishes++;
-              publishNext(index + 1);
-            },
-            error: (error: HttpErrorResponse) => {
-              console.error(`Erro ao publicar notícia ${idToPublish}:`, error);
-              failedPublishes++;
-              publishNext(index + 1);
-            }
-          });
-        } else {
-          if (failedPublishes === 0) {
-            alert(`${successfulPublishes} notícia(s) publicada(s) com sucesso!`);
-          } else if (successfulPublishes > 0) {
-            alert(`${successfulPublishes} notícia(s) publicada(s), mas ${failedPublishes} falharam.`);
-          } else {
-            alert('Nenhuma notícia foi publicada devido a erros.');
-          }
-          this.selectedItems = [];
-          this.selectAll = false;
-          this.loadNews();
-        }
-      };
-      publishNext(0);
+    if (!result.isConfirmed) return;
+
+    let success = 0;
+    let failed = 0;
+
+    for (const id of this.selectedItems) {
+      try {
+        await this.newsService.updateNewsPublishStatus(id, true).toPromise();
+        success++;
+      } catch {
+        failed++;
+      }
     }
+
+    this.toastr.success(`${success} publicada(s) com sucesso!`);
+    if (failed > 0) this.toastr.warning(`${failed} falharam.`);
+    this.selectedItems = [];
+    this.selectAll = false;
+    this.loadNews();
   }
 
-  bulkUnpublish(): void {
+  async bulkUnpublish(): Promise<void> {
     if (this.selectedItems.length === 0) return;
 
-    if (confirm(`Tem certeza que deseja despublicar ${this.selectedItems.length} notícia(s)?`)) {
-      let successfulUnpublishes = 0;
-      let failedUnpublishes = 0;
+    const result = await Swal.fire({
+      title: `Despublicar ${this.selectedItems.length} notícia(s)?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, despublicar',
+      cancelButtonText: 'Cancelar'
+    });
 
-      const unpublishNext = (index: number) => {
-        if (index < this.selectedItems.length) {
-          const idToUnpublish = this.selectedItems[index];
-          this.newsService.updateNewsPublishStatus(idToUnpublish, false).subscribe({
-            next: () => {
-              successfulUnpublishes++;
-              unpublishNext(index + 1);
-            },
-            error: (error: HttpErrorResponse) => {
-              console.error(`Erro ao despublicar notícia ${idToUnpublish}:`, error);
-              failedUnpublishes++;
-              unpublishNext(index + 1);
-            }
-          });
-        } else {
-          if (failedUnpublishes === 0) {
-            alert(`${successfulUnpublishes} notícia(s) despublicada(s) com sucesso!`);
-          } else if (successfulUnpublishes > 0) {
-            alert(`${successfulUnpublishes} notícia(s) despublicada(s), mas ${failedUnpublishes} falharam.`);
-          } else {
-            alert('Nenhuma notícia foi despublicada devido a erros.');
-          }
-          this.selectedItems = [];
-          this.selectAll = false;
-          this.loadNews();
-        }
-      };
-      unpublishNext(0);
+    if (!result.isConfirmed) return;
+
+    let success = 0;
+    let failed = 0;
+
+    for (const id of this.selectedItems) {
+      try {
+        await this.newsService.updateNewsPublishStatus(id, false).toPromise();
+        success++;
+      } catch {
+        failed++;
+      }
     }
+
+    this.toastr.success(`${success} despublicada(s) com sucesso!`);
+    if (failed > 0) this.toastr.warning(`${failed} falharam.`);
+    this.selectedItems = [];
+    this.selectAll = false;
+    this.loadNews();
   }
 
   formatDate(dateString: string | undefined): string {

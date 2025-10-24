@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Providers } from '../../../../models/provider';
-import { ProviderService } from '../../../../services//provider.service';
+import { ProviderService } from '../../../../services/provider.service';
 import { debounceTime, Subject, forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-provider-list',
@@ -17,34 +19,33 @@ export class ProviderListComponent implements OnInit {
   paginatedProviders: Providers[] = [];
   loading = false;
 
-  // Filters and Search
+  // Filtros e busca
   searchTerm: string = '';
   private searchSubject = new Subject<string>();
 
-  // Pagination
+  // Paginação
   currentPage: number = 1;
   itemsPerPage: number = 10;
   totalItems: number = 0;
   totalPages: number = 0;
 
-  // Sorting
+  // Ordenação
   sortBy: string = 'name';
   sortOrder: 'asc' | 'desc' = 'asc';
 
-  // Bulk Actions
+  // Ações em massa
   selectedItems: string[] = [];
   selectAll: boolean = false;
 
   constructor(
     private router: Router,
-    private providerService: ProviderService
+    private providerService: ProviderService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
     this.loadProviders();
-    this.searchSubject.pipe(
-      debounceTime(300)
-    ).subscribe(() => {
+    this.searchSubject.pipe(debounceTime(300)).subscribe(() => {
       this.applyFiltersAndSort();
     });
   }
@@ -59,7 +60,7 @@ export class ProviderListComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao carregar fornecedores:', err);
-        alert('Erro ao carregar fornecedores. Tente novamente mais tarde.');
+        this.toastr.error('Erro ao carregar fornecedores. Tente novamente mais tarde.', 'Erro');
         this.loading = false;
       }
     });
@@ -68,7 +69,7 @@ export class ProviderListComponent implements OnInit {
   applyFiltersAndSort(): void {
     let tempProviders = [...this.providers];
 
-    // Apply Search
+    // Filtro de busca
     if (this.searchTerm) {
       const lowerSearchTerm = this.searchTerm.toLowerCase();
       tempProviders = tempProviders.filter(provider =>
@@ -76,7 +77,7 @@ export class ProviderListComponent implements OnInit {
       );
     }
 
-    // Apply Sorting
+    // Ordenação
     tempProviders.sort((a, b) => {
       const aValue = (a as any)[this.sortBy];
       const bValue = (b as any)[this.sortBy];
@@ -89,7 +90,7 @@ export class ProviderListComponent implements OnInit {
     this.filteredProviders = tempProviders;
     this.totalItems = this.filteredProviders.length;
     this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
-    this.currentPage = 1; // Reset to first page after filters/sort change
+    this.currentPage = 1;
     this.paginateProviders();
   }
 
@@ -138,16 +139,25 @@ export class ProviderListComponent implements OnInit {
     this.router.navigate([`/admin/providers/edit/${id}`]);
   }
 
-  deleteProvider(id: string): void {
-    if (confirm('Tem certeza que deseja excluir este fornecedor?')) {
+  async deleteProvider(id: string): Promise<void> {
+    const result = await Swal.fire({
+      title: 'Tem certeza?',
+      text: 'Deseja realmente excluir este fornecedor?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
       this.providerService.delete(id).subscribe({
         next: () => {
-          alert('Fornecedor excluído com sucesso!');
-          this.loadProviders(); // Recarrega a lista após exclusão
+          this.toastr.success('Fornecedor excluído com sucesso!', 'Sucesso');
+          this.loadProviders();
         },
         error: (err) => {
           console.error('Erro ao excluir fornecedor:', err);
-          alert('Erro ao excluir fornecedor. Tente novamente mais tarde.');
+          this.toastr.error('Erro ao excluir fornecedor. Tente novamente mais tarde.', 'Erro');
         }
       });
     }
@@ -171,9 +181,19 @@ export class ProviderListComponent implements OnInit {
     return this.selectedItems.includes(id);
   }
 
-  bulkDelete(): void {
+  async bulkDelete(): Promise<void> {
     if (this.selectedItems.length === 0) return;
-    if (confirm(`Tem certeza que deseja excluir ${this.selectedItems.length} fornecedor(es)?`)) {
+
+    const result = await Swal.fire({
+      title: 'Excluir múltiplos fornecedores?',
+      text: `Tem certeza que deseja excluir ${this.selectedItems.length} fornecedor(es)?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir todos',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
       const deletions = this.selectedItems.map(id =>
         this.providerService.delete(id).pipe(
           map(() => console.log(`Fornecedor ${id} excluído.`)),
@@ -185,7 +205,7 @@ export class ProviderListComponent implements OnInit {
       );
 
       forkJoin(deletions).subscribe(() => {
-        alert('Fornecedores excluídos com sucesso (verifique o console para erros individuais)!');
+        this.toastr.success('Fornecedores excluídos com sucesso!', 'Sucesso');
         this.selectedItems = [];
         this.selectAll = false;
         this.loadProviders();
@@ -197,4 +217,3 @@ export class ProviderListComponent implements OnInit {
     return Math.min(a, b);
   }
 }
-

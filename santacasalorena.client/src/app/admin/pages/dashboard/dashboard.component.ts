@@ -6,6 +6,10 @@ import { News } from '../../../models/news';
 import { Agreement } from '../../../models/agreement';
 import { HomeBanner } from '../../../models/homeBanner';
 
+// ✅ Imports adicionados
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
+
 interface StatCard {
   label: string;
   value: number;
@@ -98,7 +102,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private newsService: NewsService,
     private agreementService: AgreementService,
-    private homeBannerService: HomeBannerService
+    private homeBannerService: HomeBannerService,
+    private toastr: ToastrService // ✅ Toastr injetado
   ) { }
 
   ngOnInit(): void {
@@ -114,6 +119,10 @@ export class DashboardComponent implements OnInit {
       this.homeBannerService.getAll().toPromise()
     ])
       .then(([newsList, agreements, banners]) => {
+        if (!newsList && !agreements && !banners) {
+          throw new Error('Nenhum dado retornado do servidor');
+        }
+
         // 🔹 Notícias
         const sortedNews = [...(newsList || [])].sort((a, b) => {
           const dateA = new Date(a.publishedAt || a.createdAt || '').getTime();
@@ -128,25 +137,16 @@ export class DashboardComponent implements OnInit {
         // 🔹 Banners
         this.banners = banners || [];
 
-        // 🔹 Estatísticas reais
-        const totalNews = newsList?.length || 0;
-        const publishedCount = newsList?.filter(n => n.isPublished)?.length || 0;
-
-        const totalAgreements = this.agreements.length;
-        const activeAgreements = this.agreements.filter(a => a.isActive).length;
-
-        const totalBanners = this.banners.length;
-        const activeBanners = this.banners.filter(b => b.isActive).length;
-
+        // 🔹 Estatísticas
         this.statCards = [
           {
             label: 'Total de Notícias',
-            value: totalNews,
+            value: newsList?.length || 0,
             icon: 'bi-newspaper',
             bgClass: 'bg-primary',
             textClass: 'text-primary',
             detailsLink: '/admin/news',
-            trend: { value: publishedCount, isPositive: true }
+            trend: { value: newsList?.filter(n => n.isPublished)?.length || 0, isPositive: true }
           },
           {
             label: 'Contatos Não Lidos',
@@ -159,21 +159,21 @@ export class DashboardComponent implements OnInit {
           },
           {
             label: 'Total de Convênios',
-            value: totalAgreements,
+            value: this.agreements.length,
             icon: 'bi-people',
             bgClass: 'bg-success',
             textClass: 'text-success',
             detailsLink: '/admin/convenios',
-            trend: { value: activeAgreements, isPositive: true }
+            trend: { value: this.agreements.filter(a => a.isActive).length, isPositive: true }
           },
           {
             label: 'Banners Ativos',
-            value: totalBanners,
+            value: this.banners.length,
             icon: 'bi-image',
             bgClass: 'bg-warning',
             textClass: 'text-warning',
             detailsLink: '/admin/banners',
-            trend: { value: activeBanners, isPositive: true }
+            trend: { value: this.banners.filter(b => b.isActive).length, isPositive: true }
           }
         ];
 
@@ -181,24 +181,24 @@ export class DashboardComponent implements OnInit {
       })
       .catch((err) => {
         console.error('Erro ao carregar dados do dashboard:', err);
+        this.toastr.error('Não foi possível carregar os dados iniciais.', 'Erro');
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro ao conectar',
+          text: 'Falha ao carregar dados do Dashboard. Tente novamente mais tarde.'
+        });
         this.loading = false;
       });
   }
 
   formatDate(dateString?: string): string {
     if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
+    return new Date(dateString).toLocaleDateString('pt-BR');
   }
 
   formatDateTime(dateString?: string): string {
     if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleString('pt-BR', {
+    return new Date(dateString).toLocaleString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',

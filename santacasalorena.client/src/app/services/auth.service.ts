@@ -40,6 +40,21 @@ export class AuthService {
     this.clearToken();
   }
 
+  isTokenExpired(): boolean {
+    const token = this.getToken();
+    if (!token) return true;
+
+    try {
+      const decoded = jwtDecode<{ exp: number }>(token);
+      if (!decoded.exp) return true;
+
+      const now = Math.floor(Date.now() / 1000);
+      return decoded.exp < now; // true se expirado
+    } catch {
+      return true;
+    }
+  }
+
   /** ------------------- Token Helpers ------------------- **/
 
   private storeToken(token: string): void {

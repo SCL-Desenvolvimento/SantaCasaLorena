@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProviderService } from '../../../../services/provider.service';
 import { Providers } from '../../../../models/provider';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-provider-form',
@@ -23,7 +25,8 @@ export class ProviderFormComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private providerService: ProviderService
+    private providerService: ProviderService,
+    private toastr: ToastrService
   ) {
     this.createForm();
   }
@@ -58,7 +61,7 @@ export class ProviderFormComponent implements OnInit {
       },
       error: error => {
         console.error('Erro ao carregar provedor:', error);
-        alert('Erro ao carregar provedor. Tente novamente mais tarde.');
+        this.toastr.error('Erro ao carregar o provedor. Tente novamente mais tarde.', 'Erro');
         this.loading = false;
         this.router.navigate(['/admin/providers']);
       },
@@ -79,6 +82,7 @@ export class ProviderFormComponent implements OnInit {
   save(): void {
     if (this.providerForm.invalid) {
       this.markFormGroupTouched();
+      this.toastr.warning('Preencha todos os campos obrigatórios corretamente.', 'Atenção');
       return;
     }
 
@@ -102,13 +106,16 @@ export class ProviderFormComponent implements OnInit {
 
     saveOperation.subscribe({
       next: () => {
-        alert(this.isEditMode ? 'Provedor atualizado com sucesso!' : 'Provedor criado com sucesso!');
+        this.toastr.success(
+          this.isEditMode ? 'Fornecedor atualizado com sucesso!' : 'Fornecedor criado com sucesso!',
+          'Sucesso'
+        );
         this.router.navigate(['/admin/providers']);
         this.saving = false;
       },
       error: error => {
         console.error('Erro ao salvar provedor:', error);
-        alert('Erro ao salvar provedor. Tente novamente mais tarde.');
+        this.toastr.error('Erro ao salvar o provedor. Tente novamente mais tarde.', 'Erro');
         this.saving = false;
       },
     });
@@ -142,9 +149,20 @@ export class ProviderFormComponent implements OnInit {
     return '';
   }
 
-  cancel(): void {
-    if (this.providerForm.dirty && confirm('Você tem alterações não salvas. Deseja realmente sair?')) {
-      this.router.navigate(['/admin/providers']);
+  async cancel(): Promise<void> {
+    if (this.providerForm.dirty) {
+      const result = await Swal.fire({
+        title: 'Tem certeza?',
+        text: 'Você tem alterações não salvas. Deseja realmente sair?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim, sair',
+        cancelButtonText: 'Cancelar'
+      });
+
+      if (result.isConfirmed) {
+        this.router.navigate(['/admin/providers']);
+      }
     } else {
       this.router.navigate(['/admin/providers']);
     }

@@ -4,6 +4,8 @@ import { HomeBanner } from '../../../../models/homeBanner';
 import { HomeBannerService } from '../../../../services/home-banner.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-banner-list',
@@ -21,7 +23,8 @@ export class BannerListComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private homeBannerService: HomeBannerService
+    private homeBannerService: HomeBannerService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -37,7 +40,7 @@ export class BannerListComponent implements OnInit {
         this.loading = false;
       },
       error: (err: HttpErrorResponse) => {
-        console.error('Erro ao carregar banners:', err);
+        this.toastr.error('Erro ao carregar os banners.', 'Erro');
         this.loading = false;
       }
     });
@@ -98,34 +101,56 @@ export class BannerListComponent implements OnInit {
     this.homeBannerService.updateBannerStatus(banner.id, !banner.isActive).subscribe({
       next: () => {
         banner.isActive = !banner.isActive;
+        this.toastr.success('Status atualizado com sucesso!', 'Sucesso');
         this.applyFilters();
       },
-      error: err => console.error('Erro ao atualizar status:', err)
+      error: () => this.toastr.error('Erro ao atualizar status.', 'Erro')
     });
   }
 
   async deleteBanner(id: string): Promise<void> {
-    if (!confirm('Tem certeza que deseja excluir este banner?')) return;
+    const result = await Swal.fire({
+      title: 'Tem certeza?',
+      text: 'Você não poderá desfazer esta ação!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!result.isConfirmed) return;
+
     try {
       await firstValueFrom(this.homeBannerService.delete(id));
       this.banners = this.banners.filter(b => b.id !== id);
       this.applyFilters();
-    } catch (err) {
-      console.error('Erro ao excluir banner:', err);
+      this.toastr.success('Banner excluído com sucesso!', 'Sucesso');
+    } catch {
+      this.toastr.error('Erro ao excluir banner.', 'Erro');
     }
   }
 
   async bulkDelete(): Promise<void> {
     if (this.selectedItems.length === 0) return;
-    if (!confirm(`Excluir ${this.selectedItems.length} banner(s)?`)) return;
+
+    const result = await Swal.fire({
+      title: `Excluir ${this.selectedItems.length} banner(s)?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
       await Promise.all(this.selectedItems.map(id => firstValueFrom(this.homeBannerService.delete(id))));
       this.banners = this.banners.filter(b => !this.selectedItems.includes(b.id));
       this.selectedItems = [];
       this.applyFilters();
-    } catch (err) {
-      console.error('Erro ao excluir em massa:', err);
+      this.toastr.success('Banners excluídos com sucesso!', 'Sucesso');
+    } catch {
+      this.toastr.error('Erro ao excluir em massa.', 'Erro');
     }
   }
 
@@ -133,6 +158,7 @@ export class BannerListComponent implements OnInit {
     await Promise.all(this.selectedItems.map(id => firstValueFrom(this.homeBannerService.updateBannerStatus(id, true))));
     this.banners.forEach(b => { if (this.selectedItems.includes(b.id)) b.isActive = true; });
     this.selectedItems = [];
+    this.toastr.success('Banners ativados!', 'Sucesso');
     this.applyFilters();
   }
 
@@ -140,6 +166,7 @@ export class BannerListComponent implements OnInit {
     await Promise.all(this.selectedItems.map(id => firstValueFrom(this.homeBannerService.updateBannerStatus(id, false))));
     this.banners.forEach(b => { if (this.selectedItems.includes(b.id)) b.isActive = false; });
     this.selectedItems = [];
+    this.toastr.success('Banners desativados!', 'Sucesso');
     this.applyFilters();
   }
 
@@ -170,8 +197,8 @@ export class BannerListComponent implements OnInit {
       b.order = tmp;
 
       this.filteredBanners.sort((x, y) => x.order - y.order);
-    } catch (error) {
-      console.error('Erro ao trocar ordem:', error);
+    } catch {
+      this.toastr.error('Erro ao alterar ordem.', 'Erro');
     }
   }
 }
