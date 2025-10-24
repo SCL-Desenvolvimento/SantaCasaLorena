@@ -20,7 +20,6 @@ export class UserListComponent implements OnInit {
 
   searchTerm = '';
   private searchDebounceTimer: any = null;
-  roleFilter: string = 'all';
   isActiveFilter: 'all' | 'true' | 'false' = 'all';
 
   sortBy: keyof User | 'createdAt' = 'createdAt';
@@ -32,12 +31,6 @@ export class UserListComponent implements OnInit {
 
   selectedItems: string[] = [];
   selectAll = false;
-
-  roles = [
-    { value: 'admin', label: 'Administrador' },
-    { value: 'editor', label: 'Editor' },
-    { value: 'viewer', label: 'Visualizador' },
-  ];
 
   constructor(
     private router: Router,
@@ -90,7 +83,6 @@ export class UserListComponent implements OnInit {
       );
     }
 
-    if (this.roleFilter !== 'all') filtered = filtered.filter(u => u.role === this.roleFilter);
     if (this.isActiveFilter === 'true') filtered = filtered.filter(u => u.isActive);
     if (this.isActiveFilter === 'false') filtered = filtered.filter(u => !u.isActive);
 
@@ -109,7 +101,8 @@ export class UserListComponent implements OnInit {
 
     const aDate = this.tryParseDate(aVal);
     const bDate = this.tryParseDate(bVal);
-    if (aDate && bDate) return order === 'asc' ? aDate.getTime() - bDate.getTime() : bDate.getTime() - aDate.getTime();
+    if (aDate && bDate)
+      return order === 'asc' ? aDate.getTime() - bDate.getTime() : bDate.getTime() - aDate.getTime();
 
     const aStr = (aVal ?? '').toString().toLowerCase();
     const bStr = (bVal ?? '').toString().toLowerCase();
@@ -333,7 +326,6 @@ export class UserListComponent implements OnInit {
 
   clearFilters(): void {
     this.searchTerm = '';
-    this.roleFilter = 'all';
     this.isActiveFilter = 'all';
     this.itemsPerPage = 10;
     this.applyFilters();
