@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Agreement } from '../../../../models/agreement';
 import { AgreementService } from '../../../../services/agreement.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-convenios-list',
@@ -13,29 +13,17 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./convenios-list.component.css']
 })
 export class ConveniosListComponent implements OnInit {
-  loading = true;
   convenios: Agreement[] = [];
   filteredConvenios: Agreement[] = [];
-
-  // Filtros
   searchTerm = '';
   statusFilter: 'all' | 'active' | 'inactive' = 'all';
-  sortBy = 'createdAt';
-  sortOrder: 'asc' | 'desc' = 'desc';
-
-  // Paginação
-  currentPage = 1;
-  itemsPerPage = 10;
-  totalItems = 0;
-
-  // Seleção
+  loading = true;
   selectedItems: string[] = [];
-  selectAll = false;
 
   constructor(
     private router: Router,
     private agreementService: AgreementService,
-    private toastr: ToastrService // ✅ Toastr injetado
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -51,55 +39,22 @@ export class ConveniosListComponent implements OnInit {
         this.loading = false;
       },
       error: (error: HttpErrorResponse) => {
-        this.toastr.error('Erro ao carregar convênios.', 'Erro');
-        console.error('Erro ao carregar convênios:', error);
+        console.error(error);
+        this.toastr.error('Erro ao carregar convênios', 'Erro');
         this.loading = false;
       }
     });
   }
 
   applyFilters(): void {
-    let filtered = [...this.convenios];
-
-    // Filtro de busca
-    if (this.searchTerm) {
-      filtered = filtered.filter(item =>
-        item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-    }
-
-    // Filtro de status
-    if (this.statusFilter !== 'all') {
-      const isActive = this.statusFilter === 'active';
-      filtered = filtered.filter(item => item.isActive === isActive);
-    }
-
-    // Ordenação
-    filtered.sort((a, b) => {
-      let aValue = (a as any)[this.sortBy];
-      let bValue = (b as any)[this.sortBy];
-
-      if (typeof aValue === 'string') aValue = aValue.toLowerCase();
-      if (typeof bValue === 'string') bValue = bValue.toLowerCase();
-
-      if (aValue < bValue) return this.sortOrder === 'asc' ? -1 : 1;
-      if (aValue > bValue) return this.sortOrder === 'asc' ? 1 : -1;
-      return 0;
+    this.filteredConvenios = this.convenios.filter(item => {
+      const matchesSearch = item.name.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const matchesStatus =
+        this.statusFilter === 'all' ||
+        (this.statusFilter === 'active' && item.isActive) ||
+        (this.statusFilter === 'inactive' && !item.isActive);
+      return matchesSearch && matchesStatus;
     });
-
-    this.filteredConvenios = filtered;
-    this.totalItems = filtered.length;
-    this.currentPage = 1;
-  }
-
-  get paginatedConvenios(): Agreement[] {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    return this.filteredConvenios.slice(start, end);
-  }
-
-  get totalPages(): number {
-    return Math.ceil(this.totalItems / this.itemsPerPage);
   }
 
   onSearch(): void {
@@ -110,58 +65,35 @@ export class ConveniosListComponent implements OnInit {
     this.applyFilters();
   }
 
-  onSort(field: string): void {
-    if (this.sortBy === field) {
-      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.sortBy = field;
-      this.sortOrder = 'desc';
-    }
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.statusFilter = 'all';
     this.applyFilters();
   }
 
-  onPageChange(page: number): void {
-    this.currentPage = page;
-  }
-
-  onItemsPerPageChange(): void {
-    this.currentPage = 1;
-  }
-
-  toggleSelectAll(): void {
-    if (this.selectAll) {
-      this.selectedItems = this.paginatedConvenios.map(item => item.id);
-    } else {
-      this.selectedItems = [];
-    }
-  }
-
-  toggleItemSelection(id: string): void {
-    const index = this.selectedItems.indexOf(id);
-    if (index > -1) {
-      this.selectedItems.splice(index, 1);
-    } else {
-      this.selectedItems.push(id);
-    }
-    this.selectAll = this.selectedItems.length === this.paginatedConvenios.length;
-  }
-
-  isSelected(id: string): boolean {
-    return this.selectedItems.includes(id);
-  }
-
+  // CRUD
   createConvenio(): void {
     this.router.navigate(['/admin/convenios/new']);
   }
 
   editConvenio(id: string): void {
-    this.router.navigate(['/admin/convenios/edit', id]);
+    this.router.navigate([`/admin/convenios/edit/${id}`]);
+  }
+
+  toggleActiveStatus(convenio: Agreement): void {
+    this.agreementService.toggleActive(convenio.id).subscribe({
+      next: (updated) => {
+        convenio.isActive = updated.isActive;
+        this.toastr.success('Status atualizado com sucesso', 'Sucesso');
+      },
+      error: () => this.toastr.error('Erro ao alterar status', 'Erro')
+    });
   }
 
   deleteConvenio(id: string): void {
     Swal.fire({
-      title: 'Excluir convênio?',
-      text: 'Esta ação não poderá ser desfeita!',
+      title: 'Tem certeza?',
+      text: 'Você não poderá reverter essa ação!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sim, excluir',
@@ -170,14 +102,102 @@ export class ConveniosListComponent implements OnInit {
       if (result.isConfirmed) {
         this.agreementService.delete(id).subscribe({
           next: () => {
-            this.convenios = this.convenios.filter(item => item.id !== id);
+            this.convenios = this.convenios.filter(c => c.id !== id);
             this.applyFilters();
             this.toastr.success('Convênio excluído com sucesso!', 'Sucesso');
           },
-          error: (error: HttpErrorResponse) => {
-            console.error('Erro ao excluir convênio:', error);
-            this.toastr.error('Erro ao excluir convênio.', 'Erro');
-          }
+          error: () => this.toastr.error('Erro ao excluir convênio', 'Erro')
+        });
+      }
+    });
+  }
+
+  // Seleção
+  toggleAllSelection(): void {
+    if (this.isAllSelected()) {
+      this.selectedItems = [];
+    } else {
+      this.selectedItems = this.filteredConvenios.map(c => c.id);
+    }
+  }
+
+  toggleItemSelection(id: string): void {
+    const index = this.selectedItems.indexOf(id);
+    if (index > -1) this.selectedItems.splice(index, 1);
+    else this.selectedItems.push(id);
+  }
+
+  isSelected(id: string): boolean {
+    return this.selectedItems.includes(id);
+  }
+
+  isAllSelected(): boolean {
+    return (
+      this.filteredConvenios.length > 0 &&
+      this.selectedItems.length === this.filteredConvenios.length
+    );
+  }
+
+  // Ações em massa
+  bulkActivate(): void {
+    if (this.selectedItems.length === 0) {
+      this.toastr.warning('Nenhum item selecionado', 'Atenção');
+      return;
+    }
+
+    this.agreementService.bulkToggle(this.selectedItems, true).subscribe({
+      next: () => {
+        this.convenios.forEach(c => {
+          if (this.selectedItems.includes(c.id)) c.isActive = true;
+        });
+        this.toastr.success('Convênios ativados com sucesso', 'Sucesso');
+        this.applyFilters();
+      },
+      error: () => this.toastr.error('Erro ao ativar convênios', 'Erro')
+    });
+  }
+
+  bulkDeactivate(): void {
+    if (this.selectedItems.length === 0) {
+      this.toastr.warning('Nenhum item selecionado', 'Atenção');
+      return;
+    }
+
+    this.agreementService.bulkToggle(this.selectedItems, false).subscribe({
+      next: () => {
+        this.convenios.forEach(c => {
+          if (this.selectedItems.includes(c.id)) c.isActive = false;
+        });
+        this.toastr.success('Convênios desativados com sucesso', 'Sucesso');
+        this.applyFilters();
+      },
+      error: () => this.toastr.error('Erro ao desativar convênios', 'Erro')
+    });
+  }
+
+  bulkDelete(): void {
+    if (this.selectedItems.length === 0) {
+      this.toastr.warning('Nenhum item selecionado', 'Atenção');
+      return;
+    }
+
+    Swal.fire({
+      title: 'Excluir selecionados?',
+      text: 'Essa ação não poderá ser desfeita!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.agreementService.bulkDelete(this.selectedItems).subscribe({
+          next: () => {
+            this.convenios = this.convenios.filter(c => !this.selectedItems.includes(c.id));
+            this.selectedItems = [];
+            this.applyFilters();
+            this.toastr.success('Convênios excluídos com sucesso', 'Sucesso');
+          },
+          error: () => this.toastr.error('Erro ao excluir convênios', 'Erro')
         });
       }
     });
@@ -185,17 +205,5 @@ export class ConveniosListComponent implements OnInit {
 
   formatDate(dateString?: string): string {
     return dateString ? new Date(dateString).toLocaleDateString('pt-BR') : '-';
-  }
-
-  getStatusBadgeClass(isActive: boolean): string {
-    return isActive ? 'bg-success' : 'bg-danger';
-  }
-
-  getStatusText(isActive: boolean): string {
-    return isActive ? 'Ativo' : 'Inativo';
-  }
-
-  getMin(a: number, b: number): number {
-    return Math.min(a, b);
   }
 }

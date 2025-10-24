@@ -94,22 +94,55 @@ namespace SantaCasaLorena.Server.Services
             return true;
         }
 
-        public async Task<bool> UpdateStatusAsync(Guid id, bool isActive)
-        {
-            var banner = await _context.HomeBanners.FindAsync(id);
-            if (banner == null) return false;
-
-            banner.IsActive = isActive;
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
         public async Task<bool> UpdateOrderAsync(Guid id, int newOrder)
         {
             var banner = await _context.HomeBanners.FindAsync(id);
             if (banner == null) return false;
 
             banner.Order = newOrder;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<HomeBannerResponseDto?> ToggleActiveAsync(Guid id)
+        {
+            var entity = await _context.HomeBanners.FirstOrDefaultAsync(c => c.Id == id);
+            if (entity == null)
+                return null;
+
+            entity.IsActive = !entity.IsActive;
+
+            await _context.SaveChangesAsync();
+
+            return MapToResponse(entity);
+        }
+
+        public async Task<bool> BulkDeleteAsync(IEnumerable<Guid> ids)
+        {
+            var entity = await _context.HomeBanners
+                .Where(c => ids.Contains(c.Id))
+                .ToListAsync();
+
+            if (entity.Count == 0) return false;
+
+            _context.HomeBanners.RemoveRange(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> BulkToggleActiveAsync(IEnumerable<Guid> ids, bool activate)
+        {
+            var entity = await _context.HomeBanners
+                .Where(c => ids.Contains(c.Id))
+                .ToListAsync();
+
+            if (entity.Count == 0) return false;
+
+            foreach (var c in entity)
+            {
+                c.IsActive = activate;
+            }
+
             await _context.SaveChangesAsync();
             return true;
         }

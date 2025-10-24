@@ -9,7 +9,9 @@ namespace SantaCasaLorena.Server.Interfaces
         Task<HomeBannerResponseDto> AddAsync(HomeBannerRequestDto dto);
         Task<HomeBannerResponseDto> UpdateAsync(Guid id, HomeBannerRequestDto dto);
         Task<bool> DeleteAsync(Guid id);
-        Task<bool> UpdateStatusAsync(Guid id, bool isActive);
         Task<bool> UpdateOrderAsync(Guid id, int newOrder);
+        Task<HomeBannerResponseDto?> ToggleActiveAsync(Guid id);
+        Task<bool> BulkDeleteAsync(IEnumerable<Guid> ids);
+        Task<bool> BulkToggleActiveAsync(IEnumerable<Guid> ids, bool activate);
     }
 }
