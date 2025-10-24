@@ -17,19 +17,19 @@ export class NewsListComponent implements OnInit {
   news: News[] = [];
   filteredNews: News[] = [];
 
-  // Filters
+  // Filtros
   searchTerm = '';
   statusFilter = 'all'; // all, published, draft
   categoryFilter = 'all';
   sortBy = 'createdAt';
   sortOrder: 'asc' | 'desc' = 'desc';
 
-  // Pagination
+  // Paginação
   currentPage = 1;
   itemsPerPage = 10;
   totalItems = 0;
 
-  // Selection
+  // Seleção
   selectedItems: string[] = [];
   selectAll = false;
 
@@ -196,8 +196,7 @@ export class NewsListComponent implements OnInit {
     const newsItem = this.news.find(item => item.id === id);
     if (!newsItem) return;
 
-    const newStatus = !newsItem.isPublished;
-    const actionText = newStatus ? 'publicar' : 'despublicar';
+    const actionText = newsItem.isPublished ? 'despublicar' : 'publicar';
 
     Swal.fire({
       title: `Deseja realmente ${actionText} esta notícia?`,
@@ -208,12 +207,11 @@ export class NewsListComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then(result => {
       if (result.isConfirmed) {
-        this.newsService.updateNewsPublishStatus(id, newStatus).subscribe({
-          next: () => {
-            newsItem.isPublished = newStatus;
-            newsItem.publishedAt = newStatus ? new Date().toISOString() : undefined;
+        this.newsService.toggleActive(id).subscribe({
+          next: (updated) => {
+            newsItem.isPublished = updated.isPublished;
             this.applyFilters();
-            this.toastr.success(`Notícia ${newStatus ? 'publicada' : 'despublicada'} com sucesso!`);
+            this.toastr.success(`Notícia ${updated.isPublished ? 'publicada' : 'despublicada'} com sucesso!`);
           },
           error: (error: HttpErrorResponse) => {
             console.error('Erro ao atualizar status:', error);
@@ -265,23 +263,18 @@ export class NewsListComponent implements OnInit {
 
     if (!result.isConfirmed) return;
 
-    let successful = 0;
-    let failed = 0;
-
-    for (const id of this.selectedItems) {
-      try {
-        await this.newsService.delete(id).toPromise();
-        successful++;
-      } catch {
-        failed++;
+    this.newsService.bulkDelete(this.selectedItems).subscribe({
+      next: () => {
+        this.toastr.success(`${this.selectedItems.length} notícia(s) excluída(s).`);
+        this.selectedItems = [];
+        this.selectAll = false;
+        this.loadNews();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Erro ao excluir notícias:', error);
+        this.toastr.error(`Erro ao excluir: ${error.error?.message || error.message}`);
       }
-    }
-
-    this.toastr.success(`${successful} notícia(s) excluída(s).`);
-    if (failed > 0) this.toastr.warning(`${failed} falharam ao excluir.`);
-    this.selectedItems = [];
-    this.selectAll = false;
-    this.loadNews();
+    });
   }
 
   async bulkPublish(): Promise<void> {
@@ -297,23 +290,18 @@ export class NewsListComponent implements OnInit {
 
     if (!result.isConfirmed) return;
 
-    let success = 0;
-    let failed = 0;
-
-    for (const id of this.selectedItems) {
-      try {
-        await this.newsService.updateNewsPublishStatus(id, true).toPromise();
-        success++;
-      } catch {
-        failed++;
+    this.newsService.bulkToggle(this.selectedItems, true).subscribe({
+      next: () => {
+        this.toastr.success(`${this.selectedItems.length} publicada(s) com sucesso!`);
+        this.selectedItems = [];
+        this.selectAll = false;
+        this.loadNews();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Erro ao publicar:', error);
+        this.toastr.error(`Erro ao publicar: ${error.error?.message || error.message}`);
       }
-    }
-
-    this.toastr.success(`${success} publicada(s) com sucesso!`);
-    if (failed > 0) this.toastr.warning(`${failed} falharam.`);
-    this.selectedItems = [];
-    this.selectAll = false;
-    this.loadNews();
+    });
   }
 
   async bulkUnpublish(): Promise<void> {
@@ -329,23 +317,18 @@ export class NewsListComponent implements OnInit {
 
     if (!result.isConfirmed) return;
 
-    let success = 0;
-    let failed = 0;
-
-    for (const id of this.selectedItems) {
-      try {
-        await this.newsService.updateNewsPublishStatus(id, false).toPromise();
-        success++;
-      } catch {
-        failed++;
+    this.newsService.bulkToggle(this.selectedItems, false).subscribe({
+      next: () => {
+        this.toastr.success(`${this.selectedItems.length} despublicada(s) com sucesso!`);
+        this.selectedItems = [];
+        this.selectAll = false;
+        this.loadNews();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Erro ao despublicar:', error);
+        this.toastr.error(`Erro ao despublicar: ${error.error?.message || error.message}`);
       }
-    }
-
-    this.toastr.success(`${success} despublicada(s) com sucesso!`);
-    if (failed > 0) this.toastr.warning(`${failed} falharam.`);
-    this.selectedItems = [];
-    this.selectAll = false;
-    this.loadNews();
+    });
   }
 
   formatDate(dateString: string | undefined): string {

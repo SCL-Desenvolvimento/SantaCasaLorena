@@ -51,12 +51,6 @@ export class TransparencyPortalService {
     );
   }
 
-  updateTransparencyItemStatus(id: string, status: boolean): Observable<void> {
-    return this.http.patch<void>(`${this.apiUrl}/${id}/status`, { status }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
   toggleActive(id: string): Observable<TransparencyPortal> {
     return this.http.patch<TransparencyPortal>(`${this.apiUrl}/${id}/toggle-active`, {}).pipe(
       catchError(this.handleError)

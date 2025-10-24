@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using SantaCasaLorena.Server.Context;
 using SantaCasaLorena.Server.DTOs;
 using SantaCasaLorena.Server.Entities;
@@ -181,23 +182,62 @@ namespace SantaCasaLorena.Server.Services
             return true;
         }
 
-        public async Task<bool> UpdatePublishStatusAsync(Guid id, bool isPublished)
+        public async Task<NewsResponseDto?> ToggleActiveAsync(Guid id)
         {
-            var entity = await _context.News.FindAsync(id);
-            if (entity == null) return false;
+            var entity = await _context.News.FirstOrDefaultAsync(c => c.Id == id);
+            if (entity == null)
+                return null;
 
-            entity.IsPublished = isPublished;
-            entity.UpdatedAt = DateTime.UtcNow;
-            if (isPublished && !entity.PublishedAt.HasValue)
+            entity.IsPublished = !entity.IsPublished;
+
+            await _context.SaveChangesAsync();
+            
+            return new NewsResponseDto
             {
-                entity.PublishedAt = DateTime.UtcNow;
-            }
-            else if (!isPublished)
+                Id = entity.Id,
+                ImageUrl = entity.ImageUrl,
+                Title = entity.Title,
+                Description = entity.Description,
+                Content = entity.Content,
+                Category = entity.Category,
+                IsPublished = entity.IsPublished,
+                Tags = entity.Tags,
+                SeoTitle = entity.SeoTitle,
+                SeoDescription = entity.SeoDescription,
+                SeoKeywords = entity.SeoKeywords,
+                CreatedAt = entity.CreatedAt,
+                UpdatedAt = entity.UpdatedAt,
+                PublishedAt = entity.PublishedAt,
+                Views = entity.Views
+            };
+        }
+
+        public async Task<bool> BulkDeleteAsync(IEnumerable<Guid> ids)
+        {
+            var entity = await _context.News
+                .Where(c => ids.Contains(c.Id))
+                .ToListAsync();
+
+            if (entity.Count == 0) return false;
+
+            _context.News.RemoveRange(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> BulkToggleActiveAsync(IEnumerable<Guid> ids, bool isPublished)
+        {
+            var entity = await _context.News
+                .Where(c => ids.Contains(c.Id))
+                .ToListAsync();
+
+            if (entity.Count == 0) return false;
+
+            foreach (var c in entity)
             {
-                entity.PublishedAt = null;
+                c.IsPublished = isPublished;
             }
 
-            _context.News.Update(entity);
             await _context.SaveChangesAsync();
             return true;
         }
