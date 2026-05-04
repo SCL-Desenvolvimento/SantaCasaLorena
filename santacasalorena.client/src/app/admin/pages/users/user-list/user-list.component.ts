@@ -4,6 +4,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 import { User } from '../../../../models/user';
 import { UserService } from '../../../../services/user.service';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-list',
@@ -18,7 +20,6 @@ export class UserListComponent implements OnInit {
 
   searchTerm = '';
   private searchDebounceTimer: any = null;
-  roleFilter: string = 'all';
   isActiveFilter: 'all' | 'true' | 'false' = 'all';
 
   sortBy: keyof User | 'createdAt' = 'createdAt';
@@ -31,13 +32,11 @@ export class UserListComponent implements OnInit {
   selectedItems: string[] = [];
   selectAll = false;
 
-  roles = [
-    { value: 'admin', label: 'Administrador' },
-    { value: 'editor', label: 'Editor' },
-    { value: 'viewer', label: 'Visualizador' },
-  ];
-
-  constructor(private router: Router, private userService: UserService) { }
+  constructor(
+    private router: Router,
+    private userService: UserService,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -58,7 +57,7 @@ export class UserListComponent implements OnInit {
         },
         error: (err: HttpErrorResponse) => {
           console.error('Erro ao carregar usuários:', err);
-          alert('Erro ao carregar usuários.');
+          this.toastr.error('Erro ao carregar usuários.', 'Erro');
         },
       });
   }
@@ -84,7 +83,6 @@ export class UserListComponent implements OnInit {
       );
     }
 
-    if (this.roleFilter !== 'all') filtered = filtered.filter(u => u.role === this.roleFilter);
     if (this.isActiveFilter === 'true') filtered = filtered.filter(u => u.isActive);
     if (this.isActiveFilter === 'false') filtered = filtered.filter(u => !u.isActive);
 
@@ -103,7 +101,8 @@ export class UserListComponent implements OnInit {
 
     const aDate = this.tryParseDate(aVal);
     const bDate = this.tryParseDate(bVal);
-    if (aDate && bDate) return order === 'asc' ? aDate.getTime() - bDate.getTime() : bDate.getTime() - aDate.getTime();
+    if (aDate && bDate)
+      return order === 'asc' ? aDate.getTime() - bDate.getTime() : bDate.getTime() - aDate.getTime();
 
     const aStr = (aVal ?? '').toString().toLowerCase();
     const bStr = (bVal ?? '').toString().toLowerCase();
@@ -182,33 +181,54 @@ export class UserListComponent implements OnInit {
     this.router.navigate(['/admin/users/edit', id]);
   }
 
-  deleteUser(id: string): void {
-    if (!confirm('Tem certeza que deseja excluir este usuário?')) return;
+  async deleteUser(id: string): Promise<void> {
+    const result = await Swal.fire({
+      title: 'Excluir usuário?',
+      text: 'Tem certeza que deseja excluir este usuário?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar',
+    });
+
+    if (!result.isConfirmed) return;
+
     this.userService.bulkDelete([id]).subscribe({
       next: () => {
         this.loadUsers();
-        alert('Usuário excluído com sucesso!');
+        this.toastr.success('Usuário excluído com sucesso!', 'Sucesso');
       },
       error: (err: HttpErrorResponse) => {
         console.error('Erro ao excluir usuário:', err);
-        alert('Erro ao excluir usuário.');
+        this.toastr.error('Erro ao excluir usuário.', 'Erro');
       },
     });
   }
 
-  bulkDelete(): void {
+  async bulkDelete(): Promise<void> {
     if (!this.selectedItems.length) return;
-    if (!confirm(`Tem certeza que deseja excluir ${this.selectedItems.length} usuário(s)?`)) return;
+
+    const result = await Swal.fire({
+      title: 'Excluir usuários?',
+      text: `Tem certeza que deseja excluir ${this.selectedItems.length} usuário(s)?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar',
+    });
+
+    if (!result.isConfirmed) return;
+
     this.userService.bulkDelete(this.selectedItems).subscribe({
       next: () => {
         this.loadUsers();
         this.selectedItems = [];
         this.selectAll = false;
-        alert('Usuários excluídos com sucesso!');
+        this.toastr.success('Usuários excluídos com sucesso!', 'Sucesso');
       },
       error: (err: HttpErrorResponse) => {
         console.error('Erro ao excluir usuários:', err);
-        alert('Erro ao excluir usuários.');
+        this.toastr.error('Erro ao excluir usuários.', 'Erro');
       },
     });
   }
@@ -220,11 +240,11 @@ export class UserListComponent implements OnInit {
         this.loadUsers();
         this.selectedItems = [];
         this.selectAll = false;
-        alert('Usuários ativados com sucesso!');
+        this.toastr.success('Usuários ativados com sucesso!', 'Sucesso');
       },
       error: (err: HttpErrorResponse) => {
         console.error('Erro ao ativar usuários:', err);
-        alert('Erro ao ativar usuários.');
+        this.toastr.error('Erro ao ativar usuários.', 'Erro');
       },
     });
   }
@@ -236,23 +256,37 @@ export class UserListComponent implements OnInit {
         this.loadUsers();
         this.selectedItems = [];
         this.selectAll = false;
-        alert('Usuários desativados com sucesso!');
+        this.toastr.success('Usuários desativados com sucesso!', 'Sucesso');
       },
       error: (err: HttpErrorResponse) => {
         console.error('Erro ao desativar usuários:', err);
-        alert('Erro ao desativar usuários.');
+        this.toastr.error('Erro ao desativar usuários.', 'Erro');
       },
     });
   }
 
-  toggleSingleStatus(user: User): void {
+  async toggleSingleStatus(user: User): Promise<void> {
     const action = user.isActive ? 'desativar' : 'ativar';
-    if (!confirm(`Deseja ${action} o usuário ${user.username}?`)) return;
+
+    const result = await Swal.fire({
+      title: `${action === 'ativar' ? 'Ativar' : 'Desativar'} usuário?`,
+      text: `Deseja realmente ${action} o usuário ${user.username}?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sim',
+      cancelButtonText: 'Cancelar',
+    });
+
+    if (!result.isConfirmed) return;
+
     this.userService.toggleActive(user.id).subscribe({
-      next: () => this.loadUsers(),
+      next: () => {
+        this.loadUsers();
+        this.toastr.success(`Usuário ${action} com sucesso!`, 'Sucesso');
+      },
       error: (err: HttpErrorResponse) => {
         console.error(`Erro ao ${action} usuário:`, err);
-        alert(`Erro ao ${action} usuário.`);
+        this.toastr.error(`Erro ao ${action} usuário.`, 'Erro');
       },
     });
   }
@@ -292,7 +326,6 @@ export class UserListComponent implements OnInit {
 
   clearFilters(): void {
     this.searchTerm = '';
-    this.roleFilter = 'all';
     this.isActiveFilter = 'all';
     this.itemsPerPage = 10;
     this.applyFilters();

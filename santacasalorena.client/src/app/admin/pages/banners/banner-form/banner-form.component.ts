@@ -6,6 +6,8 @@ import { HomeBannerService } from '../../../../services/home-banner.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NewsService } from '../../../../services/news.service';
 import { News } from '../../../../models/news';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-banner-form',
@@ -41,7 +43,8 @@ export class BannerFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private homeBannerService: HomeBannerService,
-    private newsService: NewsService
+    private newsService: NewsService,
+    private toastr: ToastrService
   ) {
     this.bannerForm = this.createForm();
   }
@@ -72,20 +75,17 @@ export class BannerFormComponent implements OnInit {
 
   loadNewsList(): void {
     this.loadingNews = true;
-    // Desabilita o campo usando a abordagem reativa correta
     this.bannerForm.get('newsId')?.disable();
 
     this.newsService.getAll().subscribe({
       next: (news: News[]) => {
         this.newsList = news;
         this.loadingNews = false;
-        // Reabilita o campo após carregar
         this.bannerForm.get('newsId')?.enable();
       },
       error: (err: HttpErrorResponse) => {
-        console.error('Erro ao carregar notícias:', err);
+        this.toastr.error('Erro ao carregar notícias');
         this.loadingNews = false;
-        // Reabilita mesmo com erro
         this.bannerForm.get('newsId')?.enable();
       }
     });
@@ -95,26 +95,14 @@ export class BannerFormComponent implements OnInit {
     this.loading = true;
     this.homeBannerService.getById(this.bannerId!).subscribe({
       next: (banner: HomeBanner) => {
-        this.bannerForm.patchValue({
-          id: banner.id,
-          title: banner.title,
-          description: banner.description,
-          order: banner.order,
-          timeSeconds: banner.timeSeconds,
-          newsId: banner.newsId,
-          isActive: banner.isActive,
-          createdAt: banner.createdAt
-        });
-
+        this.bannerForm.patchValue(banner);
         this.previews.desktop = banner.desktopImageUrl || '';
         this.previews.tablet = banner.tabletImageUrl || '';
         this.previews.mobile = banner.mobileImageUrl || '';
-
         this.loading = false;
       },
-      error: (err: HttpErrorResponse) => {
-        console.error('Erro ao carregar banner:', err);
-        alert('Erro ao carregar banner');
+      error: () => {
+        this.toastr.error('Erro ao carregar banner.');
         this.loading = false;
       }
     });
@@ -126,15 +114,14 @@ export class BannerFormComponent implements OnInit {
 
     const file = input.files[0];
 
-    // Validação básica
     if (!file.type.startsWith('image/')) {
-      alert('Por favor, selecione apenas arquivos de imagem.');
+      Swal.fire('Atenção', 'Selecione apenas arquivos de imagem!', 'warning');
       input.value = '';
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      alert('A imagem deve ter no máximo 5MB.');
+      Swal.fire('Atenção', 'A imagem deve ter no máximo 5MB.', 'warning');
       input.value = '';
       return;
     }
@@ -158,67 +145,37 @@ export class BannerFormComponent implements OnInit {
   }
 
   save(): void {
-    console.log('Iniciando salvamento...');
-
     if (this.bannerForm.invalid) {
-      console.log('Formulário inválido:', this.getFormValidationErrors());
+      this.toastr.warning('Preencha os campos obrigatórios.');
       this.markFormGroupTouched();
       return;
     }
 
-    // Validação de imagens para novo banner
-    if (!this.isEditMode) {
-      const missingImages = [];
-      if (!this.selectedFiles.desktop) missingImages.push('Desktop');
-      if (!this.selectedFiles.tablet) missingImages.push('Tablet');
-      if (!this.selectedFiles.mobile) missingImages.push('Mobile');
-
-      if (missingImages.length > 0) {
-        alert(`Por favor, selecione todas as três imagens: ${missingImages.join(', ')}`);
-        return;
-      }
+    if (!this.isEditMode && (!this.selectedFiles.desktop || !this.selectedFiles.tablet || !this.selectedFiles.mobile)) {
+      Swal.fire('Atenção', 'Envie todas as 3 imagens (Desktop, Tablet e Mobile).', 'warning');
+      return;
     }
 
     this.saving = true;
     const formData = this.prepareFormData();
-
-    console.log('Enviando FormData...');
-    this.logFormData(formData);
 
     const request = this.isEditMode
       ? this.homeBannerService.update(this.bannerId!, formData)
       : this.homeBannerService.create(formData);
 
     request.subscribe({
-      next: (response) => {
-        console.log('Banner salvo com sucesso:', response);
+      next: () => {
+        Swal.fire('Sucesso!', 'Banner salvo com sucesso!', 'success').then(() => {
+          this.router.navigate(['/admin/banners']);
+        });
         this.saving = false;
-        alert('Banner salvo com sucesso!');
-        this.router.navigate(['/admin/banners']);
       },
       error: (err: HttpErrorResponse) => {
-        console.error('Erro detalhado ao salvar banner:', err);
-        console.error('Erro completo:', err.error);
-
-        let errorMessage = 'Erro ao salvar banner. ';
-        if (err.error && typeof err.error === 'string') {
-          errorMessage += err.error;
-        } else if (err.error?.message) {
-          errorMessage += err.error.message;
-        } else if (err.status === 400) {
-          errorMessage += 'Dados inválidos enviados para o servidor.';
-        } else if (err.status === 500) {
-          errorMessage += 'Erro interno do servidor. Verifique os logs do servidor.';
-        } else {
-          errorMessage += 'Tente novamente.';
-        }
-
-        alert(errorMessage);
+        this.toastr.error('Erro ao salvar banner.');
         this.saving = false;
       }
     });
   }
-
   private prepareFormData(): FormData {
     // Usa getRawValue() para incluir campos disabled
     const formValue = this.bannerForm.getRawValue();
@@ -252,29 +209,6 @@ export class BannerFormComponent implements OnInit {
     return formData;
   }
 
-  private logFormData(formData: FormData): void {
-    console.log('=== FORM DATA ===');
-    for (const pair of formData.entries()) {
-      if (pair[1] instanceof File) {
-        console.log(pair[0] + ': ', `File(${pair[1].name}, ${pair[1].size} bytes)`);
-      } else {
-        console.log(pair[0] + ': ', pair[1]);
-      }
-    }
-    console.log('=================');
-  }
-
-  private getFormValidationErrors(): any {
-    const errors: any = {};
-    Object.keys(this.bannerForm.controls).forEach(key => {
-      const control = this.bannerForm.get(key);
-      if (control?.errors) {
-        errors[key] = control.errors;
-      }
-    });
-    return errors;
-  }
-
   private markFormGroupTouched(): void {
     Object.keys(this.bannerForm.controls).forEach(key => {
       const control = this.bannerForm.get(key);
@@ -283,19 +217,32 @@ export class BannerFormComponent implements OnInit {
   }
 
   // Getters para validação no template
-  get title() { return this.bannerForm.get('title'); }
-  get description() { return this.bannerForm.get('description'); }
-  get order() { return this.bannerForm.get('order'); }
-  get timeSeconds() { return this.bannerForm.get('timeSeconds'); }
-  get newsId() { return this.bannerForm.get('newsId'); }
+  get title() {
+    return this.bannerForm.get('title');
+  }
+  get description() {
+    return this.bannerForm.get('description');
+  }
+  get order() {
+    return this.bannerForm.get('order');
+  }
+  get timeSeconds() {
+    return this.bannerForm.get('timeSeconds');
+  }
+  get newsId() {
+    return this.bannerForm.get('newsId');
+  }
 
   cancel(): void {
-    if (this.bannerForm.dirty || this.selectedFiles.desktop || this.selectedFiles.tablet || this.selectedFiles.mobile) {
-      if (confirm('Tem certeza que deseja cancelar? As alterações não salvas serão perdidas.')) {
-        this.router.navigate(['/admin/banners']);
-      }
-    } else {
-      this.router.navigate(['/admin/banners']);
-    }
+    Swal.fire({
+      title: 'Cancelar?',
+      text: 'As alterações não salvas serão perdidas.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, cancelar',
+      cancelButtonText: 'Não'
+    }).then(result => {
+      if (result.isConfirmed) this.router.navigate(['/admin/banners']);
+    });
   }
 }

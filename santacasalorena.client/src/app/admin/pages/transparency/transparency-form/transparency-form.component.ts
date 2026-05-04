@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TransparencyPortal } from '../../../../models/transparencyPortal';
 import { TransparencyPortalService } from '../../../../services/transparency-portal.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-transparency-form',
@@ -40,7 +42,8 @@ export class TransparencyFormComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private transparencyPortalService: TransparencyPortalService
+    private transparencyPortalService: TransparencyPortalService,
+    private toastr: ToastrService
   ) {
     this.transparencyForm = this.createForm();
   }
@@ -84,7 +87,7 @@ export class TransparencyFormComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error("Erro ao carregar item de transparência:", error);
-        alert("Erro ao carregar item de transparência.");
+        this.toastr.error('Erro ao carregar item de transparência.', 'Erro');
         this.loading = false;
         this.router.navigate(["/admin/transparency"]);
       }
@@ -94,15 +97,13 @@ export class TransparencyFormComponent implements OnInit {
   onFileSelected(event: any): void {
     const file = event.target.files[0];
     if (file) {
-      // Validate file type (e.g., PDF)
       if (file.type !== 'application/pdf') {
-        alert('Por favor, selecione apenas arquivos PDF.');
+        this.toastr.warning('Por favor, selecione apenas arquivos PDF.', 'Atenção');
         return;
       }
 
-      // Validate file size (max 10MB)
       if (file.size > 10 * 1024 * 1024) {
-        alert('O arquivo deve ter no máximo 10MB.');
+        this.toastr.warning('O arquivo deve ter no máximo 10MB.', 'Atenção');
         return;
       }
 
@@ -113,18 +114,30 @@ export class TransparencyFormComponent implements OnInit {
   }
 
   removeFile(): void {
-    this.filePreview = undefined;
-    this.fileName = undefined;
-    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = '';
-    }
-    this.transparencyForm.patchValue({ file: null });
+    Swal.fire({
+      title: 'Remover arquivo?',
+      text: 'Deseja realmente remover o arquivo anexado?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, remover',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.filePreview = undefined;
+        this.fileName = undefined;
+        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
+        this.transparencyForm.patchValue({ file: null });
+        this.toastr.info('Arquivo removido.', 'Removido');
+      }
+    });
   }
 
   save(): void {
     if (this.transparencyForm.invalid) {
       this.markFormGroupTouched();
+      this.toastr.warning('Preencha todos os campos obrigatórios.', 'Atenção');
       return;
     }
 
@@ -147,12 +160,20 @@ export class TransparencyFormComponent implements OnInit {
     operation.subscribe({
       next: () => {
         this.saving = false;
-        alert(this.isEditMode ? "Item de transparência atualizado com sucesso!" : "Item de transparência criado com sucesso!");
-        this.router.navigate(["/admin/transparency"]);
+        Swal.fire({
+          icon: 'success',
+          title: this.isEditMode ? 'Item atualizado!' : 'Item criado!',
+          text: this.isEditMode
+            ? 'O item de transparência foi atualizado com sucesso!'
+            : 'O item de transparência foi criado com sucesso!',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          this.router.navigate(["/admin/transparency"]);
+        });
       },
       error: (error: HttpErrorResponse) => {
         console.error("Erro ao salvar item de transparência:", error);
-        alert("Erro ao salvar item de transparência. Verifique o console para mais detalhes.");
+        this.toastr.error('Erro ao salvar item de transparência.', 'Erro');
         this.saving = false;
       }
     });
@@ -182,12 +203,20 @@ export class TransparencyFormComponent implements OnInit {
 
   cancel(): void {
     if (this.transparencyForm.dirty) {
-      if (confirm('Você tem alterações não salvas. Deseja realmente sair?')) {
-        this.router.navigate(['/admin/transparency']);
-      }
+      Swal.fire({
+        title: 'Descartar alterações?',
+        text: 'Você tem alterações não salvas. Deseja realmente sair?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim, sair',
+        cancelButtonText: 'Cancelar'
+      }).then(result => {
+        if (result.isConfirmed) {
+          this.router.navigate(['/admin/transparency']);
+        }
+      });
     } else {
       this.router.navigate(['/admin/transparency']);
     }
   }
 }
-

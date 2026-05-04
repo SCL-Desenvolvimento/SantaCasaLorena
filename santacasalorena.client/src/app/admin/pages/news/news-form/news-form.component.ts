@@ -6,6 +6,8 @@ import { NewsService } from '../../../../services/news.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../../../services/auth.service';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-news-form',
@@ -42,10 +44,9 @@ export class NewsFormComponent implements OnInit {
   ];
 
   selectedTags: string[] = [];
-  imageFile?: File; // Para armazenar o arquivo de imagem
+  imageFile?: File;
   imagePreview?: string;
 
-  // Editor configuration
   editorConfig = {
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'],
@@ -70,7 +71,8 @@ export class NewsFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private newsService: NewsService,
-    private authService: AuthService
+    private authService: AuthService,
+    private toastr: ToastrService
   ) {
     this.newsForm = this.createForm();
   }
@@ -121,7 +123,7 @@ export class NewsFormComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error('Erro ao carregar notícia:', error);
-        alert('Erro ao carregar notícia. Por favor, tente novamente.');
+        this.toastr.error('Erro ao carregar notícia. Por favor, tente novamente.', 'Erro');
         this.loading = false;
         this.router.navigate(['/admin/news']);
       }
@@ -132,16 +134,16 @@ export class NewsFormComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       if (!file.type.startsWith('image/')) {
-        alert('Por favor, selecione apenas arquivos de imagem.');
+        this.toastr.warning('Por favor, selecione apenas arquivos de imagem.', 'Atenção');
         return;
       }
 
       if (file.size > 5 * 1024 * 1024) {
-        alert('O arquivo deve ter no máximo 5MB.');
+        this.toastr.warning('O arquivo deve ter no máximo 5MB.', 'Atenção');
         return;
       }
 
-      this.imageFile = file; // Armazena o arquivo
+      this.imageFile = file;
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.imagePreview = e.target.result;
@@ -158,9 +160,7 @@ export class NewsFormComponent implements OnInit {
     this.imageFile = undefined;
     this.imagePreview = undefined;
     const fileInput = document.getElementById('imageInput') as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = '';
-    }
+    if (fileInput) fileInput.value = '';
   }
 
   addTag(tag: string): void {
@@ -232,14 +232,12 @@ export class NewsFormComponent implements OnInit {
   save(): void {
     if (this.newsForm.invalid) {
       this.markFormGroupTouched();
-      alert('Por favor, preencha todos os campos obrigatórios e corrija os erros.');
+      this.toastr.warning('Por favor, preencha todos os campos obrigatórios e corrija os erros.', 'Formulário inválido');
       return;
     }
 
     this.saving = true;
     const newsData = this.getNewsData();
-    console.log(newsData);
-
     let operation: Observable<News>;
 
     if (this.isEditMode && this.newsId) {
@@ -251,13 +249,18 @@ export class NewsFormComponent implements OnInit {
     operation.subscribe({
       next: () => {
         this.saving = false;
-        alert(this.isEditMode ? 'Notícia atualizada com sucesso!' : 'Notícia criada com sucesso!');
-        this.router.navigate(['/admin/news']);
+        Swal.fire({
+          icon: 'success',
+          title: this.isEditMode ? 'Notícia atualizada com sucesso!' : 'Notícia criada com sucesso!',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          this.router.navigate(['/admin/news']);
+        });
       },
       error: (error: HttpErrorResponse) => {
         console.error('Erro ao salvar notícia:', error);
-        alert(`Erro ao salvar notícia: ${error.error?.message || error.message}`);
         this.saving = false;
+        this.toastr.error(`Erro ao salvar notícia: ${error.error?.message || error.message}`, 'Erro');
       }
     });
   }
@@ -278,7 +281,6 @@ export class NewsFormComponent implements OnInit {
       seoDescription: formValue.seoDescription,
       seoKeywords: formValue.seoKeywords,
       userId: this.authService.getUserInfo('id') ?? undefined
-      // createdAt, updatedAt, views são gerenciados pelo backend
     };
   }
 
@@ -307,9 +309,18 @@ export class NewsFormComponent implements OnInit {
 
   cancel(): void {
     if (this.newsForm.dirty) {
-      if (confirm('Você tem alterações não salvas. Deseja realmente sair?')) {
-        this.router.navigate(['/admin/news']);
-      }
+      Swal.fire({
+        title: 'Tem certeza?',
+        text: 'Você tem alterações não salvas. Deseja realmente sair?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim, sair',
+        cancelButtonText: 'Cancelar'
+      }).then(result => {
+        if (result.isConfirmed) {
+          this.router.navigate(['/admin/news']);
+        }
+      });
     } else {
       this.router.navigate(['/admin/news']);
     }

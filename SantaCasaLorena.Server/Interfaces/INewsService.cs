@@ -9,6 +9,8 @@ namespace SantaCasaLorena.Server.Interfaces
         Task<NewsResponseDto> AddAsync(NewsRequestDto dto);
         Task<NewsResponseDto> UpdateAsync(Guid id, NewsRequestDto dto);
         Task<bool> DeleteAsync(Guid id);
-        Task<bool> UpdatePublishStatusAsync(Guid id, bool isPublished);
+        Task<NewsResponseDto?> ToggleActiveAsync(Guid id);
+        Task<bool> BulkDeleteAsync(IEnumerable<Guid> ids);
+        Task<bool> BulkToggleActiveAsync(IEnumerable<Guid> ids, bool isPublished);
     }
 }

@@ -57,15 +57,6 @@ namespace SantaCasaLorena.Server.Controllers
         }
 
         [Authorize]
-        [HttpPut("{id:guid}/status")]
-        public async Task<ActionResult> UpdateStatus(Guid id, [FromQuery] bool status)
-        {
-            var success = await _service.UpdateStatusAsync(id, status);
-            if (!success) return NotFound();
-            return NoContent();
-        }
-
-        [Authorize]
         [HttpPut("{id:guid}/order")]
         public async Task<ActionResult> UpdateOrder(Guid id, [FromQuery] int order)
         {
@@ -74,5 +65,37 @@ namespace SantaCasaLorena.Server.Controllers
             return NoContent();
         }
 
+        [Authorize]
+        [HttpPatch("{id}/toggle-active")]
+        public async Task<ActionResult<ContactResponseDto>> ToggleActive(Guid id)
+        {
+            var result = await _service.ToggleActiveAsync(id);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpPost("bulk-delete")]
+        public async Task<ActionResult> BulkDelete([FromBody] IEnumerable<Guid> ids)
+        {
+            var success = await _service.BulkDeleteAsync(ids);
+            if (!success)
+                return NotFound();
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPost("bulk-toggle")]
+        public async Task<ActionResult> BulkToggle([FromBody] BulkToggleRequest request)
+        {
+            var success = await _service.BulkToggleActiveAsync(request.Ids, request.Activate);
+            if (!success)
+                return NotFound();
+
+            return NoContent();
+        }
     }
 }

@@ -54,16 +54,28 @@ export class HomeBannerService {
     );
   }
 
-  updateBannerStatus(id: string, isActive: boolean): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}/status?status=${isActive}`, null).pipe(
-      catchError(this.handleError)
-    );
-  }
-
   updateBannerOrder(id: string, order: number): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/order?order=${order}`, null).pipe(
       catchError(this.handleError)
     );
+  }
+
+  toggleActive(id: string): Observable<HomeBanner> {
+    return this.http.patch<HomeBanner>(`${this.apiUrl}/${id}/toggle-active`, {}).pipe(
+      catchError(this.handleError)
+    );;
+  }
+
+  bulkDelete(ids: string[]): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/bulk-delete`, ids).pipe(
+      catchError(this.handleError)
+    );;
+  }
+
+  bulkToggle(ids: string[], activate: boolean): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/bulk-toggle`, { ids, activate }).pipe(
+      catchError(this.handleError)
+    );;
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {

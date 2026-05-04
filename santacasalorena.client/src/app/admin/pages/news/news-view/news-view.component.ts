@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { News } from '../../../../models/news';
 import { NewsService } from '../../../../services/news.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-news-view',
@@ -17,7 +19,8 @@ export class NewsViewComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private newsService: NewsService
+    private newsService: NewsService,
+    private toastr: ToastrService // ✅ Toastr pronto para usar
   ) { }
 
   ngOnInit(): void {
@@ -26,8 +29,15 @@ export class NewsViewComponent implements OnInit {
       if (newsId) {
         this.loadNews(newsId);
       } else {
-        // Handle case where no ID is provided, e.g., redirect to list or show error
-        this.router.navigate(['/admin/news']);
+        // Id não informado
+        Swal.fire({
+          icon: 'warning',
+          title: 'ID inválido',
+          text: 'Nenhuma notícia selecionada.',
+          confirmButtonText: 'Voltar'
+        }).then(() => {
+          this.router.navigate(['/admin/news']);
+        });
       }
     });
   }
@@ -41,9 +51,14 @@ export class NewsViewComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error('Erro ao carregar notícia:', error);
-        alert('Erro ao carregar notícia. Por favor, tente novamente.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro ao carregar notícia',
+          text: 'Ocorreu um problema ao buscar a notícia. Tente novamente mais tarde.',
+          confirmButtonText: 'OK'
+        });
         this.loading = false;
-        this.router.navigate(['/admin/news']); // Redirect to list on error
+        this.router.navigate(['/admin/news']);
       }
     });
   }
@@ -55,13 +70,17 @@ export class NewsViewComponent implements OnInit {
   editNews(id: string | undefined): void {
     if (id) {
       this.router.navigate(['/admin/news/edit', id]);
+    } else {
+      this.toastr.warning('ID da notícia inválido!');
     }
   }
 
   formatDate(dateString: string | undefined): string {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleDateString('pt-BR', {
+      year: 'numeric', month: 'long', day: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
   }
 }
-

@@ -57,13 +57,38 @@ namespace SantaCasaLorena.Server.Controllers
         }
 
         [Authorize]
-        [HttpPatch("{id:guid}/publish")]
-        public async Task<ActionResult> UpdatePublishStatus(Guid id, [FromBody] NewsPublishStatusDto dto)
+        [HttpPatch("{id}/toggle-active")]
+        public async Task<ActionResult<ContactResponseDto>> ToggleActive(Guid id)
         {
-            var success = await _service.UpdatePublishStatusAsync(id, dto.IsPublished);
-            if (!success) return NotFound();
+            var result = await _service.ToggleActiveAsync(id);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpPost("bulk-delete")]
+        public async Task<ActionResult> BulkDelete([FromBody] IEnumerable<Guid> ids)
+        {
+            var success = await _service.BulkDeleteAsync(ids);
+            if (!success)
+                return NotFound();
+
             return NoContent();
         }
+
+        [Authorize]
+        [HttpPost("bulk-toggle")]
+        public async Task<ActionResult> BulkToggle([FromBody] BulkToggleRequest request)
+        {
+            var success = await _service.BulkToggleActiveAsync(request.Ids, request.Activate);
+            if (!success)
+                return NotFound();
+
+            return NoContent();
+        }
+
     }
 
     // DTO para o status de publicação, pois o PATCH espera um corpo JSON simples

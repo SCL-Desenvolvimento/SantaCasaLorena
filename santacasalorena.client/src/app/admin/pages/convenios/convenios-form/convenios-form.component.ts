@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Agreement } from '../../../../models/agreement';
 import { AgreementService } from '../../../../services/agreement.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-convenios-form',
@@ -24,7 +26,8 @@ export class ConveniosFormComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private agreementService: AgreementService
+    private agreementService: AgreementService,
+    private toastr: ToastrService // ✅ Toastr adicionado
   ) {
     this.createForm();
   }
@@ -42,7 +45,7 @@ export class ConveniosFormComponent implements OnInit {
   createForm(): void {
     this.convenioForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(150)]],
-      imageUrl: [''], // Mantém para armazenar o URL retornado do backend
+      imageUrl: [''],
       isActive: [true, Validators.required],
       createdAt: ['']
     });
@@ -53,12 +56,12 @@ export class ConveniosFormComponent implements OnInit {
     this.agreementService.getById(id).subscribe({
       next: (agreement: Agreement) => {
         this.convenioForm.patchValue(agreement);
-        this.previewImage = agreement.imageUrl; // Exibe imagem atual
+        this.previewImage = agreement.imageUrl;
         this.loading = false;
       },
       error: (error: HttpErrorResponse) => {
+        this.toastr.error('Erro ao carregar convênio.', 'Erro');
         console.error('Erro ao carregar convênio:', error);
-        alert('Erro ao carregar convênio. Tente novamente mais tarde.');
         this.loading = false;
         this.router.navigate(['/admin/convenios']);
       }
@@ -79,6 +82,7 @@ export class ConveniosFormComponent implements OnInit {
   save(): void {
     if (this.convenioForm.invalid) {
       this.markFormGroupTouched();
+      this.toastr.warning('Preencha os campos obrigatórios corretamente.', 'Atenção');
       return;
     }
 
@@ -98,26 +102,26 @@ export class ConveniosFormComponent implements OnInit {
     if (this.isEditMode && this.convenioId) {
       this.agreementService.update(this.convenioId, formData).subscribe({
         next: () => {
-          alert('Convênio atualizado com sucesso!');
+          Swal.fire('Sucesso!', 'Convênio atualizado com sucesso.', 'success');
           this.saving = false;
           this.router.navigate(['/admin/convenios']);
         },
         error: (error: HttpErrorResponse) => {
-          console.error('Erro ao atualizar convênio:', error);
-          alert('Erro ao atualizar convênio. Tente novamente mais tarde.');
+          this.toastr.error('Erro ao atualizar convênio.', 'Erro');
+          console.error(error);
           this.saving = false;
         }
       });
     } else {
       this.agreementService.create(formData).subscribe({
         next: () => {
-          alert('Convênio criado com sucesso!');
+          Swal.fire('Sucesso!', 'Convênio criado com sucesso.', 'success');
           this.saving = false;
           this.router.navigate(['/admin/convenios']);
         },
         error: (error: HttpErrorResponse) => {
-          console.error('Erro ao criar convênio:', error);
-          alert('Erro ao criar convênio. Tente novamente mais tarde.');
+          this.toastr.error('Erro ao criar convênio.', 'Erro');
+          console.error(error);
           this.saving = false;
         }
       });
@@ -150,9 +154,18 @@ export class ConveniosFormComponent implements OnInit {
 
   cancel(): void {
     if (this.convenioForm.dirty) {
-      if (confirm('Você tem alterações não salvas. Deseja realmente sair?')) {
-        this.router.navigate(['/admin/convenios']);
-      }
+      Swal.fire({
+        title: 'Tem certeza?',
+        text: 'Existem alterações não salvas. Deseja sair?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim, sair',
+        cancelButtonText: 'Cancelar'
+      }).then(result => {
+        if (result.isConfirmed) {
+          this.router.navigate(['/admin/convenios']);
+        }
+      });
     } else {
       this.router.navigate(['/admin/convenios']);
     }

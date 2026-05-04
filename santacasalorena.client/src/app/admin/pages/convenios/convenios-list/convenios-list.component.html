@@ -1,19 +1,24 @@
 <div class="convenios-list-container">
-  <div class="page-header mb-4 d-flex justify-content-between align-items-center">
-    <div>
-      <h2 class="page-title mb-1">Gerenciar Convênios</h2>
-      <p class="text-muted mb-0">Gerencie todos os convênios cadastrados</p>
+  <!-- Cabeçalho -->
+  <div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="page-title mb-1">Gerenciar Convênios</h2>
+        <p class="page-subtitle text-muted mb-0">
+          Gerencie os convênios exibidos no site
+        </p>
+      </div>
+      <button class="btn btn-primary" (click)="createConvenio()">
+        <i class="bi bi-plus-circle me-2"></i> Novo Convênio
+      </button>
     </div>
-    <button class="btn btn-primary btn-lg" (click)="createConvenio()">
-      <i class="bi bi-plus-circle me-2"></i> Novo Convênio
-    </button>
   </div>
 
   <!-- Filtros -->
   <div class="card shadow-sm border-0 rounded-3 mb-4">
     <div class="card-body">
       <div class="row g-3">
-        <div class="col-md-6">
+        <div class="col-md-4">
           <label class="form-label">Buscar</label>
           <div class="input-group">
             <input type="text"
@@ -27,32 +32,18 @@
           </div>
         </div>
 
-        <div class="col-md-3">
-          <label class="form-label">Status</label>
-          <select class="form-select"
-                  [(ngModel)]="statusFilter"
-                  (change)="onFilterChange()">
-            <option value="all">Todos</option>
-            <option value="active">Ativo</option>
-            <option value="inactive">Inativo</option>
-          </select>
-        </div>
-
         <div class="col-md-2">
-          <label class="form-label">Itens por página</label>
-          <select class="form-select"
-                  [(ngModel)]="itemsPerPage"
-                  (change)="onItemsPerPageChange()">
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
+          <label class="form-label">Status</label>
+          <select class="form-select" [(ngModel)]="statusFilter" (change)="onFilterChange()">
+            <option value="all">Todos</option>
+            <option value="active">Ativos</option>
+            <option value="inactive">Inativos</option>
           </select>
         </div>
 
         <div class="col-md-1 d-flex align-items-end">
           <button class="btn btn-outline-secondary w-100"
-                  (click)="searchTerm = ''; statusFilter = 'all'; onFilterChange()"
+                  (click)="clearFilters()"
                   title="Limpar filtros">
             <i class="bi bi-x-lg"></i>
           </button>
@@ -61,7 +52,28 @@
     </div>
   </div>
 
-  <!-- Loading -->
+  <!-- Ações em massa -->
+  <div class="bulk-actions mb-3" *ngIf="selectedItems.length > 0">
+    <div class="alert alert-info d-flex justify-content-between align-items-center">
+      <span>
+        <i class="bi bi-check-square me-2"></i>
+        {{ selectedItems.length }} convênio(s) selecionado(s)
+      </span>
+      <div class="btn-group">
+        <button class="btn btn-sm btn-success" (click)="bulkActivate()">
+          <i class="bi bi-check-circle me-1"></i> Ativar
+        </button>
+        <button class="btn btn-sm btn-warning" (click)="bulkDeactivate()">
+          <i class="bi bi-x-circle me-1"></i> Desativar
+        </button>
+        <button class="btn btn-sm btn-danger" (click)="bulkDelete()">
+          <i class="bi bi-trash me-1"></i> Excluir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loader -->
   <div class="text-center py-5" *ngIf="loading">
     <app-loading-spinner message="Carregando convênios..."></app-loading-spinner>
   </div>
@@ -76,67 +88,59 @@
               <div class="form-check">
                 <input class="form-check-input"
                        type="checkbox"
-                       [(ngModel)]="selectAll"
-                       (change)="toggleSelectAll()" />
+                       [checked]="isAllSelected()"
+                       (change)="toggleAllSelection()">
               </div>
             </th>
-            <th (click)="onSort('name')" class="sortable">
-              Nome
-              <i class="bi ms-1"
-                 [ngClass]="{
-                  'bi-arrow-up': sortBy === 'name' && sortOrder === 'asc',
-                  'bi-arrow-down': sortBy === 'name' && sortOrder === 'desc',
-                  'bi-arrow-down-up': sortBy !== 'name'
-                }"></i>
-            </th>
+            <th>Nome</th>
             <th>Imagem</th>
-            <th (click)="onSort('createdAt')" class="sortable">
-              Criado em
-              <i class="bi ms-1"
-                 [ngClass]="{
-                  'bi-arrow-up': sortBy === 'createdAt' && sortOrder === 'asc',
-                  'bi-arrow-down': sortBy === 'createdAt' && sortOrder === 'desc',
-                  'bi-arrow-down-up': sortBy !== 'createdAt'
-                }"></i>
-            </th>
+            <th>Criado em</th>
             <th>Status</th>
             <th width="150">Ações</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of paginatedConvenios" [class.table-active]="isSelected(item.id)">
+          <tr *ngFor="let convenio of filteredConvenios"
+              [class.table-active]="isSelected(convenio.id)">
             <td>
               <div class="form-check">
                 <input class="form-check-input"
                        type="checkbox"
-                       [checked]="isSelected(item.id)"
-                       (change)="toggleItemSelection(item.id)" />
+                       [checked]="isSelected(convenio.id)"
+                       (change)="toggleItemSelection(convenio.id)">
               </div>
             </td>
-            <td>{{ item.name }}</td>
+            <td>{{ convenio.name }}</td>
             <td>
-              <img *ngIf="item.imageUrl"
-                   [src]="item.imageUrl"
+              <img *ngIf="convenio.imageUrl"
+                   [src]="convenio.imageUrl"
                    alt="Imagem do convênio"
                    width="60"
-                   class="rounded shadow-sm" />
+                   class="rounded shadow-sm">
             </td>
-            <td>{{ formatDate(item.createdAt) }}</td>
+            <td>{{ formatDate(convenio.createdAt) }}</td>
             <td>
-              <span class="badge" [class]="getStatusBadgeClass(item.isActive)">
-                {{ getStatusText(item.isActive) }}
+              <span class="badge"
+                    [class.bg-success]="convenio.isActive"
+                    [class.bg-secondary]="!convenio.isActive">
+                {{ convenio.isActive ? 'Ativo' : 'Inativo' }}
               </span>
             </td>
             <td>
               <div class="btn-group">
                 <button class="btn btn-sm btn-outline-primary"
-                        (click)="editConvenio(item.id)"
-                        title="Editar">
+                        (click)="editConvenio(convenio.id)" title="Editar">
                   <i class="bi bi-pencil"></i>
                 </button>
+                <button class="btn btn-sm"
+                        [ngClass]="convenio.isActive ? 'btn-outline-warning' : 'btn-outline-success'"
+                        (click)="toggleActiveStatus(convenio)"
+                        [title]="convenio.isActive ? 'Desativar' : 'Ativar'">
+                  <i class="bi"
+                     [ngClass]="convenio.isActive ? 'bi-toggle-on' : 'bi-toggle-off'"></i>
+                </button>
                 <button class="btn btn-sm btn-outline-danger"
-                        (click)="deleteConvenio(item.id)"
-                        title="Excluir">
+                        (click)="deleteConvenio(convenio.id)" title="Excluir">
                   <i class="bi bi-trash"></i>
                 </button>
               </div>
@@ -146,7 +150,7 @@
       </table>
     </div>
 
-    <!-- Estado vazio -->
+    <!-- Nenhum convênio -->
     <div class="text-center py-5" *ngIf="filteredConvenios.length === 0 && !loading">
       <i class="bi bi-journal-bookmark display-1 text-muted"></i>
       <h5 class="mt-3">Nenhum convênio encontrado</h5>
@@ -154,52 +158,13 @@
         {{
           searchTerm || statusFilter !== 'all'
             ? 'Tente ajustar os filtros de busca'
-            : 'Comece cadastrando seu primeiro convênio'
+            : 'Nenhum convênio cadastrado ainda.'
         }}
       </p>
-      <button class="btn btn-primary"
-              (click)="createConvenio()"
-              *ngIf="!searchTerm && statusFilter === 'all'">
+      <button class="btn btn-primary mt-3" (click)="createConvenio()">
         <i class="bi bi-plus-circle me-2"></i>
-        Cadastrar primeiro convênio
+        Criar Primeiro Convênio
       </button>
-    </div>
-
-    <!-- Paginação -->
-    <div class="card-footer bg-light" *ngIf="totalPages > 1">
-      <div class="d-flex justify-content-between align-items-center">
-        <small class="text-muted">
-          Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} a
-          {{ getMin(currentPage * itemsPerPage, totalItems) }} de
-          {{ totalItems }} resultados
-        </small>
-
-        <ul class="pagination pagination-sm mb-0">
-          <li class="page-item" [class.disabled]="currentPage === 1">
-            <button class="page-link"
-                    (click)="onPageChange(currentPage - 1)"
-                    [disabled]="currentPage === 1">
-              <i class="bi bi-chevron-left"></i>
-            </button>
-          </li>
-
-          <li class="page-item"
-              *ngFor="let page of [].constructor(totalPages); let i = index"
-              [class.active]="currentPage === i + 1">
-            <button class="page-link" (click)="onPageChange(i + 1)">
-              {{ i + 1 }}
-            </button>
-          </li>
-
-          <li class="page-item" [class.disabled]="currentPage === totalPages">
-            <button class="page-link"
-                    (click)="onPageChange(currentPage + 1)"
-                    [disabled]="currentPage === totalPages">
-              <i class="bi bi-chevron-right"></i>
-            </button>
-          </li>
-        </ul>
-      </div>
     </div>
   </div>
 </div>

@@ -4,6 +4,8 @@ import { HomeBanner } from '../../../../models/homeBanner';
 import { HomeBannerService } from '../../../../services/home-banner.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-banner-list',
@@ -21,7 +23,8 @@ export class BannerListComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private homeBannerService: HomeBannerService
+    private homeBannerService: HomeBannerService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -37,7 +40,7 @@ export class BannerListComponent implements OnInit {
         this.loading = false;
       },
       error: (err: HttpErrorResponse) => {
-        console.error('Erro ao carregar banners:', err);
+        this.toastr.error('Erro ao carregar os banners.', 'Erro');
         this.loading = false;
       }
     });
@@ -94,56 +97,96 @@ export class BannerListComponent implements OnInit {
     return this.selectedItems.includes(id);
   }
 
-  toggleActiveStatus(banner: HomeBanner): void {
-    this.homeBannerService.updateBannerStatus(banner.id, !banner.isActive).subscribe({
-      next: () => {
-        banner.isActive = !banner.isActive;
-        this.applyFilters();
-      },
-      error: err => console.error('Erro ao atualizar status:', err)
-    });
+  // ✅ Usa o novo método toggleActive()
+  async toggleActiveStatus(banner: HomeBanner): Promise<void> {
+    try {
+      const updated = await firstValueFrom(this.homeBannerService.toggleActive(banner.id));
+      banner.isActive = updated.isActive;
+      this.toastr.success('Status atualizado com sucesso!', 'Sucesso');
+      this.applyFilters();
+    } catch {
+      this.toastr.error('Erro ao atualizar status.', 'Erro');
+    }
   }
 
+  // ✅ Usa delete() do service
   async deleteBanner(id: string): Promise<void> {
-    if (!confirm('Tem certeza que deseja excluir este banner?')) return;
+    const result = await Swal.fire({
+      title: 'Tem certeza?',
+      text: 'Você não poderá desfazer esta ação!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!result.isConfirmed) return;
+
     try {
       await firstValueFrom(this.homeBannerService.delete(id));
       this.banners = this.banners.filter(b => b.id !== id);
       this.applyFilters();
-    } catch (err) {
-      console.error('Erro ao excluir banner:', err);
+      this.toastr.success('Banner excluído com sucesso!', 'Sucesso');
+    } catch {
+      this.toastr.error('Erro ao excluir banner.', 'Erro');
     }
   }
 
+  // ✅ Usa bulkDelete() do service
   async bulkDelete(): Promise<void> {
     if (this.selectedItems.length === 0) return;
-    if (!confirm(`Excluir ${this.selectedItems.length} banner(s)?`)) return;
+
+    const result = await Swal.fire({
+      title: `Excluir ${this.selectedItems.length} banner(s)?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
-      await Promise.all(this.selectedItems.map(id => firstValueFrom(this.homeBannerService.delete(id))));
+      await firstValueFrom(this.homeBannerService.bulkDelete(this.selectedItems));
       this.banners = this.banners.filter(b => !this.selectedItems.includes(b.id));
       this.selectedItems = [];
       this.applyFilters();
-    } catch (err) {
-      console.error('Erro ao excluir em massa:', err);
+      this.toastr.success('Banners excluídos com sucesso!', 'Sucesso');
+    } catch {
+      this.toastr.error('Erro ao excluir em massa.', 'Erro');
     }
   }
 
+  // ✅ Usa bulkToggle() do service
   async bulkActivate(): Promise<void> {
-    await Promise.all(this.selectedItems.map(id => firstValueFrom(this.homeBannerService.updateBannerStatus(id, true))));
-    this.banners.forEach(b => { if (this.selectedItems.includes(b.id)) b.isActive = true; });
-    this.selectedItems = [];
-    this.applyFilters();
+    try {
+      await firstValueFrom(this.homeBannerService.bulkToggle(this.selectedItems, true));
+      this.banners.forEach(b => {
+        if (this.selectedItems.includes(b.id)) b.isActive = true;
+      });
+      this.selectedItems = [];
+      this.toastr.success('Banners ativados!', 'Sucesso');
+      this.applyFilters();
+    } catch {
+      this.toastr.error('Erro ao ativar banners.', 'Erro');
+    }
   }
 
   async bulkDeactivate(): Promise<void> {
-    await Promise.all(this.selectedItems.map(id => firstValueFrom(this.homeBannerService.updateBannerStatus(id, false))));
-    this.banners.forEach(b => { if (this.selectedItems.includes(b.id)) b.isActive = false; });
-    this.selectedItems = [];
-    this.applyFilters();
+    try {
+      await firstValueFrom(this.homeBannerService.bulkToggle(this.selectedItems, false));
+      this.banners.forEach(b => {
+        if (this.selectedItems.includes(b.id)) b.isActive = false;
+      });
+      this.selectedItems = [];
+      this.toastr.success('Banners desativados!', 'Sucesso');
+      this.applyFilters();
+    } catch {
+      this.toastr.error('Erro ao desativar banners.', 'Erro');
+    }
   }
 
-  // --- Movimentação de ordem ---
+  // ✅ Usa updateBannerOrder() do service
   async moveUp(index: number): Promise<void> {
     if (index === 0) return;
     const current = this.filteredBanners[index];
@@ -170,8 +213,8 @@ export class BannerListComponent implements OnInit {
       b.order = tmp;
 
       this.filteredBanners.sort((x, y) => x.order - y.order);
-    } catch (error) {
-      console.error('Erro ao trocar ordem:', error);
+    } catch {
+      this.toastr.error('Erro ao alterar ordem.', 'Erro');
     }
   }
 }

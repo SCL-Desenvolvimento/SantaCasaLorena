@@ -52,10 +52,22 @@ export class NewsService {
     );
   }
 
-  updateNewsPublishStatus(id: string, isPublished: boolean): Observable<void> {
-    return this.http.patch<void>(`${this.apiUrl}/${id}/publish`, { isPublished }).pipe(
+  toggleActive(id: string): Observable<News> {
+    return this.http.patch<News>(`${this.apiUrl}/${id}/toggle-active`, {}).pipe(
       catchError(this.handleError)
-    );
+    );;
+  }
+
+  bulkDelete(ids: string[]): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/bulk-delete`, ids).pipe(
+      catchError(this.handleError)
+    );;
+  }
+
+  bulkToggle(ids: string[], activate: boolean): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/bulk-toggle`, { ids, activate }).pipe(
+      catchError(this.handleError)
+    );;
   }
 
   private buildFormData(news: News, imageFile?: File): FormData {

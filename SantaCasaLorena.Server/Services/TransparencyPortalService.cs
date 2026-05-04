@@ -178,7 +178,7 @@ namespace SantaCasaLorena.Server.Services
                 .Where(c => ids.Contains(c.Id))
                 .ToListAsync();
 
-            if (!entity.Any()) return false;
+            if (entity.Count == 0) return false;
 
             _context.TransparencyPortals.RemoveRange(entity);
             await _context.SaveChangesAsync();
@@ -191,7 +191,7 @@ namespace SantaCasaLorena.Server.Services
                 .Where(c => ids.Contains(c.Id))
                 .ToListAsync();
 
-            if (!entity.Any()) return false;
+            if (entity.Count == 0) return false;
 
             foreach (var c in entity)
             {

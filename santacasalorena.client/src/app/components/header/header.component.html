@@ -52,14 +52,24 @@
 
           <!-- Sem submenu -->
           <ng-template #noChildren>
-            <a class="nav-link fw-medium"
+            <!-- Link externo -->
+            <a *ngIf="item.external"
+               class="nav-link fw-medium"
+               [href]="item.path"
+               target="_blank"
+               rel="noopener noreferrer">
+              {{ item.name }}
+            </a>
+
+            <!-- Link interno -->
+            <a *ngIf="!item.external"
+               class="nav-link fw-medium"
                [routerLink]="item.path"
                routerLinkActive="active"
                [routerLinkActiveOptions]="{ exact: true }">
               {{ item.name }}
             </a>
-          </ng-template>
-        </ng-container>
+          </ng-template>        </ng-container>
 
         <!-- Fale Conosco Dropdown -->
         <div class="nav-item dropdown">
@@ -133,7 +143,7 @@
           <!-- Sem submenu -->
           <ng-template #simpleLink>
             <a class="nav-link fw-medium"
-               (click)="item.path && navigateTo(item.path)">
+               (click)="handleNavigation(item)">
               {{ item.name }}
             </a>
           </ng-template>

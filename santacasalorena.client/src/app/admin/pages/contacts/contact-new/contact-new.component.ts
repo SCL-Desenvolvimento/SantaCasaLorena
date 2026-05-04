@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Contact } from '../../../../models/contact';
 import { ContactService } from '../../../../services/contact.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-contact-new',
@@ -25,7 +27,8 @@ export class ContactNewComponent implements OnInit {
   constructor(
     private contactService: ContactService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -47,9 +50,8 @@ export class ContactNewComponent implements OnInit {
         this.loading = false;
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Erro ao carregar contato:', error);
         this.loading = false;
-        alert('Erro ao carregar o contato. Verifique se o contato existe.');
+        this.toastr.error('Erro ao carregar o contato.', 'Erro');
         this.router.navigate(['/admin/contacts']);
       }
     });
@@ -59,38 +61,51 @@ export class ContactNewComponent implements OnInit {
     this.loading = true;
 
     if (this.isEditMode && this.contactId) {
-      // Atualiza o contato existente
       this.contactService.updateContact(this.contactId, this.contact as Contact).subscribe({
         next: () => {
           this.loading = false;
-          alert('Contato atualizado com sucesso!');
-          this.router.navigate(['/admin/contacts']);
+          Swal.fire({
+            icon: 'success',
+            title: 'Atualizado!',
+            text: 'Contato atualizado com sucesso.'
+          }).then(() => this.router.navigate(['/admin/contacts']));
         },
         error: (error: HttpErrorResponse) => {
-          console.error('Erro ao atualizar contato:', error);
           this.loading = false;
-          alert('Erro ao atualizar contato. Tente novamente.');
+          Swal.fire('Erro', 'Erro ao atualizar o contato. Tente novamente.', 'error');
         }
       });
     } else {
-      // Cria um novo contato
       this.contactService.createContact(this.contact as Contact).subscribe({
         next: () => {
           this.loading = false;
-          alert('Contato criado com sucesso!');
-          this.router.navigate(['/admin/contacts']);
+          Swal.fire({
+            icon: 'success',
+            title: 'Criado!',
+            text: 'Contato criado com sucesso.'
+          }).then(() => this.router.navigate(['/admin/contacts']));
         },
         error: (error: HttpErrorResponse) => {
-          console.error('Erro ao criar contato:', error);
           this.loading = false;
-          alert('Erro ao criar contato. Tente novamente.');
+          Swal.fire('Erro', 'Erro ao criar o contato. Tente novamente.', 'error');
         }
       });
     }
   }
 
   onCancel(): void {
-    this.router.navigate(['/admin/contacts']);
+    Swal.fire({
+      title: 'Tem certeza que deseja cancelar?',
+      text: 'As alterações não serão salvas!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, cancelar',
+      cancelButtonText: 'Voltar'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.router.navigate(['/admin/contacts']);
+      }
+    });
   }
 
   formatPhoneNumber(event: any): void {

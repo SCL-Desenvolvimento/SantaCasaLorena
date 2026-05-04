@@ -50,10 +50,22 @@ export class AgreementService {
     );
   }
 
-  updateAgreementStatus(id: string, status: boolean): Observable<void> {
-    return this.http.patch<void>(`${this.apiUrl}/${id}/status`, { status }).pipe(
+  toggleActive(id: string): Observable<Agreement> {
+    return this.http.patch<Agreement>(`${this.apiUrl}/${id}/toggle-active`, {}).pipe(
       catchError(this.handleError)
-    );
+    );;
+  }
+
+  bulkDelete(ids: string[]): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/bulk-delete`, ids).pipe(
+      catchError(this.handleError)
+    );;
+  }
+
+  bulkToggle(ids: string[], activate: boolean): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/bulk-toggle`, { ids, activate }).pipe(
+      catchError(this.handleError)
+    );;
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {

@@ -11,6 +11,16 @@ export class HeaderComponent {
   isMenuOpen = false;
   faleConoscoOpen = false; // Adicionei esta linha
 
+  handleNavigation(item: any) {
+    if (!item.path) return;
+
+    if (item.external) {
+      window.open(item.path, '_blank');
+    } else {
+      this.navigateTo(item.path);
+    }
+  }
+
   menuItems = [
     { name: 'Home', path: '/' },
     {
@@ -33,7 +43,6 @@ export class HeaderComponent {
         { name: 'Clínica Emília', path: '/clinica-emilia' },
         { name: 'Centro de Diagnóstico por Imagem', path: '/diagnostico-imagem' },
         { name: 'Unidade de Internação', path: '/unidade-internacao' },
-        //  { name: 'Particular / Convênio', path: '/particular-convenio' }
       ]
     },
     {
@@ -47,10 +56,12 @@ export class HeaderComponent {
       ]
     },
     { name: 'Notícias', path: '/noticias' },
-    { name: 'Emendômetro', path: '/emendas' }
-    // Removi o "Fale Conosco" daqui pois agora é um dropdown separado
+    {
+      name: 'Emendômetro',
+      path: 'https://www.emendasdasantacasadelorena.com.br/',
+      external: true
+    }
   ];
-
   constructor(private router: Router) { }
 
   toggleMenu() {
