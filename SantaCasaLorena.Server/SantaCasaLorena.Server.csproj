@@ -21,7 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MailKit" Version="4.13.0" />
+		<PackageReference Include="MailKit" Version="4.16.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.19" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.19" />
 		<PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.19" />
@@ -45,6 +45,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Migrations\" />
 		<Folder Include="Uploads\" />
 		<Folder Include="wwwroot\browser\" />
 	</ItemGroup>
