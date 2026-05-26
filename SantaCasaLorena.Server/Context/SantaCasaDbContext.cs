@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SantaCasaLorena.Server.Entities;
+using System.Reflection;
 
 namespace SantaCasaLorena.Server.Context
 {
@@ -20,6 +21,17 @@ namespace SantaCasaLorena.Server.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>().ToTable("users");
+            modelBuilder.Entity<HomeBanner>().ToTable("homebanners");
+            modelBuilder.Entity<Agreement>().ToTable("agreements");
+            modelBuilder.Entity<News>().ToTable("news");
+            modelBuilder.Entity<Provider>().ToTable("providers");
+            modelBuilder.Entity<TransparencyPortal>().ToTable("transparencyportals");
+            modelBuilder.Entity<Contact>().ToTable("contact");
+            modelBuilder.Entity<Feedback>().ToTable("ouvidorias");
+            modelBuilder.Entity<JobApplication>().ToTable("trabalheconosco");
+            modelBuilder.Entity<ServiceSurvey>().ToTable("pesquisas");
+
             base.OnModelCreating(modelBuilder);
 
             // USER
